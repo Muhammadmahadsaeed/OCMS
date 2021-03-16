@@ -28,6 +28,7 @@ const TabForPhoneEmail = createMaterialTopTabNavigator(
       style: {
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
+        backgroundColor:'red'
       },
     },
     initialRouteName: 'Phone',

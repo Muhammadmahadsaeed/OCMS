@@ -3,7 +3,7 @@ import {View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native';
 
 const TermAndConditon = ({navigation}) => {
   const goToSelectionScreen = () => {
-    console.log("data======")
+   
     navigation.navigate('TabScreen')
   };
   return (

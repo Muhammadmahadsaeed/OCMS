@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import {View, Text, StyleSheet,Image, TouchableWithoutFeedback} from 'react-native';
 
 const UserSelection = (props) => {
   const {
@@ -12,12 +12,14 @@ const UserSelection = (props) => {
   const activeTabIndex = navigation.state.index;
 
   return (
-    <View style={styles.paymentContainer}>
-      <View style={styles.paymentText}>
-        <Text style={{color: '#81b840', fontSize: 20}}>Pay it forward </Text>
-     
+    <View style={styles.container}>
+      <View style={{flexGrow:0.6}}>
+        <Image 
+         source={require('../../../asessts/images/aboutreact.png')}
+         style={{width: '90%',height:'50%', resizeMode: 'contain', margin: 30}}
+        />
       </View>
-      <View style={styles.paymentButton}>
+      <View style={styles.footer}>
         {navigationState.routes.map((route, index) => {
           const isRouteActive = index === activeTabIndex;
           const tintColor = isRouteActive ? activeTintColor : inactiveTintColor;
@@ -28,14 +30,10 @@ const UserSelection = (props) => {
               key={index}>
               <View>
                 <Text
-                  style={[
-                    styles.paymentButtonText,
-                    {
-                      backgroundColor: `${isRouteActive ? '#81b840' : 'white'}`,
-                      color: `${tintColor}`,
-                    },
-                  ]}>
-                  {' '}
+                  style={{
+                    backgroundColor: `${isRouteActive ? '#81b840' : 'white'}`,
+                    color: `${tintColor}`,
+                  }}>
                   {route.routeName}
                 </Text>
               </View>
@@ -47,30 +45,11 @@ const UserSelection = (props) => {
   );
 };
 const styles = StyleSheet.create({
-  paymentContainer: {
-    marginTop: 10,
-    height: '20%',
-    width: '100%',
+  container: {
+    flex:1,
+    backgroundColor:'red'
+  },
 
-  },
-  paymentButton: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    borderRadius: 50,
-    borderBottomRightRadius: 50,
-    borderTopRightRadius: 50,
-    marginTop: 20,
-  },
-  paymentButtonText: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingRight: 20,
-    paddingLeft: 20,
-  },
-  paymentText: {
-    marginTop: 10,
-    alignItems: 'center',
-  },
   footer: {
     flex: 0.4,
     backgroundColor: '#e9ba00',
