@@ -7,7 +7,7 @@ const SplashScreen = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
       setAnimating(false);
-      navigation.navigate('AuthScreen');
+      navigation.navigate('TermAndConditionScreen');
     }, 3000);
   }, []);
 
