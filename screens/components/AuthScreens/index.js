@@ -1,4 +1,5 @@
 import login from './login'
+import register from './register'
 import Splash from './Splash'
 import TermAndCondition from './TermAndCondition'
 import UserSelection from './UserSelection'
@@ -10,6 +11,7 @@ export {
     TermAndCondition,
     UserSelection,
     LoginWithEmail,
-    LoginWithPhone
+    LoginWithPhone,
+    register
 
 }

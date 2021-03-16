@@ -9,6 +9,7 @@ import {
 } from 'react-navigation-tabs';
 // import {createDrawerNavigator} from 'react-navigation-drawer';
 import * as AuthScreens from '../AuthScreens/index';
+import * as AllNavigation from './index';
 
 // Tab Navigation for Login with email and phone
 const TabForPhoneEmail = createMaterialTopTabNavigator(
@@ -34,37 +35,38 @@ const TabForPhoneEmail = createMaterialTopTabNavigator(
     initialRouteName: 'Phone',
   },
 );
-// const Auth = createStackNavigator({
-//   Login: {
-//     screen: AuthScreens.login,
-//     navigationOptions: {
-//       headerShown: false,
-//     },
-//   },
-//   // ForgotPassword: {
-//   //   screen: AuthScreens.ForgotPassword,
-//   //   navigationOptions: {
-//   //     headerTitle: '',
-//   //     headerStyle: {
-//   //       backgroundColor: 'none',
-//   //       shadowOffset: {
-//   //         height: 0,
-//   //         width: 0,
-//   //       },
-//   //       shadowOpacity: 0,
-//   //       elevation: 0,
-//   //     },
-//   //     headerBackImage: () => <CommonComponents.HeaderBackButton />,
-//   //   },
-//   // }
-// });
+const Auth = createStackNavigator({
+  Login: {
+    screen: AuthScreens.login,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+  // ForgotPassword: {
+  //   screen: AuthScreens.ForgotPassword,
+  //   navigationOptions: {
+  //     headerTitle: '',
+  //     headerStyle: {
+  //       backgroundColor: 'none',
+  //       shadowOffset: {
+  //         height: 0,
+  //         width: 0,
+  //       },
+  //       shadowOpacity: 0,
+  //       elevation: 0,
+  //     },
+  //     headerBackImage: () => <CommonComponents.HeaderBackButton />,
+  //   },
+  // }
+});
 const RootNavigator = createSwitchNavigator({
   SplashScreen: AuthScreens.Splash,
   TermAndConditionScreen: AuthScreens.TermAndCondition,
-  TabScreen: TabForPhoneEmail
-  // RegisterScreen: {
-  //   screen: Register_StackNavigator,
-  // },
+  // TabScreen: TabForPhoneEmail,
+  AuthScreen: Auth,
+  register: {
+    screen: AllNavigation.Register_StackNavigator,
+  },
 });
 
 const MainNavigator = createAppContainer(RootNavigator);
