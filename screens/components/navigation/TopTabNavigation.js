@@ -20,7 +20,7 @@ const TopTabNavigation = (navigation) => {
           <View style={styles.headerImage}>
             <Image
               style={styles.img}
-              source={require('../../../asessts/images/aboutreact.png')}
+              source={require('../../../asessts/images/logo.png')}
             />
           </View>
         </View>

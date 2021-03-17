@@ -10,6 +10,7 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Dimensions,
 } from 'react-native';
 
 const LoginWithEmail = ({navigation}) => {
@@ -21,6 +22,7 @@ const LoginWithEmail = ({navigation}) => {
   const passwordInputRef = createRef();
 
   const handleSubmitPress = () => {
+    navigation.navigate('HomeScreen')
     // setErrortext('');
     // if (!userEmail) {
     //   alert('Please fill Email');
@@ -72,6 +74,10 @@ const LoginWithEmail = ({navigation}) => {
 
   return (
     <View style={styles.mainBody}>
+      <Image
+        style={styles.backgroundImage}
+        source={require('../../../asessts/images/bg.png')}
+      />
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
@@ -97,7 +103,7 @@ const LoginWithEmail = ({navigation}) => {
                 style={styles.inputStyle}
                 onChangeText={(UserEmail) => setUserEmail(UserEmail)}
                 placeholder="Enter Email" //dummy@abc.com
-                placeholderTextColor="#8b9cb5"
+                placeholderTextColor="white"
                 autoCapitalize="none"
                 keyboardType="email-address"
                 returnKeyType="next"
@@ -113,7 +119,7 @@ const LoginWithEmail = ({navigation}) => {
                 style={styles.inputStyle}
                 onChangeText={(UserPassword) => setUserPassword(UserPassword)}
                 placeholder="Enter Password" //12345
-                placeholderTextColor="#8b9cb5"
+                placeholderTextColor="white"
                 keyboardType="default"
                 ref={passwordInputRef}
                 onSubmitEditing={Keyboard.dismiss}
@@ -172,6 +178,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#307ecc',
     alignContent: 'center',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
   SectionStyle: {
     flexDirection: 'row',

@@ -4,7 +4,9 @@ import {View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native';
 const LoginPhoneEmailButton = ({navigationProps}) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigationProps.navigation.navigate('Phone')}>
         <Text>Login With Phone</Text>
       </TouchableOpacity>
       <TouchableOpacity

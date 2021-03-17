@@ -15,9 +15,9 @@ const TermAndConditon = ({navigation}) => {
           industry.
         </Text>
       </View>
-      <View style={styles.heading}>
+      <View style={[styles.heading]}>
         <Image
-          source={require('../../../asessts/images/aboutreact.png')}
+          source={require('../../../asessts/images/logo.png')}
           style={{width: '90%', resizeMode: 'contain', margin: 30}}
         />
       </View>
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-around',
-    backgroundColor: '#307ecc',
+    backgroundColor: '#81b840',
   },
   heading: {
     justifyContent: 'center',
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 50,
   },
   buttonStyle: {
-    backgroundColor: '#7DE24E',
+    backgroundColor: '#00E676',
     color: '#FFFFFF',
     alignItems: 'center',
     marginTop: 20,

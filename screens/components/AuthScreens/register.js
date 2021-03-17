@@ -10,10 +10,10 @@ import {
   Keyboard,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 
-
-const RegisterScreen = (props) => {
+const RegisterScreen = (navigation) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userAge, setUserAge] = useState('');
@@ -21,10 +21,7 @@ const RegisterScreen = (props) => {
   const [userPassword, setUserPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
-  const [
-    isRegistraionSuccess,
-    setIsRegistraionSuccess
-  ] = useState(false);
+  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
 
   const emailInputRef = createRef();
   const ageInputRef = createRef();
@@ -69,7 +66,6 @@ const RegisterScreen = (props) => {
     //   formBody.push(encodedKey + '=' + encodedValue);
     // }
     // formBody = formBody.join('&');
-
     // fetch('http://localhost:3000/api/user/register', {
     //   method: 'POST',
     //   body: formBody,
@@ -100,43 +96,46 @@ const RegisterScreen = (props) => {
     //     console.error(error);
     //   });
   };
-//   if (isRegistraionSuccess) {
-//     return (
-//       <View
-//         style={{
-//           flex: 1,
-//           backgroundColor: '#307ecc',
-//           justifyContent: 'center',
-//         }}>
-//         <Image
-//           source={require('../Image/success.png')}
-//           style={{
-//             height: 150,
-//             resizeMode: 'contain',
-//             alignSelf: 'center'
-//           }}
-//         />
-//         <Text style={styles.successTextStyle}>
-//           Registration Successful
-//         </Text>
-//         <TouchableOpacity
-//           style={styles.buttonStyle}
-//           activeOpacity={0.5}
-//           onPress={() => props.navigation.navigate('LoginScreen')}>
-//           <Text style={styles.buttonTextStyle}>Login Now</Text>
-//         </TouchableOpacity>
-//       </View>
-//     );
-//   }
+  //   if (isRegistraionSuccess) {
+  //     return (
+  //       <View
+  //         style={{
+  //           flex: 1,
+  //           backgroundColor: '#307ecc',
+  //           justifyContent: 'center',
+  //         }}>
+  //         <Image
+  //           source={require('../Image/success.png')}
+  //           style={{
+  //             height: 150,
+  //             resizeMode: 'contain',
+  //             alignSelf: 'center'
+  //           }}
+  //         />
+  //         <Text style={styles.successTextStyle}>
+  //           Registration Successful
+  //         </Text>
+  //         <TouchableOpacity
+  //           style={styles.buttonStyle}
+  //           activeOpacity={0.5}
+  //           onPress={() => props.navigation.navigate('LoginScreen')}>
+  //           <Text style={styles.buttonTextStyle}>Login Now</Text>
+  //         </TouchableOpacity>
+  //       </View>
+  //     );
+  //   }
   return (
-    <View style={{flex: 1, backgroundColor: '#307ecc'}}>
+    <View style={{flex: 1}}>
+      <Image
+        style={styles.backgroundImage}
+        source={require('../../../asessts/images/bg.png')}
+      />
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
           justifyContent: 'center',
           alignContent: 'center',
         }}>
-       
         <KeyboardAvoidingView enabled>
           <View style={styles.SectionStyle}>
             <TextInput
@@ -164,8 +163,7 @@ const RegisterScreen = (props) => {
               ref={emailInputRef}
               returnKeyType="next"
               onSubmitEditing={() =>
-                passwordInputRef.current &&
-                passwordInputRef.current.focus()
+                passwordInputRef.current && passwordInputRef.current.focus()
               }
               blurOnSubmit={false}
             />
@@ -173,9 +171,7 @@ const RegisterScreen = (props) => {
           <View style={styles.SectionStyle}>
             <TextInput
               style={styles.inputStyle}
-              onChangeText={(UserPassword) =>
-                setUserPassword(UserPassword)
-              }
+              onChangeText={(UserPassword) => setUserPassword(UserPassword)}
               underlineColorAndroid="#f000"
               placeholder="Enter Password"
               placeholderTextColor="#F6F6F7"
@@ -183,8 +179,7 @@ const RegisterScreen = (props) => {
               returnKeyType="next"
               secureTextEntry={true}
               onSubmitEditing={() =>
-                ageInputRef.current &&
-                ageInputRef.current.focus()
+                ageInputRef.current && ageInputRef.current.focus()
               }
               blurOnSubmit={false}
             />
@@ -200,8 +195,7 @@ const RegisterScreen = (props) => {
               ref={ageInputRef}
               returnKeyType="next"
               onSubmitEditing={() =>
-                addressInputRef.current &&
-                addressInputRef.current.focus()
+                addressInputRef.current && addressInputRef.current.focus()
               }
               blurOnSubmit={false}
             />
@@ -209,9 +203,7 @@ const RegisterScreen = (props) => {
           <View style={styles.SectionStyle}>
             <TextInput
               style={styles.inputStyle}
-              onChangeText={(UserAddress) =>
-                setUserAddress(UserAddress)
-              }
+              onChangeText={(UserAddress) => setUserAddress(UserAddress)}
               underlineColorAndroid="#f000"
               placeholder="Enter Address"
               placeholderTextColor="#F6F6F7"
@@ -223,9 +215,7 @@ const RegisterScreen = (props) => {
             />
           </View>
           {errortext != '' ? (
-            <Text style={styles.errorTextStyle}>
-              {errortext}
-            </Text>
+            <Text style={styles.errorTextStyle}>{errortext}</Text>
           ) : null}
           <TouchableOpacity
             style={styles.buttonStyle}
@@ -234,19 +224,19 @@ const RegisterScreen = (props) => {
             <Text style={styles.buttonTextStyle}>Next</Text>
           </TouchableOpacity>
           <TouchableOpacity
-              style={[styles.SignUpbuttonStyle]}
-              activeOpacity={0.5}
-              onPress={() => {
-                this.moveToSignin();
-              }}>
-              <Text
-                style={[
-                  styles.buttonTextStyle,
-                  {paddingTop: 25, color: 'white'},
-                ]}>
-                Sign in
-              </Text>
-            </TouchableOpacity>
+            style={[styles.SignUpbuttonStyle]}
+            activeOpacity={0.5}
+            onPress={() => {
+              navigation.navigation.navigate('AuthScreen');
+            }}>
+            <Text
+              style={[
+                styles.buttonTextStyle,
+                {paddingTop: 25, color: 'white'},
+              ]}>
+              Sign in
+            </Text>
+          </TouchableOpacity>
         </KeyboardAvoidingView>
       </ScrollView>
     </View>
@@ -255,6 +245,13 @@ const RegisterScreen = (props) => {
 export default RegisterScreen;
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
   SectionStyle: {
     flexDirection: 'row',
     height: 50,
@@ -263,7 +260,7 @@ const styles = StyleSheet.create({
     marginRight: 35,
     margin: 10,
     width: '80%',
-    alignSelf:'center'
+    alignSelf: 'center',
   },
   buttonStyle: {
     backgroundColor: '#FFFFFF',
@@ -303,7 +300,6 @@ const styles = StyleSheet.create({
     color: '#81b840',
     paddingVertical: 10,
     fontSize: 16,
-   
   },
   inputStyle: {
     flex: 1,
