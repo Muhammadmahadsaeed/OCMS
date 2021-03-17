@@ -1,8 +1,7 @@
 import {Register_StackNavigator} from './RegisterStack'
-import {Auth} from './LoginStack'
-import TobTabNavigation from './TopTabNavigation'
+import TopTabNavigation from './TopTabNavigation'
 export{
     Register_StackNavigator,
-    TobTabNavigation,
-    Auth
+    TopTabNavigation,
+    
 }

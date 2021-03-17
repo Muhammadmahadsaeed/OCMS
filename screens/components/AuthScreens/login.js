@@ -12,8 +12,6 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 
-
-
 const LoginWithEmail = ({navigation}) => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
@@ -41,7 +39,6 @@ const LoginWithEmail = ({navigation}) => {
     //   formBody.push(encodedKey + '=' + encodedValue);
     // }
     // formBody = formBody.join('&');
-
     // fetch('http://localhost:3000/api/user/login', {
     //   method: 'POST',
     //   body: formBody,
@@ -91,24 +88,21 @@ const LoginWithEmail = ({navigation}) => {
                   width: '50%',
                   height: 100,
                   resizeMode: 'contain',
-                  margin: 30,
+                  // margin: 30,
                 }}
               />
             </View>
             <View style={styles.SectionStyle}>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(UserEmail) =>
-                  setUserEmail(UserEmail)
-                }
+                onChangeText={(UserEmail) => setUserEmail(UserEmail)}
                 placeholder="Enter Email" //dummy@abc.com
                 placeholderTextColor="#8b9cb5"
                 autoCapitalize="none"
                 keyboardType="email-address"
                 returnKeyType="next"
                 onSubmitEditing={() =>
-                  passwordInputRef.current &&
-                  passwordInputRef.current.focus()
+                  passwordInputRef.current && passwordInputRef.current.focus()
                 }
                 underlineColorAndroid="#f000"
                 blurOnSubmit={false}
@@ -117,9 +111,7 @@ const LoginWithEmail = ({navigation}) => {
             <View style={styles.SectionStyle}>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(UserPassword) =>
-                  setUserPassword(UserPassword)
-                }
+                onChangeText={(UserPassword) => setUserPassword(UserPassword)}
                 placeholder="Enter Password" //12345
                 placeholderTextColor="#8b9cb5"
                 keyboardType="default"
@@ -132,21 +124,40 @@ const LoginWithEmail = ({navigation}) => {
               />
             </View>
             {errortext != '' ? (
-              <Text style={styles.errorTextStyle}>
-                {errortext}
-              </Text>
+              <Text style={styles.errorTextStyle}>{errortext}</Text>
             ) : null}
+            <TouchableOpacity
+              style={styles.forgotPassword}
+              onPress={() =>
+                console.log('data===', navigation.navigate('ForgotPwd'))
+              }>
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'Montserrat-Bold_0',
+                  marginLeft: 5,
+                }}>
+                Forgot Password
+              </Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
               onPress={handleSubmitPress}>
-              <Text style={styles.buttonTextStyle}>LOGIN</Text>
+              <Text style={styles.buttonTextStyle}>Sign in</Text>
             </TouchableOpacity>
-            <Text
-              style={styles.registerTextStyle}
-              onPress={() => navigation.navigate('register')}>
-              New Here ? Register
-            </Text>
+            <TouchableOpacity
+              style={[styles.SignUpbuttonStyle]}
+              activeOpacity={0.5}
+              onPress={() => navigation.navigate('Register')}>
+              <Text
+                style={[
+                  styles.buttonTextStyle,
+                  {paddingTop: 25, color: 'white'},
+                ]}>
+                Sign up
+              </Text>
+            </TouchableOpacity>
           </KeyboardAvoidingView>
         </View>
       </ScrollView>
@@ -164,27 +175,34 @@ const styles = StyleSheet.create({
   },
   SectionStyle: {
     flexDirection: 'row',
-    height: 40,
+    height: 50,
     marginTop: 20,
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
+    width: '80%',
+    alignSelf: 'center',
   },
   buttonStyle: {
-    backgroundColor: '#7DE24E',
+    backgroundColor: '#FFFFFF',
     borderWidth: 0,
-    color: '#FFFFFF',
+    color: 'black',
     borderColor: '#7DE24E',
-    height: 40,
+    height: 50,
+    width: '80%',
     alignItems: 'center',
     borderRadius: 30,
+    paddingTop: 5,
+    paddingBottom: 5,
     marginLeft: 35,
     marginRight: 35,
     marginTop: 20,
-    marginBottom: 25,
+    marginBottom: 20,
+    alignSelf: 'center',
   },
+
   buttonTextStyle: {
-    color: '#FFFFFF',
+    color: '#81b840',
     paddingVertical: 10,
     fontSize: 16,
   },
@@ -195,7 +213,25 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: '#dadae8',
+    borderColor: 'white',
+    fontFamily: 'Montserrat-Regular_0',
+    backgroundColor: '#a1ca70',
+  },
+  SignUpbuttonStyle: {
+    width: 80,
+    color: 'white',
+    borderColor: '#7DE24E',
+    height: 80,
+    alignSelf: 'center',
+    alignItems: 'center',
+    borderRadius: 100,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginLeft: 35,
+    marginRight: 35,
+    marginTop: 20,
+    marginBottom: 20,
+    fontFamily: 'Montserrat-Regular_0',
   },
   registerTextStyle: {
     color: '#FFFFFF',
@@ -209,5 +245,13 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     fontSize: 14,
+  },
+  forgotPassword: {
+    // marginTop:10,
+    flexDirection: 'row',
+    marginLeft: 35,
+    marginRight: 35,
+    marginBottom: 15,
+    justifyContent: 'center',
   },
 });

@@ -136,17 +136,7 @@ const RegisterScreen = (props) => {
           justifyContent: 'center',
           alignContent: 'center',
         }}>
-        <View style={{alignItems: 'center'}}>
-          <Image
-            source={require('../../../asessts/images/aboutreact.png')}
-            style={{
-              width: '50%',
-              height: 100,
-              resizeMode: 'contain',
-              margin: 30,
-            }}
-          />
-        </View>
+       
         <KeyboardAvoidingView enabled>
           <View style={styles.SectionStyle}>
             <TextInput
@@ -154,7 +144,7 @@ const RegisterScreen = (props) => {
               onChangeText={(UserName) => setUserName(UserName)}
               underlineColorAndroid="#f000"
               placeholder="Enter Name"
-              placeholderTextColor="#8b9cb5"
+              placeholderTextColor="#F6F6F7"
               autoCapitalize="sentences"
               returnKeyType="next"
               onSubmitEditing={() =>
@@ -169,7 +159,7 @@ const RegisterScreen = (props) => {
               onChangeText={(UserEmail) => setUserEmail(UserEmail)}
               underlineColorAndroid="#f000"
               placeholder="Enter Email"
-              placeholderTextColor="#8b9cb5"
+              placeholderTextColor="#F6F6F7"
               keyboardType="email-address"
               ref={emailInputRef}
               returnKeyType="next"
@@ -188,7 +178,7 @@ const RegisterScreen = (props) => {
               }
               underlineColorAndroid="#f000"
               placeholder="Enter Password"
-              placeholderTextColor="#8b9cb5"
+              placeholderTextColor="#F6F6F7"
               ref={passwordInputRef}
               returnKeyType="next"
               secureTextEntry={true}
@@ -205,7 +195,7 @@ const RegisterScreen = (props) => {
               onChangeText={(UserAge) => setUserAge(UserAge)}
               underlineColorAndroid="#f000"
               placeholder="Enter Age"
-              placeholderTextColor="#8b9cb5"
+              placeholderTextColor="#F6F6F7"
               keyboardType="numeric"
               ref={ageInputRef}
               returnKeyType="next"
@@ -224,7 +214,7 @@ const RegisterScreen = (props) => {
               }
               underlineColorAndroid="#f000"
               placeholder="Enter Address"
-              placeholderTextColor="#8b9cb5"
+              placeholderTextColor="#F6F6F7"
               autoCapitalize="sentences"
               ref={addressInputRef}
               returnKeyType="next"
@@ -241,8 +231,22 @@ const RegisterScreen = (props) => {
             style={styles.buttonStyle}
             activeOpacity={0.5}
             onPress={handleSubmitButton}>
-            <Text style={styles.buttonTextStyle}>REGISTER</Text>
+            <Text style={styles.buttonTextStyle}>Next</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+              style={[styles.SignUpbuttonStyle]}
+              activeOpacity={0.5}
+              onPress={() => {
+                this.moveToSignin();
+              }}>
+              <Text
+                style={[
+                  styles.buttonTextStyle,
+                  {paddingTop: 25, color: 'white'},
+                ]}>
+                Sign in
+              </Text>
+            </TouchableOpacity>
         </KeyboardAvoidingView>
       </ScrollView>
     </View>
@@ -253,29 +257,53 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   SectionStyle: {
     flexDirection: 'row',
-    height: 40,
+    height: 50,
     marginTop: 20,
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
+    width: '80%',
+    alignSelf:'center'
   },
   buttonStyle: {
-    backgroundColor: '#7DE24E',
+    backgroundColor: '#FFFFFF',
     borderWidth: 0,
-    color: '#FFFFFF',
+    color: 'black',
     borderColor: '#7DE24E',
-    height: 40,
+    height: 50,
+    width: '80%',
     alignItems: 'center',
     borderRadius: 30,
+    paddingTop: 5,
+    paddingBottom: 5,
     marginLeft: 35,
     marginRight: 35,
     marginTop: 20,
     marginBottom: 20,
+    alignSelf: 'center',
+  },
+
+  SignUpbuttonStyle: {
+    width: 80,
+    color: 'white',
+    borderColor: '#7DE24E',
+    height: 80,
+    alignSelf: 'center',
+    alignItems: 'center',
+    borderRadius: 100,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginLeft: 35,
+    marginRight: 35,
+    marginTop: 20,
+    marginBottom: 20,
+    fontFamily: 'Montserrat-Regular_0',
   },
   buttonTextStyle: {
-    color: '#FFFFFF',
+    color: '#81b840',
     paddingVertical: 10,
     fontSize: 16,
+   
   },
   inputStyle: {
     flex: 1,
@@ -284,8 +312,11 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: '#dadae8',
+    borderColor: 'white',
+    fontFamily: 'Montserrat-Regular_0',
+    backgroundColor: '#a1ca70',
   },
+
   errorTextStyle: {
     color: 'red',
     textAlign: 'center',
