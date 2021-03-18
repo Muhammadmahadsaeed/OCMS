@@ -8,48 +8,53 @@ import {
   Alert,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from 'react-native';
-
+import {fetchUser} from '../../config/env';
 export default class ChatTab extends Component {
   constructor() {
     super();
     this.state = {
       data: [],
+      limit: 10,
+      page: 1,
+      isLoading: false,
+      loading: true,
     };
   }
 
   componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/todos')
-      .then((response) => response.json())
-      .then((json) => this.setState({data: json}));
+    this.setState({isLoading: true}, this.getData);
   }
-  renderSeparator = () => {
-    return (
-      <View
-        style={{
-          height: 1,
-          width: '100%',
-          backgroundColor: '#000',
-        }}
-      />
-    );
+  getData = async () => {
+    const {limit} = this.state;
+    console.log('limit=====', limit);
+    fetch(`${fetchUser}?_limit=${limit}`)
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({
+          data: this.state.data.concat(json),
+          isLoading: false,
+          loading: false,
+        });
+      })
+      .catch((err) => console.log(err));
   };
+
   renderItemComponent(props) {
-    
     return (
       <TouchableOpacity>
         <View style={styles.row}>
           <Image
             source={{
-              uri:
-                'https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png',
+              uri: props.item.thumbnailUrl,
             }}
             style={styles.pic}
           />
           <View>
             <View style={styles.nameContainer}>
               <Text style={styles.nameTxt}>{props.item.title}</Text>
-              <Text style={styles.time}>{props.item.completed}</Text>
+              <Text style={styles.time}>{props.item.id}</Text>
             </View>
             <View style={styles.msgContainer}>
               {/* <Icon
@@ -65,19 +70,42 @@ export default class ChatTab extends Component {
       </TouchableOpacity>
     );
   }
-  //handling onPress action
-  getListViewItem = (item) => {
-    Alert.alert(item.key);
-  };
 
+  handleLoadMore = () => {
+    console.log('load more=====');
+    this.setState(
+      {limit: this.state.limit + 10, isLoading: true},
+      this.getData,
+    );
+  };
+  renderFooter = () => {
+    return this.state.isLoading ? (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    ) : null;
+  };
   render() {
     return (
       <View style={styles.container}>
-        <FlatList
-          data={this.state.data}
-          renderItem={(item) => this.renderItemComponent(item)}
-          keyExtractor={(item) => item.id.toString()}
-        />
+        {this.state.loading ? (
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <ActivityIndicator size="large" animating color="black" />
+          </View>
+        ) : (
+          <FlatList
+            data={this.state.data}
+            renderItem={(item) => this.renderItemComponent(item)}
+            keyExtractor={(item, index) => index.toString()}
+            onEndReached={this.handleLoadMore}
+            onEndReachedThreshold={0}
+            ListFooterComponent={this.renderFooter}
+          />
+        )}
+        <View style={styles.bottomView}>
+          <Image source={require('../../../asessts/images/chat.png')} />
+        </View>
       </View>
     );
   }
@@ -129,5 +157,20 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#666',
     fontSize: 12,
+  },
+  loader: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  bottomView: {
+    width: 70,
+    height: 70,
+    backgroundColor: '#00CC3F',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    borderRadius: 100,
   },
 });

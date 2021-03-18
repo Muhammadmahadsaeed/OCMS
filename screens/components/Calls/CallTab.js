@@ -18,11 +18,11 @@ export default class CallTab extends Component {
     };
   }
 
-  componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/todos')
-      .then((response) => response.json())
-      .then((json) => this.setState({data: json}));
-  }
+  // componentDidMount() {
+  //   fetch('https://jsonplaceholder.typicode.com/todos')
+  //     .then((response) => response.json())
+  //     .then((json) => this.setState({data: json}));
+  // }
   renderSeparator = () => {
     return (
       <View
@@ -34,37 +34,37 @@ export default class CallTab extends Component {
       />
     );
   };
-  renderItemComponent(props) {
+  // renderItemComponent(props) {
     
-    return (
-      <TouchableOpacity>
-        <View style={styles.row}>
-          <Image
-            source={{
-              uri:
-                'https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png',
-            }}
-            style={styles.pic}
-          />
-          <View>
-            <View style={styles.nameContainer}>
-              <Text style={styles.nameTxt}>{props.item.title}</Text>
-              <Text style={styles.time}>{props.item.completed}</Text>
-            </View>
-            <View style={styles.msgContainer}>
-              {/* <Icon
-                name={props.icon}
-                size={15}
-                color="#b3b3b3"
-                style={{marginLeft: 15, marginRight: 5}}
-              /> */}
-              <Text style={styles.msgTxt}>{props.item.id}</Text>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  }
+  //   return (
+  //     <TouchableOpacity>
+  //       <View style={styles.row}>
+  //         <Image
+  //           source={{
+  //             uri:
+  //               'https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png',
+  //           }}
+  //           style={styles.pic}
+  //         />
+  //         <View>
+  //           <View style={styles.nameContainer}>
+  //             <Text style={styles.nameTxt}>{props.item.title}</Text>
+  //             <Text style={styles.time}>{props.item.completed}</Text>
+  //           </View>
+  //           <View style={styles.msgContainer}>
+  //             {/* <Icon
+  //               name={props.icon}
+  //               size={15}
+  //               color="#b3b3b3"
+  //               style={{marginLeft: 15, marginRight: 5}}
+  //             /> */}
+  //             <Text style={styles.msgTxt}>{props.item.id}</Text>
+  //           </View>
+  //         </View>
+  //       </View>
+  //     </TouchableOpacity>
+  //   );
+  // }
   //handling onPress action
   getListViewItem = (item) => {
     Alert.alert(item.key);
@@ -73,11 +73,11 @@ export default class CallTab extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <FlatList
+        {/* <FlatList
           data={this.state.data}
           renderItem={(item) => this.renderItemComponent(item)}
           keyExtractor={(item) => item.id.toString()}
-        />
+        /> */}
       </View>
     );
   }

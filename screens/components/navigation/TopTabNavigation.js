@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexGrow: 0.6,
+    flexGrow: 0.7,
     backgroundColor: 'green',
     justifyContent: 'center',
     alignItems: 'center',
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D52C43',
   },
   footer: {
-    // flex: 0.5,
+    flex: 0.4,
     backgroundColor: '#e9ba00',
     width: '100%',
     position: 'absolute',

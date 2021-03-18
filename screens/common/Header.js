@@ -1,47 +1,25 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  } from 'react-native';
-
-
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 
 const Header = () => (
   <View style={styles.top}>
     <Text style={styles.logo}>WhatsApp</Text>
     <View style={styles.icons}>
-      <TouchableOpacity>
-          <Text>serach</Text>
-        {/* <Icon
-          name="search"
-          color="#fff"
-          size={23}
-          style={{ padding: 5 }}
-        /> */}
+      <TouchableOpacity style={{marginHorizontal:5,padding:5}}>
+      <Image
+          source={require('../../asessts/images/search.png')}
+         
+        />
       </TouchableOpacity>
-      <TouchableOpacity>
-          <Text>Chat</Text>
-        {/* <Icon
-          name="chat"
-          color="#fff"
-          size={23}
-          style={{ padding: 5 }}
-        /> */}
-      </TouchableOpacity>
-      <TouchableOpacity>
-          <Text>more</Text>
-        {/* <Icon
-          name="more-vert"
-          color="#fff"
-          size={23}
-          style={{ padding: 5 }}
-        /> */}
+      <TouchableOpacity style={{marginHorizontal:5,padding:5}}>
+        <Image
+          source={require('../../asessts/images/more.png')}
+          
+        />
       </TouchableOpacity>
     </View>
   </View>
-  );
+);
 
 export default Header;
 

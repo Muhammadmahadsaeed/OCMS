@@ -22,7 +22,7 @@ const LoginWithEmail = ({navigation}) => {
   const passwordInputRef = createRef();
 
   const handleSubmitPress = () => {
-    navigation.navigate('HomeScreen')
+    navigation.navigate('HomeScreen');
     // setErrortext('');
     // if (!userEmail) {
     //   alert('Please fill Email');
@@ -134,9 +134,7 @@ const LoginWithEmail = ({navigation}) => {
             ) : null}
             <TouchableOpacity
               style={styles.forgotPassword}
-              onPress={() =>
-                console.log('data===', navigation.navigate('ForgotPwd'))
-              }>
+              onPress={() => navigation.navigate('ForgotPwd')}>
               <Text
                 style={{
                   color: 'white',
@@ -175,16 +173,15 @@ export default LoginWithEmail;
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#307ecc',
-    alignContent: 'center',
+    // justifyContent: 'center',
+    // alignContent: 'center',
   },
   backgroundImage: {
     position: 'absolute',
     left: 0,
     top: 0,
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    width: '100%',
+    height: '100%',
   },
   SectionStyle: {
     flexDirection: 'row',

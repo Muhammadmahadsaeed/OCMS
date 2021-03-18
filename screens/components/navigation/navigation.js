@@ -1,8 +1,13 @@
 import React, {Component} from 'react';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
+import {
+  createMaterialTopTabNavigator,
+  createBottomTabNavigator,
+} from 'react-navigation-tabs';
 import Home from '../../Home';
-
+import * as calls from '../Calls/index'
+import * as chat from '../Chat/index'
 // import {createDrawerNavigator} from 'react-navigation-drawer';
 import * as AuthScreens from '../AuthScreens/index';
 import * as AllNavigation from './index';
@@ -55,6 +60,25 @@ const PhoneAuth = createStackNavigator({
   //   },
   // },
 });
+// Tab Navigation for chat,call,status
+const TabScreen = createMaterialTopTabNavigator(
+  {
+    CHAT: {
+      screen: chat.ChatsTab,
+    },
+    CALLS: {
+      screen: calls.CallsTab,
+    },
+  },
+  {
+    tabBarComponent: Home,
+    tabBarOptions: {
+      activeTintColor: 'white',
+      inactiveTintColor: '#bbb',
+    },
+    initialRouteName: 'CHAT',
+  },
+);
 
 const RootNavigator = createSwitchNavigator({
   SplashScreen: AuthScreens.Splash,
@@ -66,7 +90,7 @@ const RootNavigator = createSwitchNavigator({
     screen: AllNavigation.Register_StackNavigator,
   },
   HomeScreen: {
-    screen: Home
+    screen: TabScreen
   }
 });
 
