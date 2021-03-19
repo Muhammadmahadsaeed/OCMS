@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {fetchUser} from '../../config/env';
-export default class ChatTab extends Component {
+export default class contact extends Component {
   constructor() {
     super();
     this.state = {
@@ -28,7 +28,7 @@ export default class ChatTab extends Component {
   }
   getData = async () => {
     const {limit} = this.state;
-
+   
     fetch(`${fetchUser}?_limit=${limit}`)
       .then((response) => response.json())
       .then((json) => {
@@ -43,8 +43,7 @@ export default class ChatTab extends Component {
 
   renderItemComponent(props) {
     return (
-      <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('conversation')}>
+      <TouchableOpacity onPress={()=> this.props.navigation.navigate('conversation')}>
         <View style={styles.row}>
           <Image
             source={{
@@ -73,6 +72,7 @@ export default class ChatTab extends Component {
   }
 
   handleLoadMore = () => {
+   
     this.setState(
       {limit: this.state.limit + 10, isLoading: true},
       this.getData,
@@ -103,12 +103,9 @@ export default class ChatTab extends Component {
             ListFooterComponent={this.renderFooter}
           />
         )}
-        <TouchableOpacity
-          style={styles.bottomView}
-          activeOpacity={0.9}
-          onPress={() => this.props.navigation.navigate('contact')}>
+        <View style={styles.bottomView}>
           <Image source={require('../../../asessts/images/chat.png')} />
-        </TouchableOpacity>
+        </View>
       </View>
     );
   }

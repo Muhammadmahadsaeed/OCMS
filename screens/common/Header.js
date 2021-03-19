@@ -6,10 +6,16 @@ const Header = () => (
     <Text style={styles.logo}>WhatsApp</Text>
     <View style={styles.icons}>
       <TouchableOpacity style={styles.imgContainer}>
-        <Image source={require('../../asessts/images/search.png')} />
+        <Image
+          source={require('../../asessts/images/search.png')}
+          style={{height: 25, width: 25}}
+        />
       </TouchableOpacity>
       <TouchableOpacity style={styles.imgContainer}>
-        <Image source={require('../../asessts/images/more.png')} />
+        <Image
+          source={require('../../asessts/images/more.png')}
+          style={{height: 25, width: 25,resizeMode:'contain'}}
+        />
       </TouchableOpacity>
     </View>
   </View>

@@ -1,39 +1,65 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  ListView,
+  Image,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  Dimensions,
+  KeyboardAvoidingView,
+  ImageBackground,
+} from 'react-native';
 
-const Conversation = () => (
-  <View style={styles.top}>
-    <Text style={styles.logo}>Conversation</Text>
-  
-  </View>
-);
+const {width, height} = Dimensions.get('window');
 
-export default Conversation;
+class conversation extends React.Component {
+  render() {
+    return (
+      <View style={{flex: 1}}>
+        <ImageBackground
+          source={require('../../../asessts/images/background.jpg')}
+          style={styles.image}>
+          <KeyboardAvoidingView behavior="padding">
+            <View style={styles.input}>
+              <TextInput
+                style={{flex: 1}}
+                // value={this.state.msg}
+                // onChangeText={(msg) => this.setState({msg})}
+                blurOnSubmit={false}
+                // onSubmitEditing={() => this.send()}
+                placeholder="Type a message"
+                returnKeyType="send"
+              />
+            </View>
+          </KeyboardAvoidingView>
+        </ImageBackground>
+      </View>
+    );
+  }
+}
+
+export default conversation;
 
 const styles = StyleSheet.create({
-  top: {
-    flexDirection: 'row',
-    backgroundColor: '#075e54',
-    borderColor: '#fff',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 5,
-    paddingVertical: 10,
+  image: {
+    width,
+    height,
   },
-  logo: {
-    fontSize: 23,
-    color: '#fff',
+  input: {
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    padding: 10,
+    height: 40,
+    width: width - 20,
+    backgroundColor: '#fff',
     margin: 10,
-    fontWeight: '500',
-  },
-  icons: {
-    flexDirection: 'row',
-  },
-  imgContainer: {
-    marginHorizontal: 5,
-    height: 35,
-    width: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
+    shadowColor: '#3d3d3d',
+    shadowRadius: 2,
+    shadowOpacity: 0.5,
+    shadowOffset: {
+      height: 1,
+    },
   },
 });

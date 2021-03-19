@@ -1,15 +1,12 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
-import {
-  createMaterialTopTabNavigator,
-  createBottomTabNavigator,
-} from 'react-navigation-tabs';
+import {createStackNavigator, TransitionPresets} from 'react-navigation-stack';
+import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import Home from '../../Home';
 import * as calls from '../Calls/index';
 import * as chat from '../Chat/index';
 import * as camera from '../Camera/index';
-// import {createDrawerNavigator} from 'react-navigation-drawer';
+import * as contact from '../contact/index';
 import * as AuthScreens from '../AuthScreens/index';
 import * as AllNavigation from './index';
 
@@ -69,7 +66,6 @@ const Chat_StackNavigator = createStackNavigator({
       headerShown: false,
     }),
   },
-
 });
 const Camera_StackNavigator = createStackNavigator({
   camera: {
@@ -89,14 +85,6 @@ const Call_StackNavigator = createStackNavigator({
     }),
   },
 });
-const conversation_stack = createStackNavigator({
-  conversation: {
-    screen: chat.conversation,
-    navigationOptions: ({navigation}) => ({
-      header: <chat.ConversationHeader />,
-    }),
-  },
-})
 // Tab Navigation for chat,call,status
 const TabScreen = createMaterialTopTabNavigator(
   {
@@ -120,6 +108,34 @@ const TabScreen = createMaterialTopTabNavigator(
     initialRouteName: 'CHAT',
   },
 );
+const HomeStack = createStackNavigator(
+  {
+    Home: {
+      screen: TabScreen,
+      navigationOptions: ({navigation}) => ({
+        safeAreaInsets: {top: 0},
+        headerShown: false,
+      }),
+    },
+    conversation: {
+      screen: chat.conversation,
+      navigationOptions: ({navigation}) => ({
+        header: () => <chat.ConversationHeader navigationProps={navigation} />,
+      }),
+    },
+    contact: {
+      screen: contact.contact,
+      navigationOptions: ({navigation}) => ({
+        // header: () => <chat.ConversationHeader navigationProps={navigation} />,
+      }),
+    },
+  },
+  {
+    defaultNavigationOptions: {
+      ...TransitionPresets.SlideFromRightIOS,
+    },
+  },
+);
 
 const RootNavigator = createSwitchNavigator({
   SplashScreen: AuthScreens.Splash,
@@ -130,10 +146,7 @@ const RootNavigator = createSwitchNavigator({
   Register: {
     screen: AllNavigation.Register_StackNavigator,
   },
-  HomeScreen: {
-    screen: TabScreen,
-  },
-  // conversation: conversation_stack
+  HomeScreen: HomeStack,
 });
 
 const MainNavigator = createAppContainer(RootNavigator);
