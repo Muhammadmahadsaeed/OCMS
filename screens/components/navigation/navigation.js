@@ -6,8 +6,9 @@ import {
   createBottomTabNavigator,
 } from 'react-navigation-tabs';
 import Home from '../../Home';
-import * as calls from '../Calls/index'
-import * as chat from '../Chat/index'
+import * as calls from '../Calls/index';
+import * as chat from '../Chat/index';
+import * as camera from '../Camera/index';
 // import {createDrawerNavigator} from 'react-navigation-drawer';
 import * as AuthScreens from '../AuthScreens/index';
 import * as AllNavigation from './index';
@@ -60,14 +61,54 @@ const PhoneAuth = createStackNavigator({
   //   },
   // },
 });
+const Chat_StackNavigator = createStackNavigator({
+  showAllUsers: {
+    screen: chat.ChatsTab,
+    navigationOptions: ({navigation}) => ({
+      safeAreaInsets: {top: 0},
+      headerShown: false,
+    }),
+  },
+
+});
+const Camera_StackNavigator = createStackNavigator({
+  camera: {
+    screen: camera.CameraTab,
+    navigationOptions: ({navigation}) => ({
+      safeAreaInsets: {top: 0},
+      headerShown: false,
+    }),
+  },
+});
+const Call_StackNavigator = createStackNavigator({
+  AllCalls: {
+    screen: calls.CallsTab,
+    navigationOptions: ({navigation}) => ({
+      safeAreaInsets: {top: 0},
+      headerShown: false,
+    }),
+  },
+});
+const conversation_stack = createStackNavigator({
+  conversation: {
+    screen: chat.conversation,
+    navigationOptions: ({navigation}) => ({
+      header: <chat.ConversationHeader />,
+    }),
+  },
+})
 // Tab Navigation for chat,call,status
 const TabScreen = createMaterialTopTabNavigator(
   {
+    Camera: {
+      screen: Camera_StackNavigator,
+      navigationOptions: {},
+    },
     CHAT: {
-      screen: chat.ChatsTab,
+      screen: Chat_StackNavigator,
     },
     CALLS: {
-      screen: calls.CallsTab,
+      screen: Call_StackNavigator,
     },
   },
   {
@@ -90,8 +131,9 @@ const RootNavigator = createSwitchNavigator({
     screen: AllNavigation.Register_StackNavigator,
   },
   HomeScreen: {
-    screen: TabScreen
-  }
+    screen: TabScreen,
+  },
+  // conversation: conversation_stack
 });
 
 const MainNavigator = createAppContainer(RootNavigator);

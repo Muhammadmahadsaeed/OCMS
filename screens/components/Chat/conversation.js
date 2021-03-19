@@ -1,21 +1,14 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 
-const Header = () => (
+const Conversation = () => (
   <View style={styles.top}>
-    <Text style={styles.logo}>WhatsApp</Text>
-    <View style={styles.icons}>
-      <TouchableOpacity style={styles.imgContainer}>
-        <Image source={require('../../asessts/images/search.png')} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.imgContainer}>
-        <Image source={require('../../asessts/images/more.png')} />
-      </TouchableOpacity>
-    </View>
+    <Text style={styles.logo}>Conversation</Text>
+  
   </View>
 );
 
-export default Header;
+export default Conversation;
 
 const styles = StyleSheet.create({
   top: {

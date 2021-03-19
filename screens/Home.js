@@ -1,6 +1,12 @@
 import React from 'react';
 
-import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Image,
+} from 'react-native';
 import Header from './common/Header';
 
 const GiverUserTabBar = (props) => {
@@ -15,7 +21,7 @@ const GiverUserTabBar = (props) => {
   return (
     <View style={styles.container}>
       <Header />
-      
+
       <View style={styles.tabContainer}>
         {navigationState.routes.map((route, index) => {
           const isRouteActive = index === activeTabIndex;
@@ -25,23 +31,26 @@ const GiverUserTabBar = (props) => {
             <TouchableWithoutFeedback
               onPress={() => navigation.navigate(route.routeName)}
               key={index}>
-              <View
-                style={{
-                  paddingHorizontal: 30,
-                  borderBottomWidth: 3,
-                  borderBottomColor: `${isRouteActive ? 'white' : '#075e54'}`,
-                }}>
-                <Text
-                  style={[
-                    styles.text,
-                    {
-                      color: `${tintColor}`,
-                    },
-                  ]}>
-                  {' '}
-                  {route.routeName}
-                </Text>
-              </View>
+              {route.routeName === 'Camera' ? (
+                <Image source={require('../asessts/images/camera.png')} />
+              ) : (
+                <View
+                  style={{
+                    paddingHorizontal: 30,
+                    borderBottomWidth: 3,
+                    borderBottomColor: `${isRouteActive ? 'white' : '#075e54'}`,
+                  }}>
+                  <Text
+                    style={[
+                      styles.text,
+                      {
+                        color: `${tintColor}`,
+                      },
+                    ]}>
+                    {route.routeName}
+                  </Text>
+                </View>
+              )}
             </TouchableWithoutFeedback>
           );
         })}

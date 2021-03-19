@@ -43,7 +43,7 @@ export default class ChatTab extends Component {
 
   renderItemComponent(props) {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=> this.props.navigation.navigate('conversation')}>
         <View style={styles.row}>
           <Image
             source={{
