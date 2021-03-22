@@ -83,6 +83,11 @@ class ContactSearchBar extends React.Component {
     // force blur
     this.refs.input.blur();
   };
+  setText(value) {
+    this.setState({keyword: value});
+    this.props.searchUser(value)
+    console.log(value);
+  }
   render() {
     return (
       <>
@@ -92,7 +97,8 @@ class ContactSearchBar extends React.Component {
               <View style={styles.left}>
                 <View style={styles.row}>
                   <View style={styles.back_icon_box}>
-                    <TouchableOpacity activeOpacity={0.8}
+                    <TouchableOpacity
+                      activeOpacity={0.8}
                       onPress={() =>
                         this.props.navigationProps.navigation.pop()
                       }>
@@ -153,7 +159,7 @@ class ContactSearchBar extends React.Component {
                   placeholder="Search Facebook"
                   clearButtonMode="always"
                   value={this.state.keyword}
-                  onChangeText={(value) => this.setState({keyword: value})}
+                  onChangeText={(value) => this.setText(value)}
                   style={styles.input}
                 />
               </Animated.View>

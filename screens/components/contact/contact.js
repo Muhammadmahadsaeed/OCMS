@@ -41,8 +41,8 @@ export default class contact extends Component {
       })
       .catch((err) => console.log(err));
   };
-  searchUser = () =>{
-    console.log("user======")
+  searchUser = (value) =>{
+    console.log("user======",value)
   }
   renderItemComponent(props) {
     return (
@@ -91,7 +91,7 @@ export default class contact extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ContactSearchBar navigationProps={this.props} />
+        <ContactSearchBar navigationProps={this.props} searchUser={this.searchUser} />
         {this.state.loading ? (
           <View
             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
