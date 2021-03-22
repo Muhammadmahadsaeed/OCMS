@@ -10,6 +10,7 @@ import * as contact from '../contact/index';
 import * as AuthScreens from '../AuthScreens/index';
 import LoginSignupSegment from './LoginSignupSegment';
 import {Profile} from '../profile/index';
+import ContactSearchBar from '../../common/ContactSearchbar';
 const Auth = createStackNavigator(
   {
     TabScreen: {
@@ -123,7 +124,6 @@ const TabScreen = createMaterialTopTabNavigator(
   {
     Camera: {
       screen: Camera_StackNavigator,
-      navigationOptions: {},
     },
     CHAT: {
       screen: Chat_StackNavigator,
@@ -160,7 +160,9 @@ const HomeStack = createStackNavigator(
     contact: {
       screen: contact.contact,
       navigationOptions: ({navigation}) => ({
-        // header: () => <chat.ConversationHeader navigationProps={navigation} />,
+        headerTitle: '',
+        headerShown: false
+        // header: () => <ContactSearchBar navigationProps={navigation} />,
       }),
     },
     profile: {

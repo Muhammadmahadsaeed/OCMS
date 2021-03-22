@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import colors from '../constants/colors';
 
 const Header = () => (
   <View style={styles.top}>
@@ -26,12 +27,11 @@ export default Header;
 const styles = StyleSheet.create({
   top: {
     flexDirection: 'row',
-    backgroundColor: '#075e54',
-    borderColor: '#fff',
+    backgroundColor: colors.Colors.backgroundColor,
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 5,
-    paddingVertical: 10,
+    paddingVertical: 15,
   },
   logo: {
     fontSize: 23,

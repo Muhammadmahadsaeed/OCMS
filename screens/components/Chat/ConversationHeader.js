@@ -67,7 +67,7 @@ export default ConversationHeader;
 
 const styles = StyleSheet.create({
   header: {
-    height: 60,
+    height: 65,
     backgroundColor: Colors.Colors.backgroundColor,
   },
   headerContent: {

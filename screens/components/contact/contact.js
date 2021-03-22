@@ -10,6 +10,7 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
+import ContactSearchBar from '../../common/ContactSearchbar';
 import {fetchUser} from '../../config/env';
 export default class contact extends Component {
   constructor() {
@@ -40,7 +41,9 @@ export default class contact extends Component {
       })
       .catch((err) => console.log(err));
   };
-
+  searchUser = () =>{
+    console.log("user======")
+  }
   renderItemComponent(props) {
     return (
       <TouchableOpacity onPress={()=> this.props.navigation.navigate('conversation')}>
@@ -88,6 +91,7 @@ export default class contact extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <ContactSearchBar navigationProps={this.props} />
         {this.state.loading ? (
           <View
             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -103,9 +107,7 @@ export default class contact extends Component {
             ListFooterComponent={this.renderFooter}
           />
         )}
-        <View style={styles.bottomView}>
-          <Image source={require('../../../asessts/images/chat.png')} />
-        </View>
+      
       </View>
     );
   }
@@ -162,15 +164,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
   },
-  bottomView: {
-    width: 70,
-    height: 70,
-    backgroundColor: '#00CC3F',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    borderRadius: 100,
-  },
+
 });
