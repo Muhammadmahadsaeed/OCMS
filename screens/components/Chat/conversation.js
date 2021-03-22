@@ -1,65 +1,51 @@
 import React from 'react';
-import {
-  View,
-  ListView,
-  Image,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  Dimensions,
-  KeyboardAvoidingView,
-  ImageBackground,
-} from 'react-native';
+import {Text, View,StyleSheet} from 'react-native';
 
-const {width, height} = Dimensions.get('window');
+const Conversation = (ChatMessageProps) => {
+//   const {message, myId} = props;
 
-class conversation extends React.Component {
-  render() {
-    return (
-      <View style={{flex: 1}}>
-        <ImageBackground
-          source={require('../../../asessts/images/background.jpg')}
-          style={styles.image}>
-          <KeyboardAvoidingView behavior="padding">
-            <View style={styles.input}>
-              <TextInput
-                style={{flex: 1}}
-                // value={this.state.msg}
-                // onChangeText={(msg) => this.setState({msg})}
-                blurOnSubmit={false}
-                // onSubmitEditing={() => this.send()}
-                placeholder="Type a message"
-                returnKeyType="send"
-              />
-            </View>
-          </KeyboardAvoidingView>
-        </ImageBackground>
+  const isMyMessage = () => {
+    return message.user.id === myId;
+  };
+
+  return (
+    <View style={styles.container}>
+      <View
+        style={[
+          styles.messageBox,
+          {
+            backgroundColor: isMyMessage() ? '#DCF8C5' : 'white',
+            marginLeft: isMyMessage() ? 50 : 0,
+            marginRight: isMyMessage() ? 0 : 50,
+          },
+        ]}>
+        {!isMyMessage() && <Text style={styles.name}>Mahad</Text>}
+        <Text style={styles.message}>Hello mahad</Text>
+        <Text style={styles.time}>11:45</Text>
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
 
-export default conversation;
+export default Conversation;
 
 const styles = StyleSheet.create({
-  image: {
-    width,
-    height,
-  },
-  input: {
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
+  container: {
     padding: 10,
-    height: 40,
-    width: width - 20,
-    backgroundColor: '#fff',
-    margin: 10,
-    shadowColor: '#3d3d3d',
-    shadowRadius: 2,
-    shadowOpacity: 0.5,
-    shadowOffset: {
-      height: 1,
-    },
+  },
+  messageBox: {
+    borderRadius: 5,
+    padding: 10,
+  },
+  name: {
+    color: 'black',
+    // color: Colors.light.tint,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  message: {},
+  time: {
+    alignSelf: 'flex-end',
+    color: 'grey',
   },
 });

@@ -8,58 +8,91 @@ import * as chat from '../Chat/index';
 import * as camera from '../Camera/index';
 import * as contact from '../contact/index';
 import * as AuthScreens from '../AuthScreens/index';
-import * as AllNavigation from './index';
+import LoginSignupSegment from './LoginSignupSegment';
+import {Profile} from '../profile/index';
+const Auth = createStackNavigator(
+  {
+    TabScreen: {
+      screen: LoginSignupSegment,
 
-const Auth = createStackNavigator({
-  Login: {
-    screen: AuthScreens.login,
-    navigationOptions: {
-      headerShown: false,
-    },
-  },
-  ForgotPwd: {
-    screen: AuthScreens.ForgotPassword,
-    navigationOptions: {
-      headerTitle: '',
-      headerStyle: {
-        backgroundColor: 'none',
-        shadowOffset: {
-          height: 0,
-          width: 0,
-        },
-        shadowOpacity: 0,
-        elevation: 0,
+      navigationOptions: {
+        headerShown: false,
       },
-      // headerBackImage: () => <CommonComponents.HeaderBackButton />,
+    },
+
+    Login: {
+      screen: AuthScreens.login,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
+    ForgotPwd: {
+      screen: AuthScreens.ForgotPassword,
+      navigationOptions: {
+        headerTitle: '',
+        headerStyle: {
+          backgroundColor: 'none',
+          shadowOffset: {
+            height: 0,
+            width: 0,
+          },
+          shadowOpacity: 0,
+          elevation: 0,
+        },
+        // headerBackImage: () => <CommonComponents.HeaderBackButton />,
+      },
+    },
+    Phone: {
+      screen: AuthScreens.PhoneLogin,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
+    Register: {
+      screen: AuthScreens.register,
+
+      navigationOptions: {
+        headerLeft: () => null,
+        safeAreaInsets: {top: 0},
+        title: 'SIGN UP YOUR ACCOUNT',
+        headerTitleStyle: {
+          textAlign: 'center',
+          // flex: 1,
+          fontSize: 14,
+          fontFamily: 'Montserrat-Bold_0',
+          color: 'white',
+        },
+        headerStyle: {
+          backgroundColor: '#3d900e',
+          shadowOffset: {
+            height: 0,
+            width: 0,
+          },
+          shadowOpacity: 0,
+          elevation: 0,
+        },
+      },
+    },
+    // Second: {
+    //   screen: AuthScreens.ChooseImage,
+    //   title: 'none',
+    //   navigationOptions: {
+    //     headerTransparent: true,
+    //     headerBackImage: () => <CommonComponents.HeaderBackButton />,
+    //     headerTitle: '',
+    //   },
+    // },
+  },
+
+  {
+    defaultNavigationOptions: {
+      ...TransitionPresets.SlideFromRightIOS,
     },
   },
-});
-const PhoneAuth = createStackNavigator({
-  NumberScreen: {
-    screen: AuthScreens.PhoneLogin,
-    navigationOptions: {
-      headerShown: false,
-    },
-  },
-  // ForgotPwd: {
-  //   screen: AuthScreens.ForgotPassword,
-  //   navigationOptions: {
-  //     headerTitle: '',
-  //     headerStyle: {
-  //       backgroundColor: 'none',
-  //       shadowOffset: {
-  //         height: 0,
-  //         width: 0,
-  //       },
-  //       shadowOpacity: 0,
-  //       elevation: 0,
-  //     },
-  //     // headerBackImage: () => <CommonComponents.HeaderBackButton />,
-  //   },
-  // },
-});
+);
+
 const Chat_StackNavigator = createStackNavigator({
-  showAllUsers: {
+  allChat: {
     screen: chat.ChatsTab,
     navigationOptions: ({navigation}) => ({
       safeAreaInsets: {top: 0},
@@ -117,9 +150,10 @@ const HomeStack = createStackNavigator(
         headerShown: false,
       }),
     },
-    conversation: {
-      screen: chat.conversation,
+    chatRoom: {
+      screen: chat.ChatRoom,
       navigationOptions: ({navigation}) => ({
+        headerTitle: '',
         header: () => <chat.ConversationHeader navigationProps={navigation} />,
       }),
     },
@@ -127,6 +161,15 @@ const HomeStack = createStackNavigator(
       screen: contact.contact,
       navigationOptions: ({navigation}) => ({
         // header: () => <chat.ConversationHeader navigationProps={navigation} />,
+      }),
+    },
+    profile: {
+      screen: Profile,
+      navigationOptions: ({navigation}) => ({
+        headerTitle: '',
+        headerTransparent: () => true,
+        headerBackTitleVisible: false,
+        headerTintColor: '#fff',
       }),
     },
   },
@@ -140,12 +183,7 @@ const HomeStack = createStackNavigator(
 const RootNavigator = createSwitchNavigator({
   SplashScreen: AuthScreens.Splash,
   TermAndConditionScreen: AuthScreens.TermAndCondition,
-  TabScreen: AllNavigation.TopTabNavigation,
   AuthScreen: Auth,
-  Phone: PhoneAuth,
-  Register: {
-    screen: AllNavigation.Register_StackNavigator,
-  },
   HomeScreen: HomeStack,
 });
 

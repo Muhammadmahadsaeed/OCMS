@@ -227,7 +227,7 @@ const RegisterScreen = (navigation) => {
             style={[styles.SignUpbuttonStyle]}
             activeOpacity={0.5}
             onPress={() => {
-              navigation.navigation.navigate('AuthScreen');
+              navigation.navigation.pop();
             }}>
             <Text
               style={[

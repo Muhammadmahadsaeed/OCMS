@@ -1,70 +1,133 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import Colors from '../../constants/colors';
 
-const ConversationHeader = (props) => (
-  <View style={styles.header}>
-    <View style={styles.left}>
-      <TouchableOpacity onPress={() => props.navigationProps.pop()}>
-      <Image
-        source={require('../../../asessts/images/left-arrow.png')}
-        style={styles.icon}
-      />
-      </TouchableOpacity>
-      {/* <Image source={{uri: this.props.image}} style={styles.chatImage} /> */}
-      <TouchableOpacity>
-        <Text style={styles.chatTitle}>Mahad</Text>
-      </TouchableOpacity>
+const ConversationHeader = (props) => {
+  const user = props.navigationProps.getParam('singleUser');
+
+  return (
+    <View style={styles.header}>
+      <View style={styles.headerContent}>
+        <View style={styles.left}>
+          <View style={styles.headerBack}>
+            <TouchableOpacity
+              style={styles.headerBack}
+              activeOpacity={0.8}
+              onPress={() => props.navigationProps.pop()}>
+              <Image
+                source={require('../../../asessts/images/left-arrow.png')}
+                style={styles.backIcon}
+              />
+              <Image source={{uri: user.url}} style={styles.chatImage} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.chatTitle}>
+            <TouchableOpacity
+              onPress={() => props.navigationProps.navigate('profile')}
+              activeOpacity={0.8}>
+              <Text style={styles.titleText}>Muhammad Mahad saeed</Text>
+              <Text style={styles.titleText}>last seen today 11:20 am</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.right}>
+          <View style={styles.rightIcon}>
+            <TouchableOpacity style={styles.rightImg}>
+              <Image
+                source={require('../../../asessts/images/video-camera.png')}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.rightIcon}>
+            <TouchableOpacity style={styles.rightImg}>
+              <Image
+                source={require('../../../asessts/images/call.png')}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.rightImg}>
+              <Image
+                source={require('../../../asessts/images/more.png')}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
     </View>
-    <View style={styles.right}>
-      <Image
-        source={require('../../../asessts/images/video-camera.png')}
-        style={styles.icon}
-      />
-      <Image
-        source={require('../../../asessts/images/call.png')}
-        style={styles.icon}
-      />
-      <Image
-        source={require('../../../asessts/images/more.png')}
-        style={styles.icon}
-      />
-    </View>
-  </View>
-);
+  );
+};
 
 export default ConversationHeader;
 
 const styles = StyleSheet.create({
   header: {
-    height: 65,
+    height: 60,
+    backgroundColor: Colors.Colors.backgroundColor,
+  },
+  headerContent: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#075e54',
   },
   left: {
+    flex: 1,
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 5,
   },
-  right: {
+  headerBack: {
     flexDirection: 'row',
-    marginHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
   },
-  chatTitle: {
-    color: '#fff',
-    fontWeight: '600',
-    margin: 10,
-    fontSize: 15,
+  backIcon: {
+    height: 25,
+    width: 25,
+    resizeMode: 'contain',
   },
   chatImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    margin: 5,
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    margin: 2,
   },
+  chatTitle: {
+    flex: 1,
+    justifyContent: 'center',
+    marginLeft: 5,
+    marginVertical: 10,
+  },
+  titleText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+
+  right: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rightIcon: {
+    marginRight: 10,
+  },
+  rightImg: {
+    padding: 5,
+    
+  },
+
   icon: {
-    height: 23,
-    width: 23,
+    height: '100%',
+    width: 25,
     resizeMode: 'contain',
   },
 });

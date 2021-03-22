@@ -5,7 +5,7 @@ import SegmentedControlTab from 'react-native-segmented-control-tab';
 import {  LoginPhoneEmailButton,
   RegisterPhoneEmailButton,} from '../AuthScreens';
 
-const TopTabNavigation = (navigation) => {
+const LoginSignupSegment = (navigation) => {
   const [customStyleIndex, setCustomStyleIndex] = useState(0);
 
   const handleCustomIndexSelect = (index) => {
@@ -56,7 +56,7 @@ const TopTabNavigation = (navigation) => {
   );
 };
 
-export default TopTabNavigation;
+export default LoginSignupSegment;
 
 const styles = StyleSheet.create({
   container: {

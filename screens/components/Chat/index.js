@@ -1,8 +1,8 @@
 import ChatsTab from './ChatTab'
-import conversation from './conversation'
+import ChatRoom from './ChatRoom'
 import ConversationHeader from './ConversationHeader'
 export{
     ChatsTab,
     ConversationHeader,
-    conversation
+    ChatRoom
 }

@@ -11,7 +11,7 @@ const LoginPhoneEmailButton = ({navigationProps}) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigationProps.navigation.navigate('AuthScreen')}
+        onPress={() => navigationProps.navigation.navigate('Login')}
         activeOpacity={0.9}>
         <Text>Login With Email</Text>
       </TouchableOpacity>

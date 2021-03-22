@@ -44,7 +44,9 @@ export default class ChatTab extends Component {
   renderItemComponent(props) {
     return (
       <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('conversation')}>
+        onPress={() =>
+          this.props.navigation.navigate('chatRoom', {singleUser: props.item})
+        }>
         <View style={styles.row}>
           <Image
             source={{
