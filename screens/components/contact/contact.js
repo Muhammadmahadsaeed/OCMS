@@ -21,6 +21,7 @@ export default class contact extends Component {
       page: 1,
       isLoading: false,
       loading: true,
+      text: '',
     };
   }
 
@@ -29,7 +30,7 @@ export default class contact extends Component {
   }
   getData = async () => {
     const {limit} = this.state;
-   
+
     fetch(`${fetchUser}?_limit=${limit}`)
       .then((response) => response.json())
       .then((json) => {
@@ -41,12 +42,13 @@ export default class contact extends Component {
       })
       .catch((err) => console.log(err));
   };
-  searchUser = (value) =>{
-    console.log("user======",value)
-  }
+  searchUser = (value) => {
+    this.setState({text: value});
+  };
   renderItemComponent(props) {
     return (
-      <TouchableOpacity onPress={()=> this.props.navigation.navigate('conversation')}>
+      <TouchableOpacity
+        onPress={() => this.props.navigation.navigate('conversation')}>
         <View style={styles.row}>
           <Image
             source={{
@@ -75,7 +77,6 @@ export default class contact extends Component {
   }
 
   handleLoadMore = () => {
-   
     this.setState(
       {limit: this.state.limit + 10, isLoading: true},
       this.getData,
@@ -91,7 +92,10 @@ export default class contact extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ContactSearchBar navigationProps={this.props} searchUser={this.searchUser} />
+        <ContactSearchBar
+          navigationProps={this.props}
+          searchUser={this.searchUser}
+        />
         {this.state.loading ? (
           <View
             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -107,7 +111,6 @@ export default class contact extends Component {
             ListFooterComponent={this.renderFooter}
           />
         )}
-      
       </View>
     );
   }
@@ -164,5 +167,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
   },
-
 });

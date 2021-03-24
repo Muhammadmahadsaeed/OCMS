@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, View, Image} from 'react-native';
 // importing Segmented Control Tab
 import SegmentedControlTab from 'react-native-segmented-control-tab';
-import {  LoginPhoneEmailButton,
-  RegisterPhoneEmailButton,} from '../AuthScreens';
-
+import {LoginPhoneEmailButton, RegisterPhoneEmailButton} from '../AuthScreens';
+import LinearGradient from 'react-native-linear-gradient';
+import font from '../../constants/font';
 const LoginSignupSegment = (navigation) => {
   const [customStyleIndex, setCustomStyleIndex] = useState(0);
 
@@ -16,14 +16,16 @@ const LoginSignupSegment = (navigation) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-        <View style={styles.header}>
+        <LinearGradient
+          colors={['#09c6f9', '#045de9']}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
+          // locations={[1,0.5]}
+          style={styles.header}>
           <View style={styles.headerImage}>
-            <Image
-              style={styles.img}
-              source={require('../../../asessts/images/logo.png')}
-            />
+            <Text style={styles.headerText}> Community App</Text>
           </View>
-        </View>
+        </LinearGradient>
         <View style={styles.footer}>
           <SegmentedControlTab
             values={['Login', 'Sign up']}
@@ -34,11 +36,11 @@ const LoginSignupSegment = (navigation) => {
             //   backgroundColor: '#F2F2F2',
             // }}
             tabStyle={{
-              backgroundColor:'none',
+              backgroundColor: 'none',
               backgroundColor: '#e9ba00',
               borderWidth: 1,
               borderColor: 'transparent',
-              paddingVertical:15
+              paddingVertical: 15,
               // borderRadius:50
             }}
             activeTabStyle={{
@@ -48,8 +50,12 @@ const LoginSignupSegment = (navigation) => {
             tabTextStyle={{color: '#444444', fontWeight: 'bold'}}
             activeTabTextStyle={{color: '#888888'}}
           />
-          {customStyleIndex === 0 && <LoginPhoneEmailButton navigationProps={navigation} />}
-          {customStyleIndex === 1 && <RegisterPhoneEmailButton navigationProps={navigation}/>}
+          {customStyleIndex === 0 && (
+            <LoginPhoneEmailButton navigationProps={navigation} />
+          )}
+          {customStyleIndex === 1 && (
+            <RegisterPhoneEmailButton navigationProps={navigation} />
+          )}
         </View>
       </View>
     </SafeAreaView>
@@ -64,12 +70,16 @@ const styles = StyleSheet.create({
   },
   header: {
     flexGrow: 0.7,
-    backgroundColor: 'green',
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerImage: {
-    width: '70%',
+    // width: '70%',
+  },
+  headerText:{
+    color:'white',
+    fontSize:30,
+    fontFamily: font.Fonts.josefBold
   },
   img: {
     resizeMode: 'contain',
@@ -89,13 +99,13 @@ const styles = StyleSheet.create({
   },
   footer: {
     flex: 0.4,
-    backgroundColor: '#e9ba00',
+    backgroundColor: 'white',
     width: '100%',
     position: 'absolute',
     bottom: 0,
     borderTopRightRadius: 30,
     borderTopLeftRadius: 30,
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     paddingBottom: 40,
   },
 });
