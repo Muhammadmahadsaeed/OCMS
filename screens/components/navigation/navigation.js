@@ -11,6 +11,9 @@ import * as AuthScreens from '../AuthScreens/index';
 import LoginSignupSegment from './LoginSignupSegment';
 import {Profile} from '../profile/index';
 import ContactSearchBar from '../../common/ContactSearchbar';
+import colors from '../../constants/colors';
+import LinearGradient from 'react-native-linear-gradient';
+import font from '../../constants/font';
 const Auth = createStackNavigator(
   {
     TabScreen: {
@@ -125,10 +128,10 @@ const TabScreen = createMaterialTopTabNavigator(
     Camera: {
       screen: Camera_StackNavigator,
     },
-    CHAT: {
+    Chats: {
       screen: Chat_StackNavigator,
     },
-    CALLS: {
+    Call: {
       screen: Call_StackNavigator,
     },
   },
@@ -138,7 +141,7 @@ const TabScreen = createMaterialTopTabNavigator(
       activeTintColor: 'white',
       inactiveTintColor: '#bbb',
     },
-    initialRouteName: 'CHAT',
+    initialRouteName: 'Chats',
   },
 );
 const HomeStack = createStackNavigator(
@@ -146,8 +149,36 @@ const HomeStack = createStackNavigator(
     Home: {
       screen: TabScreen,
       navigationOptions: ({navigation}) => ({
+        // headerLeft: () => (
+        //   <CommonComponents.HamBurger navigationProps={navigation} />
+        // ),
         safeAreaInsets: {top: 0},
-        headerShown: false,
+        headerTitleStyle: {
+          alignSelf: 'center',
+          color: 'white',
+          fontFamily: font.Fonts.josefBold,
+          
+        },
+        headerTitle: 'Community App',
+        headerBackground: () => (
+          <LinearGradient
+            colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+            start={{x: 0, y: 0.5}}
+            end={{x: 1, y: 1}}
+            style={{flex: 1}}
+          />
+        ),
+        headerStyle: {
+          shadowOffset: {
+            height: 0,
+            width: 0,
+          },
+          shadowOpacity: 0,
+          elevation: 0,
+        },
+        // headerRight: () => (
+        //   <CommonComponents.ShopButton navigationProps={navigation} />
+        // ),
       }),
     },
     chatRoom: {
@@ -161,7 +192,7 @@ const HomeStack = createStackNavigator(
       screen: contact.contact,
       navigationOptions: ({navigation}) => ({
         headerTitle: '',
-        headerShown: false
+        headerShown: false,
         // header: () => <ContactSearchBar navigationProps={navigation} />,
       }),
     },

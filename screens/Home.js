@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   View,
   Text,
@@ -7,8 +6,9 @@ import {
   TouchableWithoutFeedback,
   Image,
 } from 'react-native';
-import Header from './common/Header';
-
+import LinearGradient from 'react-native-linear-gradient';
+import colors from './constants/colors';
+import font from './constants/font';
 const GiverUserTabBar = (props) => {
   const {
     navigationState,
@@ -20,9 +20,11 @@ const GiverUserTabBar = (props) => {
 
   return (
     <View style={styles.container}>
-      <Header />
-
-      <View style={styles.tabContainer}>
+      <LinearGradient
+        colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+        start={{x: 0, y: 0.5}}
+        end={{x: 1, y: 1}}
+        style={styles.tabContainer}>
         {navigationState.routes.map((route, index) => {
           const isRouteActive = index === activeTabIndex;
           const tintColor = isRouteActive ? activeTintColor : inactiveTintColor;
@@ -36,9 +38,9 @@ const GiverUserTabBar = (props) => {
               ) : (
                 <View
                   style={{
-                    paddingHorizontal: 30,
-                    borderBottomWidth: 3,
-                    borderBottomColor: `${isRouteActive ? 'white' : '#075e54'}`,
+                    // paddingHorizontal: 30,
+                    // borderBottomWidth: 3,
+                    // borderBottomColor: `${isRouteActive ? 'white' : '#075e54'}`,
                   }}>
                   <Text
                     style={[
@@ -54,7 +56,7 @@ const GiverUserTabBar = (props) => {
             </TouchableWithoutFeedback>
           );
         })}
-      </View>
+      </LinearGradient>
     </View>
   );
 };
@@ -66,17 +68,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabContainer: {
+    borderTopColor: 'white',
+    borderTopWidth: 0.2,
     flexDirection: 'row',
-    backgroundColor: '#075e54',
     justifyContent: 'space-evenly',
     alignItems: 'center',
+    paddingVertical: 5,
   },
   text: {
     paddingTop: 10,
     paddingBottom: 10,
     paddingRight: 20,
     paddingLeft: 20,
-    fontFamily: 'Montserrat-Bold_0',
+    fontFamily: font.Fonts.josefBold,
+    fontSize:18
   },
   paymentText: {
     marginTop: 10,

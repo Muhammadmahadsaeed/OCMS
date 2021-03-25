@@ -5,6 +5,7 @@ import SegmentedControlTab from 'react-native-segmented-control-tab';
 import {LoginPhoneEmailButton, RegisterPhoneEmailButton} from '../AuthScreens';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
+import colors from '../../constants/colors';
 const LoginSignupSegment = (navigation) => {
   const [customStyleIndex, setCustomStyleIndex] = useState(0);
 
@@ -17,10 +18,9 @@ const LoginSignupSegment = (navigation) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         <LinearGradient
-          colors={['#09c6f9', '#045de9']}
+          colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
           start={{x: 0, y: 0}}
           end={{x: 1, y: 1}}
-          // locations={[1,0.5]}
           style={styles.header}>
           <View style={styles.headerImage}>
             <Text style={styles.headerText}> Community App</Text>
@@ -31,24 +31,10 @@ const LoginSignupSegment = (navigation) => {
             values={['Login', 'Sign up']}
             selectedIndex={customStyleIndex}
             onTabPress={handleCustomIndexSelect}
-            borderRadius={5}
-            // tabsContainerStyle={{
-            //   backgroundColor: '#F2F2F2',
-            // }}
-            tabStyle={{
-              backgroundColor: 'none',
-              backgroundColor: '#e9ba00',
-              borderWidth: 1,
-              borderColor: 'transparent',
-              paddingVertical: 15,
-              // borderRadius:50
-            }}
-            activeTabStyle={{
-              backgroundColor: '#e9ba00',
-              borderBottomColor: 'black',
-            }}
-            tabTextStyle={{color: '#444444', fontWeight: 'bold'}}
-            activeTabTextStyle={{color: '#888888'}}
+            tabStyle={styles.tabStyle}
+            activeTabStyle={styles.activeTabStyle}
+            tabTextStyle={styles.tabTextStyle}
+            activeTabTextStyle={styles.activeTabTextStyle}
           />
           {customStyleIndex === 0 && (
             <LoginPhoneEmailButton navigationProps={navigation} />
@@ -69,37 +55,45 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexGrow: 0.7,
+    flexGrow: 0.6,
+    // backgroundColor:'red',
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerImage: {
     // width: '70%',
   },
-  headerText:{
-    color:'white',
-    fontSize:30,
-    fontFamily: font.Fonts.josefBold
+  headerText: {
+    color: 'white',
+    fontSize: 30,
+    fontFamily: font.Fonts.josefBold,
   },
   img: {
     resizeMode: 'contain',
     width: '100%',
   },
-  tabContent: {
-    color: '#444444',
-    fontSize: 18,
-    margin: 24,
-  },
-
   tabStyle: {
-    borderColor: '#D52C43',
+    backgroundColor: colors.Colors.backgroundColor,
+    borderWidth: 1,
+    borderBottomColor: colors.Colors.blueDark,
+    borderColor: 'transparent',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
   },
   activeTabStyle: {
-    backgroundColor: '#D52C43',
+    backgroundColor: colors.Colors.blueLight,
+    borderBottomColor: '#045de9',
+  },
+  tabTextStyle:{
+    color: colors.Colors.blueLight,
+    fontFamily: font.Fonts.josefBold,
+  },
+  activeTabTextStyle:{
+    color: 'white'
   },
   footer: {
     flex: 0.4,
-    backgroundColor: 'white',
+    backgroundColor: '#f6f6f6',
     width: '100%',
     position: 'absolute',
     bottom: 0,
