@@ -6,6 +6,7 @@ import TermAndCondition from './TermAndCondition';
 import LoginPhoneEmailButton from './LoginPhoneEmailButton';
 import RegisterPhoneEmailButton from './RegisterPhoneEmailButton';
 import PhoneLogin from './PhoneLogin';
+import PhoneOTP from './PhoneOTP';
 export {
   login,
   Splash,
@@ -14,5 +15,6 @@ export {
   RegisterPhoneEmailButton,
   register,
   ForgotPassword,
-  PhoneLogin
+  PhoneLogin,
+  PhoneOTP
 };

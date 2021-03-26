@@ -52,6 +52,25 @@ const Auth = createStackNavigator(
         headerShown: false,
       },
     },
+    PhoneOtp:{
+      screen: AuthScreens.PhoneOTP,
+      navigationOptions: ({navigation}) => ({
+        // headerLeft: () => (
+        //   <CommonComponents.HamBurger navigationProps={navigation} />
+        // ),
+        safeAreaInsets: {top: 0},
+        headerTitle: '',
+        headerStyle: {
+          backgroundColor: 'transparent',
+          shadowOffset: {
+            height: 0,
+            width: 0,
+          },
+          shadowOpacity: 0,
+          elevation: 0,
+        },
+      }),
+    },
     Register: {
       screen: AuthScreens.register,
 

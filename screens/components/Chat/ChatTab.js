@@ -63,7 +63,7 @@ export default class ChatTab extends Component {
               flex: 1,
               marginHorizontal: 10,
               borderBottomWidth: 2,
-              borderBottomColor: colors.Colors.gray,
+              borderBottomColor: '#c5c4c4',
               paddingVertical: 10,
             }}>
             <View style={styles.nameContainer}>

@@ -23,7 +23,9 @@ const PhoneLogin = ({navigation}) => {
 
   const passwordInputRef = createRef();
 
-  const handleSubmitPress = () => {};
+  const handleSubmitPress = () => {
+    navigation.navigate('PhoneOtp')
+  };
 
   return (
     <LinearGradient
@@ -39,7 +41,51 @@ const PhoneLogin = ({navigation}) => {
         <View style={styles.headerImage}>
           <Text style={styles.headerText}>Community App</Text>
         </View>
-        <View style={styles.footer}></View>
+        <View style={styles.footer}>
+          <View style={[styles.heading, {marginTop: 20}]}>
+            <Text style={styles.headingText}>
+              Enter your phone number to continue
+            </Text>
+          </View>
+          <KeyboardAvoidingView enabled>
+            <View style={styles.SectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(UserPassword) => setUserPassword(UserPassword)}
+                placeholder="3409755265" //12345
+                placeholderTextColor={colors.Colors.gray}
+                keyboardType="default"
+                ref={passwordInputRef}
+                onSubmitEditing={Keyboard.dismiss}
+                blurOnSubmit={false}
+                underlineColorAndroid="#f000"
+                returnKeyType="next"
+              />
+            </View>
+            <View style={styles.heading}>
+              <Text style={styles.headingText}>
+                Enter an OTP pin sent to your phone number for confirmation
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <View>
+                <Image
+                  source={require('../../../asessts/images/process.png')}
+                />
+              </View>
+              <LinearGradient
+                style={styles.buttonView}
+                colors={[colors.Colors.blueLight, colors.Colors.blueDark]}>
+                <TouchableOpacity
+                  style={styles.buttonStyle}
+                  activeOpacity={0.5}
+                  onPress={handleSubmitPress}>
+                  <Text style={styles.buttonTextStyle}>Next</Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            </View>
+          </KeyboardAvoidingView>
+        </View>
       </ScrollView>
     </LinearGradient>
   );
@@ -51,10 +97,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerImage: {
+    // flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'red',
-    alignItems:'center'
-    // width: '70%',
+    alignItems: 'center',
   },
   headerText: {
     color: 'white',
@@ -70,5 +115,61 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     borderTopLeftRadius: 30,
     paddingBottom: 40,
+  },
+  heading: {
+    width: '70%',
+    alignSelf: 'center',
+    marginVertical: 10,
+  },
+  headingText: {
+    color: colors.Colors.gray,
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 18,
+  },
+  SectionStyle: {
+    flexDirection: 'row',
+    height: 50,
+    marginLeft: 35,
+    marginRight: 35,
+    margin: 10,
+    width: '90%',
+    alignSelf: 'center',
+  },
+  inputStyle: {
+    flex: 1,
+    color: colors.Colors.gray,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: '#d8d8d8',
+    fontFamily: font.Fonts.josefReg,
+    backgroundColor: '#F3F1F1',
+    fontSize: 20,
+  },
+  row: {
+    width: '90%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginTop: 15,
+  },
+  buttonView: {
+    borderRadius: 30,
+  },
+  buttonStyle: {
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    paddingVertical: 5,
+    paddingHorizontal: 50,
+  },
+
+  buttonTextStyle: {
+    color: 'white',
+    fontFamily: font.Fonts.josefBold,
+    fontSize: 18,
   },
 });

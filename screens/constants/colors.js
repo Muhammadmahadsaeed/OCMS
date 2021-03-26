@@ -3,6 +3,6 @@ export default {
     backgroundColor: '#f6f6f6',
     blueDark: '#045de9',
     blueLight: '#09c6f9',
-    gray: '#f6f6f6'
+    gray: '#868686'
   },
 };
