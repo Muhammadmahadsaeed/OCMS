@@ -130,8 +130,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     marginVertical: 5,
-    marginHorizontal:7,
     alignItems: 'flex-end',
+   
   },
   mainContainer: {
     flexDirection: 'row',

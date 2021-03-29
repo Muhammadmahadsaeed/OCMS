@@ -16,33 +16,31 @@ const LoginSignupSegment = (navigation) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
-        <LinearGradient
-          colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 1}}
-          style={styles.header}>
-          <View style={styles.headerImage}>
-            <Text style={styles.headerText}> Community App</Text>
-          </View>
-        </LinearGradient>
-        <View style={styles.footer}>
-          <SegmentedControlTab
-            values={['Login', 'Sign up']}
-            selectedIndex={customStyleIndex}
-            onTabPress={handleCustomIndexSelect}
-            tabStyle={styles.tabStyle}
-            activeTabStyle={styles.activeTabStyle}
-            tabTextStyle={styles.tabTextStyle}
-            activeTabTextStyle={styles.activeTabTextStyle}
-          />
-          {customStyleIndex === 0 && (
-            <LoginPhoneEmailButton navigationProps={navigation} />
-          )}
-          {customStyleIndex === 1 && (
-            <RegisterPhoneEmailButton navigationProps={navigation} />
-          )}
+      <LinearGradient
+        colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 1}}
+        style={styles.header}>
+        <View style={styles.headerImage}>
+          <Text style={styles.headerText}> Community App</Text>
         </View>
+      </LinearGradient>
+      <View style={styles.footer}>
+        <SegmentedControlTab
+          values={['Login', 'Sign up']}
+          selectedIndex={customStyleIndex}
+          onTabPress={handleCustomIndexSelect}
+          tabStyle={styles.tabStyle}
+          activeTabStyle={styles.activeTabStyle}
+          tabTextStyle={styles.tabTextStyle}
+          activeTabTextStyle={styles.activeTabTextStyle}
+        />
+        {customStyleIndex === 0 && (
+          <LoginPhoneEmailButton navigationProps={navigation} />
+        )}
+        {customStyleIndex === 1 && (
+          <RegisterPhoneEmailButton navigationProps={navigation} />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -74,8 +72,8 @@ const styles = StyleSheet.create({
   },
   tabStyle: {
     backgroundColor: colors.Colors.backgroundColor,
-    borderWidth: 1,
-    borderBottomColor: colors.Colors.blueDark,
+    // borderWidth: 1,
+    // borderBottomColor: colors.Colors.blueDark,
     borderColor: 'transparent',
     paddingVertical: 15,
     paddingHorizontal: 20,
@@ -84,12 +82,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.Colors.blueLight,
     borderBottomColor: '#045de9',
   },
-  tabTextStyle:{
+  tabTextStyle: {
     color: colors.Colors.blueLight,
     fontFamily: font.Fonts.josefBold,
   },
-  activeTabTextStyle:{
-    color: 'white'
+  activeTabTextStyle: {
+    color: 'white',
   },
   footer: {
     flex: 0.4,
@@ -99,7 +97,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderTopRightRadius: 30,
     borderTopLeftRadius: 30,
-    // paddingHorizontal: 20,
+    paddingHorizontal: 20,
     paddingBottom: 40,
   },
 });

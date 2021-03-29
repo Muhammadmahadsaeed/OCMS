@@ -1,19 +1,23 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import Colors from '../../constants/colors';
-
+import LinearGradient from 'react-native-linear-gradient';
+import font from '../../constants/font';
 const ConversationHeader = (props) => {
-  const user = props.navigationProps.getParam('singleUser');
-
+  const user = props.navigationProps.navigation.getParam('singleUser');
   return (
-    <View style={styles.header}>
+    <LinearGradient
+      style={styles.header}
+      colors={[Colors.Colors.blueLight, Colors.Colors.blueDark]}
+      start={{x: 0, y: 1}}
+      end={{x: 1, y: 1}}>
       <View style={styles.headerContent}>
         <View style={styles.left}>
           <View style={styles.headerBack}>
             <TouchableOpacity
               style={styles.headerBack}
               activeOpacity={0.8}
-              onPress={() => props.navigationProps.pop()}>
+              onPress={() => props.navigationProps.navigation.pop()}>
               <Image
                 source={require('../../../asessts/images/left-arrow.png')}
                 style={styles.backIcon}
@@ -26,8 +30,8 @@ const ConversationHeader = (props) => {
             <TouchableOpacity
               onPress={() => props.navigationProps.navigate('profile')}
               activeOpacity={0.8}>
-              <Text style={styles.titleText}>Muhammad Mahad saeed</Text>
-              <Text style={styles.titleText}>last seen today 11:20 am</Text>
+              <Text style={styles.name}>Muhammad Mahad</Text>
+              <Text style={styles.status}>last seen today 11:20 am</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -36,7 +40,7 @@ const ConversationHeader = (props) => {
           <View style={styles.rightIcon}>
             <TouchableOpacity style={styles.rightImg}>
               <Image
-                source={require('../../../asessts/images/video-camera.png')}
+                source={require('../../../asessts/images/video-call.png')}
                 style={styles.icon}
               />
             </TouchableOpacity>
@@ -44,12 +48,12 @@ const ConversationHeader = (props) => {
           <View style={styles.rightIcon}>
             <TouchableOpacity style={styles.rightImg}>
               <Image
-                source={require('../../../asessts/images/call.png')}
+                source={require('../../../asessts/images/voice-call.png')}
                 style={styles.icon}
               />
             </TouchableOpacity>
           </View>
-          <View>
+          <View style={styles.rightIcon}>
             <TouchableOpacity style={styles.rightImg}>
               <Image
                 source={require('../../../asessts/images/more.png')}
@@ -58,8 +62,9 @@ const ConversationHeader = (props) => {
             </TouchableOpacity>
           </View>
         </View>
+      
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -68,13 +73,12 @@ export default ConversationHeader;
 const styles = StyleSheet.create({
   header: {
     height: 65,
-    backgroundColor: Colors.Colors.backgroundColor,
+    
   },
   headerContent: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   left: {
     flex: 1,
@@ -106,12 +110,16 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginVertical: 10,
   },
-  titleText: {
+  name: {
     color: '#fff',
-    fontWeight: '600',
+    fontFamily: font.Fonts.josefBold,
+    fontSize: 20,
+  },
+  status:{
+    color: '#fff',
+    fontFamily: font.Fonts.josefReg,
     fontSize: 16,
   },
-
   right: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -119,10 +127,11 @@ const styles = StyleSheet.create({
   },
   rightIcon: {
     marginRight: 10,
+    height:30,
+    width:25
   },
   rightImg: {
     padding: 5,
-    
   },
 
   icon: {

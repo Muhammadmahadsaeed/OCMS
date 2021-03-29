@@ -52,23 +52,10 @@ const Auth = createStackNavigator(
         headerShown: false,
       },
     },
-    PhoneOtp:{
+    PhoneOtp: {
       screen: AuthScreens.PhoneOTP,
       navigationOptions: ({navigation}) => ({
-        // headerLeft: () => (
-        //   <CommonComponents.HamBurger navigationProps={navigation} />
-        // ),
-        safeAreaInsets: {top: 0},
-        headerTitle: '',
-        headerStyle: {
-          backgroundColor: 'transparent',
-          shadowOffset: {
-            height: 0,
-            width: 0,
-          },
-          shadowOpacity: 0,
-          elevation: 0,
-        },
+        headerShown: false,
       }),
     },
     Register: {
@@ -96,15 +83,6 @@ const Auth = createStackNavigator(
         },
       },
     },
-    // Second: {
-    //   screen: AuthScreens.ChooseImage,
-    //   title: 'none',
-    //   navigationOptions: {
-    //     headerTransparent: true,
-    //     headerBackImage: () => <CommonComponents.HeaderBackButton />,
-    //     headerTitle: '',
-    //   },
-    // },
   },
 
   {
@@ -168,43 +146,13 @@ const HomeStack = createStackNavigator(
     Home: {
       screen: TabScreen,
       navigationOptions: ({navigation}) => ({
-        // headerLeft: () => (
-        //   <CommonComponents.HamBurger navigationProps={navigation} />
-        // ),
-        safeAreaInsets: {top: 0},
-        headerTitleStyle: {
-          alignSelf: 'center',
-          color: 'white',
-          fontFamily: font.Fonts.josefBold,
-          
-        },
-        headerTitle: 'Community App',
-        headerBackground: () => (
-          <LinearGradient
-            colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-            start={{x: 0, y: 0.5}}
-            end={{x: 1, y: 1}}
-            style={{flex: 1}}
-          />
-        ),
-        headerStyle: {
-          shadowOffset: {
-            height: 0,
-            width: 0,
-          },
-          shadowOpacity: 0,
-          elevation: 0,
-        },
-        // headerRight: () => (
-        //   <CommonComponents.ShopButton navigationProps={navigation} />
-        // ),
+        headerShown: false,
       }),
     },
     chatRoom: {
       screen: chat.ChatRoom,
       navigationOptions: ({navigation}) => ({
-        headerTitle: '',
-        header: () => <chat.ConversationHeader navigationProps={navigation} />,
+        headerShown: false,
       }),
     },
     contact: {

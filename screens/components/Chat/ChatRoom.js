@@ -14,22 +14,33 @@ import {
 } from 'react-native';
 import InputBox from './InputBox';
 import Conversation from './conversation';
+import ConversationHeader from './ConversationHeader';
 const {width, height} = Dimensions.get('window');
-
+import LinearGradient from 'react-native-linear-gradient';
+import colors from '../../constants/colors';
+import font from '../../constants/font';
 class ChatRoom extends React.Component {
-  
   render() {
     return (
-      <ImageBackground
-        source={require('../../../asessts/images/background.png')}
-        style={styles.image}>
-        <FlatList
-          // data={messages}
-          renderItem={({item}) => <Conversation myId={myId} message={item} />}
-          inverted
-        />
-        <InputBox />
-      </ImageBackground>
+      <View style={{flex: 1}}>
+        <ConversationHeader navigationProps={this.props} />
+        <LinearGradient
+          style={styles.container}
+          colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+          start={{x: 0, y: 1}}
+          end={{x: 1, y: 1}}>
+          <View style={styles.innerContainer}>
+            <FlatList
+              // data={messages}
+              renderItem={({item}) => (
+                <Conversation myId={myId} message={item} />
+              )}
+              inverted
+            />
+            <InputBox />
+          </View>
+        </LinearGradient>
+      </View>
     );
   }
 }
@@ -37,23 +48,15 @@ class ChatRoom extends React.Component {
 export default ChatRoom;
 
 const styles = StyleSheet.create({
-  image: {
-    width: '100%',
-    height: '100%',
+  container: {
+    flex: 1,
   },
-  input: {
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
-    padding: 10,
-    height: 40,
-    width: width - 20,
-    backgroundColor: '#fff',
-    margin: 10,
-    shadowColor: '#3d3d3d',
-    shadowRadius: 2,
-    shadowOpacity: 0.5,
-    shadowOffset: {
-      height: 1,
-    },
+  innerContainer: {
+    flex:1,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    backgroundColor: '#F6F6F6',
+    paddingHorizontal: 10,
   },
+  
 });

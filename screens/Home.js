@@ -7,6 +7,7 @@ import {
   Image,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Header from './common/Header';
 import colors from './constants/colors';
 import font from './constants/font';
 const GiverUserTabBar = (props) => {
@@ -20,6 +21,7 @@ const GiverUserTabBar = (props) => {
 
   return (
     <View style={styles.container}>
+      <Header />
       <LinearGradient
         colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
         start={{x: 0, y: 0.5}}
@@ -37,11 +39,13 @@ const GiverUserTabBar = (props) => {
                 <Image source={require('../asessts/images/camera.png')} />
               ) : (
                 <View
-                  style={{
-                    // paddingHorizontal: 30,
-                    // borderBottomWidth: 3,
-                    // borderBottomColor: `${isRouteActive ? 'white' : '#075e54'}`,
-                  }}>
+                  style={
+                    {
+                      // paddingHorizontal: 30,
+                      // borderBottomWidth: 3,
+                      // borderBottomColor: `${isRouteActive ? 'white' : '#075e54'}`,
+                    }
+                  }>
                   <Text
                     style={[
                       styles.text,
@@ -61,12 +65,7 @@ const GiverUserTabBar = (props) => {
   );
 };
 const styles = StyleSheet.create({
-  paymentContainer: {
-    marginTop: 10,
-    height: '20%',
-    width: '100%',
-    alignItems: 'center',
-  },
+  // container: {flex: 1},
   tabContainer: {
     borderTopColor: 'white',
     borderTopWidth: 0.2,
@@ -81,7 +80,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingLeft: 20,
     fontFamily: font.Fonts.josefBold,
-    fontSize:18
+    fontSize: 18,
   },
   paymentText: {
     marginTop: 10,

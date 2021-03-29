@@ -15,6 +15,7 @@ import {fetchUser} from '../../config/env';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
+
 export default class ChatTab extends Component {
   constructor() {
     super();
@@ -70,10 +71,8 @@ export default class ChatTab extends Component {
               <Text style={styles.nameTxt}>Syed Kashan Tayyab</Text>
             </View>
             <View style={styles.msgContainer}>
-              <View style={{flex:1}}>
-                <Text style={styles.msgTxt}>
-                  Hey, I am Syed Kashan Tayyab
-                </Text>
+              <View style={{flex: 1}}>
+                <Text style={styles.msgTxt}>Hey, I am Syed Kashan Tayyab</Text>
               </View>
               <View>
                 <Text style={styles.time}>10:20</Text>

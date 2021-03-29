@@ -49,7 +49,11 @@ const PhoneOTP = ({navigation}) => {
         style={{
           flex: 1,
         }}>
-        <View style={{flex: 1}}>
+        <View
+          style={{
+            flex: 1,
+            marginTop: 60,
+          }}>
           <View
             style={{
               justifyContent: 'center',
