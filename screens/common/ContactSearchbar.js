@@ -17,6 +17,9 @@ import {
 
 import Animated, {Easing} from 'react-native-reanimated';
 import colors from '../constants/colors';
+
+import LinearGradient from 'react-native-linear-gradient';
+import font from '../constants/font';
 const {Value, timing} = Animated;
 
 // Calculate window size
@@ -85,88 +88,89 @@ class ContactSearchBar extends React.Component {
   };
   setText(value) {
     this.setState({keyword: value});
-    this.props.searchUser(value)
-    console.log(value);
+    this.props.searchUser(value);
+   
   }
   render() {
     return (
-      <>
-        <SafeAreaView style={styles.header_safe_area}>
-          <View style={styles.header}>
-            <View style={styles.header_inner}>
-              <View style={styles.left}>
+      <SafeAreaView style={styles.header_safe_area}>
+        <LinearGradient
+          style={styles.header}
+          colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+          start={{x: 0, y: 1}}
+          end={{x: 1, y: 1}}>
+          <View style={styles.header_inner}>
+            <View style={styles.left}>
+              <View style={styles.row}>
+                <View style={styles.back_icon_box}>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => this.props.navigationProps.navigation.pop()}>
+                    <Image
+                      source={require('../../asessts/images/left-arrow.png')}
+                      style={{width: 30, height: 30}}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View style={{marginLeft: 20}}>
+                  <Text style={styles.heading}>Select contact</Text>
+                  <Text style={styles.text}>150 contacts</Text>
+                </View>
+              </View>
+              <View style={styles.row}>
                 <View style={styles.row}>
-                  <View style={styles.back_icon_box}>
+                  <View style={styles.right}>
                     <TouchableOpacity
                       activeOpacity={0.8}
-                      onPress={() =>
-                        this.props.navigationProps.navigation.pop()
-                      }>
+                      onPress={this._onFocus}
+                      style={styles.search_icon_box}>
                       <Image
-                        source={require('../../asessts/images/left-arrow.png')}
-                        style={{width: 30, height: 30}}
+                        source={require('../../asessts/images/search.png')}
+                        style={{height: 25, width: 25}}
                       />
                     </TouchableOpacity>
                   </View>
-                  <View style={{marginLeft: 20}}>
-                    <Text style={styles.heading}>Select contact</Text>
-                    <Text style={styles.text}>150</Text>
+                  <View style={styles.right}>
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      style={styles.search_icon_box}>
+                      <Image
+                        source={require('../../asessts/images/more.png')}
+                      />
+                    </TouchableOpacity>
                   </View>
                 </View>
-                <View style={styles.row}>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    underlayColor={'#ccd0d5'}
-                    onPress={this._onFocus}
-                    style={styles.search_icon_box}>
-                    <Image
-                      source={require('../../asessts/images/search.png')}
-                      style={{height: 25, width: 25}}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    underlayColor={'#ccd0d5'}
-                    onPress={this._onFocus}
-                    style={styles.search_icon_box}>
-                    <Image
-                      source={require('../../asessts/images/more.png')}
-                      style={{height: 25, width: 25}}
-                    />
-                  </TouchableOpacity>
-                </View>
               </View>
-
-              <Animated.View
-                style={[
-                  styles.input_box,
-                  {transform: [{translateX: this._input_box_translate_x}]},
-                ]}>
-                <Animated.View style={{opacity: this._back_button_opacity}}>
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    underlayColor={'#ccd0d5'}
-                    onPress={this._onBlur}
-                    style={styles.back_icon_box}>
-                    <Image
-                      source={require('../../asessts/images/left-arrow.png')}
-                      style={{height: 25, width: 25}}
-                    />
-                  </TouchableOpacity>
-                </Animated.View>
-                <TextInput
-                  ref="input"
-                  placeholder="Search Facebook"
-                  clearButtonMode="always"
-                  value={this.state.keyword}
-                  onChangeText={(value) => this.setText(value)}
-                  style={styles.input}
-                />
-              </Animated.View>
             </View>
+            <Animated.View
+              style={[
+                styles.input_box,
+                {transform: [{translateX: this._input_box_translate_x}]},
+              ]}>
+              <Animated.View style={{opacity: this._back_button_opacity}}>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  underlayColor={'#ccd0d5'}
+                  onPress={this._onBlur}
+                  style={styles.back_icon_box}>
+                  <Image
+                    source={require('../../asessts/images/left-arrow.png')}
+                    style={{width: 30, height: 30}}
+                  />
+                </TouchableOpacity>
+              </Animated.View>
+              <TextInput
+                ref="input"
+                placeholder="Search..."
+                clearButtonMode="always"
+                value={this.state.keyword}
+                onChangeText={(value) => this.setText(value)}
+                style={styles.input}
+              />
+            </Animated.View>
           </View>
-        </SafeAreaView>
-      </>
+        </LinearGradient>
+      </SafeAreaView>
     );
   }
 }
@@ -176,7 +180,6 @@ export default ContactSearchBar;
 const styles = StyleSheet.create({
   header_safe_area: {
     zIndex: 1000,
-    backgroundColor: colors.Colors.backgroundColor,
   },
   header: {
     height: 65,
@@ -190,11 +193,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   search_icon_box: {
-    width: 40,
-    height: 40,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 8,
   },
   input_box: {
     height: 65,
@@ -217,12 +216,13 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 65,
-    backgroundColor: '#e4e6eb',
+    backgroundColor: 'white',
     paddingHorizontal: 16,
     fontSize: 15,
+    fontFamily:font.Fonts.poppinBold
   },
   left: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -230,14 +230,23 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  right: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   heading: {
     fontSize: 22,
     color: 'white',
+    fontFamily: font.Fonts.josefBold,
   },
   text: {
     color: 'white',
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 16,
   },
 });

@@ -68,11 +68,11 @@ export default class ChatTab extends Component {
               paddingVertical: 10,
             }}>
             <View style={styles.nameContainer}>
-              <Text style={styles.nameTxt}>Syed Kashan Tayyab</Text>
+              <Text style={styles.nameTxt} numberOfLines={1}>Syed Kashan Tayyab</Text>
             </View>
             <View style={styles.msgContainer}>
               <View style={{flex: 1}}>
-                <Text style={styles.msgTxt}>Hey, I am Syed Kashan Tayyab</Text>
+                <Text style={styles.msgTxt} numberOfLines={1}>Hey, I am Syed Kashan Tayyab. how are you?</Text>
               </View>
               <View>
                 <Text style={styles.time}>10:20</Text>
@@ -156,6 +156,7 @@ export default class ChatTab extends Component {
           </LinearGradient>
         </View>
       </LinearGradient>
+    
     );
   }
 }

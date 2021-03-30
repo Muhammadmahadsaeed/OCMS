@@ -30,7 +30,7 @@ const ConversationHeader = (props) => {
             <TouchableOpacity
               onPress={() => props.navigationProps.navigate('profile')}
               activeOpacity={0.8}>
-              <Text style={styles.name}>Muhammad Mahad</Text>
+              <Text style={styles.name} numberOfLines={1}>Muhammad Mahad khan ALi Yousuf Zai</Text>
               <Text style={styles.status}>last seen today 11:20 am</Text>
             </TouchableOpacity>
           </View>
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 5,
     marginVertical: 10,
+    marginRight:5
   },
   name: {
     color: '#fff',

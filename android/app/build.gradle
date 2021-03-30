@@ -131,6 +131,7 @@ android {
     defaultConfig {
         applicationId "com.ocms"
         minSdkVersion rootProject.ext.minSdkVersion
+        missingDimensionStrategy 'react-native-camera', 'general' //add camera permission
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"

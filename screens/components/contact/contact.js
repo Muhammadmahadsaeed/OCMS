@@ -12,6 +12,9 @@ import {
 } from 'react-native';
 import ContactSearchBar from '../../common/ContactSearchbar';
 import {fetchUser} from '../../config/env';
+import LinearGradient from 'react-native-linear-gradient';
+import colors from '../../constants/colors';
+import font from '../../constants/font';
 export default class contact extends Component {
   constructor() {
     super();
@@ -24,7 +27,6 @@ export default class contact extends Component {
       text: '',
     };
   }
-
   componentDidMount() {
     this.setState({isLoading: true}, this.getData);
   }
@@ -43,12 +45,15 @@ export default class contact extends Component {
       .catch((err) => console.log(err));
   };
   searchUser = (value) => {
+    console.log(value)
     this.setState({text: value});
   };
   renderItemComponent(props) {
     return (
       <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('conversation')}>
+        onPress={() =>
+          this.props.navigation.navigate('chatRoom', {singleUser: props.item})
+        }>
         <View style={styles.row}>
           <Image
             source={{
@@ -56,19 +61,19 @@ export default class contact extends Component {
             }}
             style={styles.pic}
           />
-          <View>
+          <View
+            style={{
+              flex: 1,
+              marginHorizontal: 10,
+              paddingVertical: 10,
+            }}>
             <View style={styles.nameContainer}>
-              <Text style={styles.nameTxt}>{props.item.title}</Text>
-              <Text style={styles.time}>{props.item.id}</Text>
+              <Text style={styles.nameTxt}>Syed Kashan Tayyab</Text>
             </View>
             <View style={styles.msgContainer}>
-              {/* <Icon
-                name={props.icon}
-                size={15}
-                color="#b3b3b3"
-                style={{marginLeft: 15, marginRight: 5}}
-              /> */}
-              <Text style={styles.msgTxt}>{props.item.id}</Text>
+              <View style={{flex: 1}}>
+                <Text style={styles.msgTxt}>Hey, I am Syed Kashan Tayyab</Text>
+              </View>
             </View>
           </View>
         </View>
@@ -96,21 +101,34 @@ export default class contact extends Component {
           navigationProps={this.props}
           searchUser={this.searchUser}
         />
-        {this.state.loading ? (
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <ActivityIndicator size="large" animating color="black" />
+        <LinearGradient
+          style={styles.container}
+          colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+          start={{x: 0, y: 1}}
+          end={{x: 1, y: 1}}>
+          <View style={styles.innerContainer}>
+            {this.state.loading ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="large" animating color="black" />
+              </View>
+            ) : (
+              <FlatList
+                data={this.state.data}
+                showsVerticalScrollIndicator={false}
+                renderItem={(item) => this.renderItemComponent(item)}
+                keyExtractor={(item, index) => index.toString()}
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0}
+                ListFooterComponent={this.renderFooter}
+              />
+            )}
           </View>
-        ) : (
-          <FlatList
-            data={this.state.data}
-            renderItem={(item) => this.renderItemComponent(item)}
-            keyExtractor={(item, index) => index.toString()}
-            onEndReached={this.handleLoadMore}
-            onEndReachedThreshold={0}
-            ListFooterComponent={this.renderFooter}
-          />
-        )}
+        </LinearGradient>
       </View>
     );
   }
@@ -120,48 +138,44 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
+  innerContainer: {
+    flex: 1,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: '#f7f7f7',
-    borderBottomWidth: 1,
     padding: 10,
-    backgroundColor: '#fff',
   },
   pic: {
-    borderRadius: 30,
+    borderRadius: 100,
     width: 60,
     height: 60,
   },
   nameContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: 280,
+    flex:1,
   },
   nameTxt: {
-    marginLeft: 15,
-    fontWeight: '600',
-    color: '#222',
-    fontSize: 15,
+    color: 'black',
+    fontSize: 20,
+    fontFamily: font.Fonts.josefBold,
   },
-  time: {
-    fontWeight: '200',
-    color: '#777',
-    fontSize: 13,
-  },
+
   msgContainer: {
+    flex: 1,
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   msgTxt: {
-    fontWeight: '400',
     color: '#666',
-    fontSize: 12,
+    fontSize: 16,
+    fontFamily: font.Fonts.josefReg,
   },
   loader: {
     marginTop: 10,
