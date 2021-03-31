@@ -1,23 +1,59 @@
-
-import React, {useState,useEffect} from 'react';
+import React, {PureComponent} from 'react';
 import {
   SafeAreaView,
+  AppRegistry,
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
-  Image,
-  Platform,
+  View,
   PermissionsAndroid,
+  Dimensions,
 } from 'react-native';
-import {
-  launchCamera
-} from 'react-native-image-picker';
+import {RNCamera} from 'react-native-camera';
+import Toolbar from './toolbar';
+import styles from './styles';
+import Gallery from './gallery';
+export default class Camera extends PureComponent {
+  state = {
+    captures: [],
+    capturing: null,
+    hasCameraPermission: null,
+    cameraType: RNCamera.Constants.Type.back,
+    flashMode: RNCamera.Constants.FlashMode.off,
+  };
 
-const App = () => {
-  const [filePath, setFilePath] = useState({});
+  setFlashMode = (flashMode) => this.setState({flashMode});
+  setCameraType = (cameraType) => this.setState({cameraType});
+  handleCaptureIn = () => {
+    this.setState({capturing: true});
+  };
 
-  const requestCameraPermission = async () => {
+  handleCaptureOut = () => {
+    if (this.state.capturing) this.camera.stopRecording();
+  };
+
+  handleShortCapture = async () => {
+    const photoData = await this.camera.takePictureAsync();
+    this.setState({
+      capturing: false,
+      captures: [photoData, ...this.state.captures],
+    });
+  };
+
+  handleLongCapture = async () => {
+    const videoData = await this.camera.recordAsync();
+
+    this.setState({
+      capturing: false,
+      captures: [videoData, ...this.state.captures],
+    });
+  };
+
+  async componentDidMount() {
+    const hasCameraPermission = await this.requestCameraPermission();
+    if (hasCameraPermission) this.setState({hasCameraPermission});
+  }
+  requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
       try {
         const granted = await PermissionsAndroid.request(
@@ -35,77 +71,42 @@ const App = () => {
       }
     } else return true;
   };
+  render() {
+    const {
+      hasCameraPermission,
+      flashMode,
+      cameraType,
+      capturing,
+      captures,
+    } = this.state;
 
-  const requestExternalWritePermission = async () => {
-    if (Platform.OS === 'android') {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          {
-            title: 'External Storage Write Permission',
-            message: 'App needs write permission',
-          },
-        );
-        // If WRITE_EXTERNAL_STORAGE Permission is granted
-        return granted === PermissionsAndroid.RESULTS.GRANTED;
-      } catch (err) {
-        console.warn(err);
-        alert('Write permission err', err);
-      }
-      return false;
-    } else return true;
-  };
-
-  const captureImage = async (type = 'photo') => {
-    let options = {
-      mediaType: type,
-      maxWidth: 300,
-      maxHeight: 550,
-      quality: 1,
-      videoQuality: 'low',
-      durationLimit: 30, //Video max duration in seconds
-      saveToPhotos: true,
-    };
-    let isCameraPermitted = await requestCameraPermission();
-    let isStoragePermitted = await requestExternalWritePermission();
-    if (isCameraPermitted && isStoragePermitted) {
-      launchCamera(options, (response) => {
-        console.log('Response = ', response);
-
-        if (response.didCancel) {
-          alert('User cancelled camera picker');
-          return;
-        } else if (response.errorCode == 'camera_unavailable') {
-          alert('Camera not available on device');
-          return;
-        } else if (response.errorCode == 'permission') {
-          alert('Permission not satisfied');
-          return;
-        } else if (response.errorCode == 'others') {
-          alert(response.errorMessage);
-          return;
-        }
-        console.log('base64 -> ', response.base64);
-        console.log('uri -> ', response.uri);
-        console.log('width -> ', response.width);
-        console.log('height -> ', response.height);
-        console.log('fileSize -> ', response.fileSize);
-        console.log('type -> ', response.type);
-        console.log('fileName -> ', response.fileName);
-        setFilePath(response);
-      });
+    if (hasCameraPermission === null) {
+      return <View />;
+    } else if (hasCameraPermission === false) {
+      return <Text>Access to camera has been denied.</Text>;
     }
-  };
-  useEffect(()=>{
-    captureImage()
-  })
- 
+    return (
+      <SafeAreaView style={{flex: 1}}>
+        <RNCamera
+          type={cameraType}
+          flashMode={flashMode}
+          style={styles.preview}
+          ref={(camera) => (this.camera = camera)}
+        />
+        {captures.length > 0 && <Gallery captures={captures} />}
 
-  return (
-    <SafeAreaView style={{flex: 1}}>
-     
-    </SafeAreaView>
-  );
-};
-
-export default App;
+        <Toolbar
+          capturing={capturing}
+          flashMode={flashMode}
+          cameraType={cameraType}
+          setFlashMode={this.setFlashMode}
+          setCameraType={this.setCameraType}
+          onCaptureIn={this.handleCaptureIn}
+          onCaptureOut={this.handleCaptureOut}
+          onLongCapture={this.handleLongCapture}
+          onShortCapture={this.handleShortCapture}
+        />
+      </SafeAreaView>
+    );
+  }
+}
