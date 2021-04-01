@@ -19,7 +19,17 @@ const {width, height} = Dimensions.get('window');
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
+import io from 'socket.io-client';
 class ChatRoom extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      chatMessages: [],
+    };
+  }
+  getDataFromInput = (msg) => {
+    this.setState({chatMessages: [msg, ...this.state.chatMessages]});
+  };
   render() {
     return (
       <View style={{flex: 1}}>
@@ -31,13 +41,12 @@ class ChatRoom extends React.Component {
           end={{x: 1, y: 1}}>
           <View style={styles.innerContainer}>
             <FlatList
-              // data={messages}
-              renderItem={({item}) => (
-                <Conversation myId={myId} message={item} />
-              )}
-              inverted
+              data={this.state.chatMessages}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => <Conversation myId={5} message={item} />}
+              inverted={true}
             />
-            <InputBox />
+            <InputBox getDataFromInput={this.getDataFromInput} />
           </View>
         </LinearGradient>
       </View>
@@ -52,11 +61,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   innerContainer: {
-    flex:1,
+    flex: 1,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     backgroundColor: '#F6F6F6',
     paddingHorizontal: 10,
   },
-  
 });

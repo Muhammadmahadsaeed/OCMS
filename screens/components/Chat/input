@@ -10,51 +10,31 @@ import {
   Image,
   PermissionsAndroid,
 } from 'react-native';
-import AudioRecorderPlayer, {
-  AVEncoderAudioQualityIOSType,
-  AVEncodingOption,
-  AudioEncoderAndroidType,
-  AudioSet,
-  AudioSourceAndroidType,
-} from 'react-native-audio-recorder-player';
+import {AudioRecorder, AudioUtils} from 'react-native-audio';
 import CryptoJS from 'crypto-js';
 // import {createMessage, updateChatRoom} from '../../src/graphql/mutations';
 
 class InputBox extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      message: '',
-      isLoggingIn: false,
-      recordSecs: 0,
-      recordTime: '00:00:00',
-      currentPositionSec: 0,
-      currentDurationSec: 0,
-      playTime: '00:00:00',
-      duration: '00:00:00',
-    };
-    this.audioRecorderPlayer = new AudioRecorderPlayer();
-    this.audioRecorderPlayer.setSubscriptionDuration(0.09); // optional. Default is 0.1
-  }
-  // state = {
-  //   message: '',
-  //   startAudio: false,
-  //   hasPermission: false,
-  //   audioPath: `${
-  //     AudioUtils.DocumentDirectoryPath
-  //   }/${this.messageIdGenerator()}test.aac`,
-  //   playAudio: false,
-  //   fetchChats: false,
-  //   audioSettings: {
-  //     SampleRate: 22050,
-  //     Channels: 1,
-  //     AudioQuality: 'Low',
-  //     AudioEncoding: 'aac',
-  //     MeteringEnabled: true,
-  //     IncludeBase64: true,
-  //     AudioEncodingBitRate: 32000,
-  //   },
-  // };
+  // const {chatRoomID} = props;
+  state = {
+    message: '',
+    startAudio: false,
+    hasPermission: false,
+    audioPath: `${
+      AudioUtils.DocumentDirectoryPath
+    }/${this.messageIdGenerator()}test.aac`,
+    playAudio: false,
+    fetchChats: false,
+    audioSettings: {
+      SampleRate: 22050,
+      Channels: 1,
+      AudioQuality: 'Low',
+      AudioEncoding: 'aac',
+      MeteringEnabled: true,
+      IncludeBase64: true,
+      AudioEncodingBitRate: 32000,
+    },
+  };
   messageIdGenerator() {
     // generates uuid.
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -147,25 +127,33 @@ class InputBox extends React.Component {
     }
   };
   handleAudio = async () => {
-    const path = 'hello.m4a';
-    const audioSet = {
-      AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-      AudioSourceAndroid: AudioSourceAndroidType.MIC,
-      AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
-      AVNumberOfChannelsKeyIOS: 2,
-      AVFormatIDKeyIOS: AVEncodingOption.aac,
-    };
-    console.log('audioSet', audioSet);
-    const uri = await this.audioRecorderPlayer.startRecorder(path, audioSet);
-    this.audioRecorderPlayer.addRecordBackListener((e) => {
+    if (!this.state.startAudio) {
       this.setState({
-        recordSecs: e.current_position,
-        recordTime: this.audioRecorderPlayer.mmssss(
-          Math.floor(e.current_position),
-        ),
+        startAudio: true,
       });
-    });
-    console.log(`uri: ${uri}`);
+      await AudioRecorder.prepareRecordingAtPath(
+        this.state.audioPath,
+        this.state.audioSettings,
+      );
+      await AudioRecorder.startRecording();
+      AudioRecorder.onProgress = (data) => {
+        console.log(data, 'onProgress data');
+      };
+     
+    } else {
+      this.setState({startAudio: false});
+      await AudioRecorder.stopRecording();
+      AudioRecorder.onFinished = (data) => {
+        console.log(data, 'on finish');
+      };
+      const {audioPath} = this.state;
+      const fileName = `${this.messageIdGenerator()}.aac`;
+      const file = {
+        uri: Platform.OS === 'ios' ? audioPath : `file://${audioPath}`,
+        name: fileName,
+        type: `audio/aac`,
+      };
+    }
   };
 
   render() {
