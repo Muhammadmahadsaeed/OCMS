@@ -15,7 +15,7 @@ import {fetchUser} from '../../config/env';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
-
+import axios from 'axios';
 export default class ChatTab extends Component {
   constructor() {
     super();
@@ -44,6 +44,53 @@ export default class ChatTab extends Component {
         });
       })
       .catch((err) => console.log(err));
+    // fetch('http://192.168.100.54:3000/contact/', {
+    //   method: 'POST',
+    //   headers: {'Content-Type': 'application/json'},
+    //   body: JSON.stringify({
+    //     senderId: '6062cb84ac8ec71b54bfcd2e',
+    //     loginCompany: '605444a8e2924b2bec69e360',
+    //   }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     console.log(json)
+    //   })
+    //   .catch((err) => console.log(err));
+    // axios({
+    //   method: 'post',
+    //   url: `192.168.100.54:3000/contact/`,
+    //   headers: {'Content-Type': 'application/json'},
+    //   data: {
+    //     senderId: '6062cb84ac8ec71b54bfcd2e',
+    //     loginCompany: '605444a8e2924b2bec69e360',
+    //   },
+    // })
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.log("err===",err.message);
+    //   });
+    // var myHeaders = new Headers();
+    // myHeaders.append('Content-Type', 'application/json');
+
+    // var raw = JSON.stringify({
+    //   senderId: '6062cb84ac8ec71b54bfcd2e',
+    //   loginCompany: '605444a8e2924b2bec69e360',
+    // });
+
+    // var requestOptions = {
+    //   method: 'POST',
+    //   headers: myHeaders,
+    //   body: raw,
+    //   redirect: 'follow',
+    // };
+
+    // fetch('192.168.100.54:3000/contact/', requestOptions)
+    //   .then((response) => response.json())
+    //   .then((result) => console.log(result))
+    //   .catch((error) => console.log('error', error));
   };
 
   renderItemComponent(props) {
@@ -68,11 +115,15 @@ export default class ChatTab extends Component {
               paddingVertical: 10,
             }}>
             <View style={styles.nameContainer}>
-              <Text style={styles.nameTxt} numberOfLines={1}>Syed Kashan Tayyab</Text>
+              <Text style={styles.nameTxt} numberOfLines={1}>
+                Syed Kashan Tayyab
+              </Text>
             </View>
             <View style={styles.msgContainer}>
               <View style={{flex: 1}}>
-                <Text style={styles.msgTxt} numberOfLines={1}>Hey, I am Syed Kashan Tayyab. how are you?</Text>
+                <Text style={styles.msgTxt} numberOfLines={1}>
+                  Hey, I am Syed Kashan Tayyab. how are you?
+                </Text>
               </View>
               <View>
                 <Text style={styles.time}>10:20</Text>
@@ -156,7 +207,6 @@ export default class ChatTab extends Component {
           </LinearGradient>
         </View>
       </LinearGradient>
-    
     );
   }
 }

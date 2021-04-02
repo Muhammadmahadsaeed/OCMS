@@ -32,6 +32,7 @@ class InputBox extends React.Component {
       currentDurationSec: 0,
       playTime: '00:00:00',
       duration: '00:00:00',
+      startAudio: false,
     };
     this.audioRecorderPlayer = new AudioRecorderPlayer();
     this.audioRecorderPlayer.setSubscriptionDuration(0.09); // optional. Default is 0.1
@@ -78,7 +79,14 @@ class InputBox extends React.Component {
   onMicrophonePress = () => {
     console.warn('Microphone');
   };
-
+  messageIdGenerator() {
+    // generates uuid.
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      let r = (Math.random() * 16) | 0,
+        v = c == 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
   //   updateChatRoomLastMessage = async (messageId) => {
   //     try {
   //       await API.graphql(
@@ -122,22 +130,64 @@ class InputBox extends React.Component {
       if (!hasPermission) return;
     });
   }
-  checkPermission() {
+  async checkPermission() {
     if (Platform.OS !== 'android') {
       return Promise.resolve(true);
     }
-    const rationale = {
-      title: 'Microphone Permission',
-      message:
-        'AudioExample needs access to your microphone so you can record audio.',
-    };
-    return PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-      rationale,
-    ).then((result) => {
-      console.log('Permission result:', result);
-      return result === true || result === PermissionsAndroid.RESULTS.GRANTED;
-    });
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Permissions for write access',
+            message: 'Give permission to your storage to write a file',
+            buttonPositive: 'ok',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('You can use the storage');
+        } else {
+          console.log('permission denied');
+          return;
+        }
+      } catch (err) {
+        console.warn(err);
+        return;
+      }
+    }
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+          {
+            title: 'Permissions for write access',
+            message: 'Give permission to your storage to write a file',
+            buttonPositive: 'ok',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('You can use the camera');
+        } else {
+          console.log('permission denied');
+          return;
+        }
+      } catch (err) {
+        console.warn(err);
+        return;
+      }
+    }
+    // const rationale = {
+    //   title: 'Microphone Permission',
+    //   message:
+    //     'AudioExample needs access to your microphone so you can record audio.',
+    // };
+    // return PermissionsAndroid.request(
+    //   PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+    //   rationale,
+    // ).then((result) => {
+    //   console.log('Permission result:', result);
+    //   return result === true || result === PermissionsAndroid.RESULTS.GRANTED;
+    // });
   }
   onPress = () => {
     if (!this.state.message) {
@@ -146,8 +196,22 @@ class InputBox extends React.Component {
       this.onSendPress();
     }
   };
-  handleAudio = async () => {
-    const path = 'hello.m4a';
+  handleAudio = () => {
+    if (!this.state.startAudio) {
+      this.setState({startAudio: true});
+      console.log('start===');
+      this.onStartRecording();
+    } else {
+      this.setState({startAudio: false});
+      console.log('stop===');
+      this.onStopRecord();
+    }
+  };
+  onStartRecording = async () => {
+    const path = Platform.select({
+      ios: 'hello.m4a',
+      android: `sdcard/hello.mp4`,
+    });
     const audioSet = {
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
       AudioSourceAndroid: AudioSourceAndroidType.MIC,
@@ -155,7 +219,6 @@ class InputBox extends React.Component {
       AVNumberOfChannelsKeyIOS: 2,
       AVFormatIDKeyIOS: AVEncodingOption.aac,
     };
-    console.log('audioSet', audioSet);
     const uri = await this.audioRecorderPlayer.startRecorder(path, audioSet);
     this.audioRecorderPlayer.addRecordBackListener((e) => {
       this.setState({
@@ -165,9 +228,17 @@ class InputBox extends React.Component {
         ),
       });
     });
-    console.log(`uri: ${uri}`);
+    this.props.getDataFromInput(uri);
+    
   };
-
+  onStopRecord = async () => {
+    const result = await this.audioRecorderPlayer.stopRecorder();
+    this.audioRecorderPlayer.removeRecordBackListener();
+    this.setState({
+      recordSecs: 0,
+    });
+    console.log(result);
+  };
   render() {
     const {message} = this.state;
     return (
