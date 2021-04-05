@@ -4,7 +4,8 @@ import Colors from '../../constants/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 const ConversationHeader = (props) => {
-  const user = props.navigationProps.navigation.getParam('singleUser');
+  const user = props.navigationProps.navigation.getParam('converstion');
+ 
   return (
     <LinearGradient
       style={styles.header}
@@ -22,7 +23,7 @@ const ConversationHeader = (props) => {
                 source={require('../../../asessts/images/left-arrow.png')}
                 style={styles.backIcon}
               />
-              <Image source={{uri: user.url}} style={styles.chatImage} />
+              <Image source={{uri: user.profile}} style={styles.chatImage} />
             </TouchableOpacity>
           </View>
 
@@ -30,7 +31,7 @@ const ConversationHeader = (props) => {
             <TouchableOpacity
               onPress={() => props.navigationProps.navigate('profile')}
               activeOpacity={0.8}>
-              <Text style={styles.name} numberOfLines={1}>Muhammad Mahad khan ALi Yousuf Zai</Text>
+              <Text style={styles.name} numberOfLines={1}>{user.userName}</Text>
               <Text style={styles.status}>last seen today 11:20 am</Text>
             </TouchableOpacity>
           </View>

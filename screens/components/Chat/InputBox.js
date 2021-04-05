@@ -18,7 +18,7 @@ import AudioRecorderPlayer, {
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
 import CryptoJS from 'crypto-js';
-// import {createMessage, updateChatRoom} from '../../src/graphql/mutations';
+
 
 class InputBox extends React.Component {
   constructor(props) {
@@ -107,21 +107,6 @@ class InputBox extends React.Component {
     // Encrypt
     var ciphertext = CryptoJS.AES.encrypt(message, 'secret key 123').toString();
     this.props.getDataFromInput(ciphertext);
-
-    // try {
-    //   const newMessageData = await API.graphql(
-    //     graphqlOperation(createMessage, {
-    //       input: {
-    //         content: message,
-    //         userID: myUserId,
-    //         chatRoomID,
-    //       },
-    //     }),
-    //   );
-    //   await updateChatRoomLastMessage(newMessageData.data.createMessage.id);
-    // } catch (e) {
-    //   console.log(e);
-    // }
     this.setState({message: ''});
   };
   componentDidMount() {
@@ -210,7 +195,7 @@ class InputBox extends React.Component {
   onStartRecording = async () => {
     const path = Platform.select({
       ios: 'hello.m4a',
-      android: `sdcard/hello.mp4`,
+      android: `sdcard/${this.messageIdGenerator()}.mp4`,
     });
     const audioSet = {
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -229,7 +214,6 @@ class InputBox extends React.Component {
       });
     });
     this.props.getDataFromInput(uri);
-    
   };
   onStopRecord = async () => {
     const result = await this.audioRecorderPlayer.stopRecorder();

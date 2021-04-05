@@ -34,75 +34,47 @@ export default class ChatTab extends Component {
   getData = async () => {
     const {limit} = this.state;
 
-    fetch(`${fetchUser}?_limit=${limit}`)
+    // fetch(`${fetchUser}?_limit=${limit}`)
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     this.setState({
+    //       data: this.state.data.concat(json),
+    //       isLoading: false,
+    //       loading: false,
+    //     });
+    //   })
+    //   .catch((err) => console.log(err));
+
+    fetch(`http://192.168.100.54:3000/contact`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        senderId: '6062cb84ac8ec71b54bfcd2e',
+        loginCompany: '605444a8e2924b2bec69e360',
+      }),
+    })
       .then((response) => response.json())
       .then((json) => {
         this.setState({
-          data: this.state.data.concat(json),
+          data: json.data,
+          // data: this.state.data.concat(json),
           isLoading: false,
           loading: false,
         });
       })
       .catch((err) => console.log(err));
-    // fetch('http://192.168.100.54:3000/contact/', {
-    //   method: 'POST',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify({
-    //     senderId: '6062cb84ac8ec71b54bfcd2e',
-    //     loginCompany: '605444a8e2924b2bec69e360',
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((json) => {
-    //     console.log(json)
-    //   })
-    //   .catch((err) => console.log(err));
-    // axios({
-    //   method: 'post',
-    //   url: `192.168.100.54:3000/contact/`,
-    //   headers: {'Content-Type': 'application/json'},
-    //   data: {
-    //     senderId: '6062cb84ac8ec71b54bfcd2e',
-    //     loginCompany: '605444a8e2924b2bec69e360',
-    //   },
-    // })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.log("err===",err.message);
-    //   });
-    // var myHeaders = new Headers();
-    // myHeaders.append('Content-Type', 'application/json');
-
-    // var raw = JSON.stringify({
-    //   senderId: '6062cb84ac8ec71b54bfcd2e',
-    //   loginCompany: '605444a8e2924b2bec69e360',
-    // });
-
-    // var requestOptions = {
-    //   method: 'POST',
-    //   headers: myHeaders,
-    //   body: raw,
-    //   redirect: 'follow',
-    // };
-
-    // fetch('192.168.100.54:3000/contact/', requestOptions)
-    //   .then((response) => response.json())
-    //   .then((result) => console.log(result))
-    //   .catch((error) => console.log('error', error));
   };
 
   renderItemComponent(props) {
     return (
       <TouchableOpacity
         onPress={() =>
-          this.props.navigation.navigate('chatRoom', {singleUser: props.item})
+          this.props.navigation.navigate('chatRoom', {converstion: props.item})
         }>
         <View style={styles.row}>
           <Image
             source={{
-              uri: props.item.thumbnailUrl,
+              uri: props.item.profile,
             }}
             style={styles.pic}
           />
@@ -116,13 +88,13 @@ export default class ChatTab extends Component {
             }}>
             <View style={styles.nameContainer}>
               <Text style={styles.nameTxt} numberOfLines={1}>
-                Syed Kashan Tayyab
+                {props.item.userName}
               </Text>
             </View>
             <View style={styles.msgContainer}>
               <View style={{flex: 1}}>
                 <Text style={styles.msgTxt} numberOfLines={1}>
-                  Hey, I am Syed Kashan Tayyab. how are you?
+                  {props.item.messageContent}
                 </Text>
               </View>
               <View>

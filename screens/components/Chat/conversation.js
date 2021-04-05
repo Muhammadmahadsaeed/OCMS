@@ -9,20 +9,22 @@ import AudioRecorderPlayer, {
   AudioSet,
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
-class Conversation extends React.Component{
+class Conversation extends React.Component {
   constructor(props) {
     super(props);
     this.audioRecorderPlayer = new AudioRecorderPlayer();
-    this.audioRecorderPlayer.setSubscriptionDuration(0.09); 
+    this.audioRecorderPlayer.setSubscriptionDuration(0.09);
     this.state = {};
   }
 
   // let bytes = CryptoJS.AES.decrypt(message, 'secret key 123');
   // let plaintext = bytes.toString(CryptoJS.enc.Utf8);
   // const [playAudio, setPlayAudio] = useState(false);
-  // const isMyMessage = () => {
-  //   return message.id === myId;
-  // };
+  isMyMessage = () => {
+    const {message} = this.props;
+    const senderId = '6062cb84ac8ec71b54bfcd2e';
+    return senderId === message.senderId;
+  };
   play = () => {
     setPlayAudio(true);
     console.log('play');
@@ -61,7 +63,7 @@ class Conversation extends React.Component{
     });
     const msg = await this.audioRecorderPlayer.startPlayer(path);
     this.audioRecorderPlayer.setVolume(1.0);
-    console.log("msg========",msg);
+    console.log('msg========', msg);
     this.audioRecorderPlayer.addPlayBackListener((e) => {
       if (e.current_position === e.duration) {
         console.log('finished');
@@ -78,25 +80,27 @@ class Conversation extends React.Component{
     });
   };
   render() {
-    const {message, myId} = this.props;
-    console.log("from conversation=======",message)
+    const {message} = this.props;
+
     return (
       <View style={styles.container}>
         <View
           style={[
             styles.messageBox,
-            // {
-            //   backgroundColor: isMyMessage() ? '#DCF8C5' : 'white',
-            //   marginLeft: isMyMessage() ? 50 : 0,
-            //   marginRight: isMyMessage() ? 0 : 50,
-            // },
+            {
+              backgroundColor: this.isMyMessage() ? '#DCF8C5' : 'white',
+              marginLeft: this.isMyMessage() ? 50 : 0,
+              marginRight: this.isMyMessage() ? 0 : 50,
+            },
           ]}>
           {/* {!isMyMessage() && <Text style={styles.name}>{plaintext}</Text>} */}
-          <TouchableOpacity onPress={this.onStartPlay} style={{backgroundColor:'red',height:60}}>
+          {/* <TouchableOpacity onPress={this.onStartPlay} style={{backgroundColor:'red',height:60}}>
             <Text>Play</Text>
-          </TouchableOpacity>
-          <Text style={styles.message}>Hello mahad</Text>
-        <Text style={styles.time}>11:45</Text>
+          </TouchableOpacity> */}
+          {this.isMyMessage() && (
+            <Text style={styles.message}>{message.messageContent}</Text>
+          )}
+          <Text style={styles.time}>11:45</Text>
         </View>
       </View>
     );
@@ -108,7 +112,6 @@ export default Conversation;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: 'red',
   },
   messageBox: {
     borderRadius: 5,
