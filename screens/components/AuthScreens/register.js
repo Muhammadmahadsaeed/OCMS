@@ -12,7 +12,9 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-
+import LinearGradient from 'react-native-linear-gradient';
+import font from '../../constants/font';
+import colors from '../../constants/colors';
 const RegisterScreen = (navigation) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -125,132 +127,184 @@ const RegisterScreen = (navigation) => {
   //     );
   //   }
   return (
-    <View style={{flex: 1}}>
-      <Image
-        style={styles.backgroundImage}
-        source={require('../../../asessts/images/bg.png')}
-      />
+    <LinearGradient
+      colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
+      style={styles.linear}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
-          justifyContent: 'center',
-          alignContent: 'center',
+          flexGrow: 1,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
         }}>
-        <KeyboardAvoidingView enabled>
-          <View style={styles.SectionStyle}>
-            <TextInput
-              style={styles.inputStyle}
-              onChangeText={(UserName) => setUserName(UserName)}
-              underlineColorAndroid="#f000"
-              placeholder="Enter Name"
-              placeholderTextColor="#F6F6F7"
-              autoCapitalize="sentences"
-              returnKeyType="next"
-              onSubmitEditing={() =>
-                emailInputRef.current && emailInputRef.current.focus()
-              }
-              blurOnSubmit={false}
-            />
-          </View>
-          <View style={styles.SectionStyle}>
-            <TextInput
-              style={styles.inputStyle}
-              onChangeText={(UserEmail) => setUserEmail(UserEmail)}
-              underlineColorAndroid="#f000"
-              placeholder="Enter Email"
-              placeholderTextColor="#F6F6F7"
-              keyboardType="email-address"
-              ref={emailInputRef}
-              returnKeyType="next"
-              onSubmitEditing={() =>
-                passwordInputRef.current && passwordInputRef.current.focus()
-              }
-              blurOnSubmit={false}
-            />
-          </View>
-          <View style={styles.SectionStyle}>
-            <TextInput
-              style={styles.inputStyle}
-              onChangeText={(UserPassword) => setUserPassword(UserPassword)}
-              underlineColorAndroid="#f000"
-              placeholder="Enter Password"
-              placeholderTextColor="#F6F6F7"
-              ref={passwordInputRef}
-              returnKeyType="next"
-              secureTextEntry={true}
-              onSubmitEditing={() =>
-                ageInputRef.current && ageInputRef.current.focus()
-              }
-              blurOnSubmit={false}
-            />
-          </View>
-          <View style={styles.SectionStyle}>
-            <TextInput
-              style={styles.inputStyle}
-              onChangeText={(UserAge) => setUserAge(UserAge)}
-              underlineColorAndroid="#f000"
-              placeholder="Enter Age"
-              placeholderTextColor="#F6F6F7"
-              keyboardType="numeric"
-              ref={ageInputRef}
-              returnKeyType="next"
-              onSubmitEditing={() =>
-                addressInputRef.current && addressInputRef.current.focus()
-              }
-              blurOnSubmit={false}
-            />
-          </View>
-          <View style={styles.SectionStyle}>
-            <TextInput
-              style={styles.inputStyle}
-              onChangeText={(UserAddress) => setUserAddress(UserAddress)}
-              underlineColorAndroid="#f000"
-              placeholder="Enter Address"
-              placeholderTextColor="#F6F6F7"
-              autoCapitalize="sentences"
-              ref={addressInputRef}
-              returnKeyType="next"
-              onSubmitEditing={Keyboard.dismiss}
-              blurOnSubmit={false}
-            />
-          </View>
-          {errortext != '' ? (
-            <Text style={styles.errorTextStyle}>{errortext}</Text>
-          ) : null}
-          <TouchableOpacity
-            style={styles.buttonStyle}
-            activeOpacity={0.5}
-            onPress={handleSubmitButton}>
-            <Text style={styles.buttonTextStyle}>Next</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.SignUpbuttonStyle]}
-            activeOpacity={0.5}
-            onPress={() => {
-              navigation.navigation.pop();
+        <View style={styles.header}>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
             }}>
-            <Text
-              style={[
-                styles.buttonTextStyle,
-                {paddingTop: 25, color: 'white'},
-              ]}>
-              Sign in
-            </Text>
-          </TouchableOpacity>
-        </KeyboardAvoidingView>
+            <View style={styles.imgView}>
+              <Image
+                style={styles.img}
+                source={require('../../../asessts/images/admin.png')}
+              />
+            </View>
+          </View>
+          <View style={styles.headingView}>
+            <Text style={styles.heading}>Create an account</Text>
+            <Text style={styles.para}>Enter your credentials</Text>
+          </View>
+        </View>
+        <View style={styles.form}>
+          <KeyboardAvoidingView enabled>
+            <View style={styles.SectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(UserName) => setUserName(UserName)}
+                underlineColorAndroid="#f000"
+                placeholder="Enter your username"
+                placeholderTextColor={colors.Colors.gray}
+                autoCapitalize="sentences"
+                returnKeyType="next"
+                onSubmitEditing={() =>
+                  emailInputRef.current && emailInputRef.current.focus()
+                }
+                blurOnSubmit={false}
+              />
+            </View>
+            <View style={styles.SectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(UserEmail) => setUserEmail(UserEmail)}
+                underlineColorAndroid="#f000"
+                placeholder="Enter your email"
+                placeholderTextColor={colors.Colors.gray}
+                keyboardType="email-address"
+                ref={emailInputRef}
+                returnKeyType="next"
+                onSubmitEditing={() =>
+                  passwordInputRef.current && passwordInputRef.current.focus()
+                }
+                blurOnSubmit={false}
+              />
+            </View>
+            <View style={styles.SectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(UserAge) => setUserAge(UserAge)}
+                underlineColorAndroid="#f000"
+                placeholder="Enter your company"
+                placeholderTextColor={colors.Colors.gray}
+                keyboardType="numeric"
+                ref={ageInputRef}
+                returnKeyType="next"
+                onSubmitEditing={() =>
+                  addressInputRef.current && addressInputRef.current.focus()
+                }
+                blurOnSubmit={false}
+              />
+            </View>
+            
+            <View style={styles.SectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(UserPassword) => setUserPassword(UserPassword)}
+                underlineColorAndroid="#f000"
+                placeholder="Enter Password"
+                placeholderTextColor={colors.Colors.gray}
+                ref={passwordInputRef}
+                returnKeyType="next"
+                secureTextEntry={true}
+                onSubmitEditing={() =>
+                  ageInputRef.current && ageInputRef.current.focus()
+                }
+                blurOnSubmit={false}
+              />
+            </View>
+           
+            <View style={styles.SectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(UserAddress) => setUserAddress(UserAddress)}
+                underlineColorAndroid="#f000"
+                placeholder="Enter Address"
+                placeholderTextColor={colors.Colors.gray}
+                autoCapitalize="sentences"
+                ref={addressInputRef}
+                returnKeyType="next"
+                onSubmitEditing={Keyboard.dismiss}
+                blurOnSubmit={false}
+              />
+            </View>
+            {errortext != '' ? (
+              <Text style={styles.errorTextStyle}>{errortext}</Text>
+            ) : null}
+            <View style={{paddingVertical: 10}}>
+              <Text>I agree</Text>
+            </View>
+            <LinearGradient
+              colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+              style={styles.linearButton}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleSubmitButton}>
+                <Text style={styles.buttonText}>Register</Text>
+              </TouchableOpacity>
+            </LinearGradient>
+          </KeyboardAvoidingView>
+        </View>
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 };
 export default RegisterScreen;
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+  linear: {
+    flex: 1,
+  },
+  header: {
+    height: 250,
+    justifyContent: 'center',
+  },
+  imgView: {
+    height: 100,
+    width: 100,
+    backgroundColor: 'red',
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  img: {
+    height: '100%',
+    width: '100%',
+    resizeMode: 'contain',
+  },
+  headingView: {
+    paddingTop: 20,
+    marginLeft: 20,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'baseline',
+  },
+  heading: {
+    color: 'white',
+    fontFamily: font.Fonts.josefBold,
+    fontSize: 26,
+  },
+  para: {
+    color: 'white',
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 16,
+  },
+  form: {
+    backgroundColor: '#FBFBFB',
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+    bottom: 0,
+    // height:'70%'
   },
   SectionStyle: {
     flexDirection: 'row',
@@ -259,7 +313,7 @@ const styles = StyleSheet.create({
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
-    width: '80%',
+    width: '90%',
     alignSelf: 'center',
   },
   buttonStyle: {
@@ -280,22 +334,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 
-  SignUpbuttonStyle: {
-    width: 80,
-    color: 'white',
-    borderColor: '#7DE24E',
-    height: 80,
-    alignSelf: 'center',
-    alignItems: 'center',
-    borderRadius: 100,
-    paddingTop: 5,
-    paddingBottom: 5,
-    marginLeft: 35,
-    marginRight: 35,
-    marginTop: 20,
-    marginBottom: 20,
-    fontFamily: 'Montserrat-Regular_0',
-  },
+ 
   buttonTextStyle: {
     color: '#81b840',
     paddingVertical: 10,
@@ -303,14 +342,15 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     flex: 1,
-    color: 'white',
+    color: colors.Colors.gray,
     paddingLeft: 15,
     paddingRight: 15,
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: 'white',
-    fontFamily: 'Montserrat-Regular_0',
-    backgroundColor: '#a1ca70',
+    borderColor: '#d8d8d8',
+    fontFamily: font.Fonts.josefReg,
+    backgroundColor: '#F3F1F1',
+    fontSize: 20,
   },
 
   errorTextStyle: {
@@ -323,5 +363,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     padding: 30,
+  },
+  linearButton: {
+    width: '90%',
+    alignSelf: 'center',
+    borderRadius: 50,
+    marginBottom: 20,
+  },
+  button: {
+    marginVertical: 5,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    textTransform: 'uppercase',
+    fontFamily: font.Fonts.josefBold,
+    textAlign: 'center',
   },
 });

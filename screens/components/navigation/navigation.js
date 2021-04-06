@@ -62,25 +62,25 @@ const Auth = createStackNavigator(
       screen: AuthScreens.register,
 
       navigationOptions: {
-        headerLeft: () => null,
-        safeAreaInsets: {top: 0},
-        title: 'SIGN UP YOUR ACCOUNT',
-        headerTitleStyle: {
-          textAlign: 'center',
-          // flex: 1,
-          fontSize: 14,
-          fontFamily: 'Montserrat-Bold_0',
-          color: 'white',
-        },
-        headerStyle: {
-          backgroundColor: '#3d900e',
-          shadowOffset: {
-            height: 0,
-            width: 0,
-          },
-          shadowOpacity: 0,
-          elevation: 0,
-        },
+        // headerLeft: () => null,
+        // safeAreaInsets: {top: 0},
+        // title: 'SIGN UP YOUR ACCOUNT',
+        // headerTitleStyle: {
+        //   textAlign: 'center',
+        //   // flex: 1,
+        //   fontSize: 14,
+        //   fontFamily: 'Montserrat-Bold_0',
+        //   color: 'white',
+        // },
+        // headerStyle: {
+        //   backgroundColor: '#3d900e',
+        //   shadowOffset: {
+        //     height: 0,
+        //     width: 0,
+        //   },
+        //   shadowOpacity: 0,
+        //   elevation: 0,
+        // },
       },
     },
   },
@@ -181,9 +181,9 @@ const HomeStack = createStackNavigator(
 );
 
 const RootNavigator = createSwitchNavigator({
-  // SplashScreen: AuthScreens.Splash,
-  // TermAndConditionScreen: AuthScreens.TermAndCondition,
-  // AuthScreen: Auth,
+  SplashScreen: AuthScreens.Splash,
+  TermAndConditionScreen: AuthScreens.TermAndCondition,
+  AuthScreen: Auth,
   HomeScreen: HomeStack,
 });
 

@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textTransform: 'uppercase',
     fontFamily: font.Fonts.josefBold,
+    textAlign:'center'
   },
   text: {
     color: colors.Colors.blueLight,

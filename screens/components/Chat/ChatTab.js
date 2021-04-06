@@ -67,6 +67,7 @@ export default class ChatTab extends Component {
   };
 
   renderItemComponent(props) {
+   
     return (
       <TouchableOpacity
         onPress={() =>

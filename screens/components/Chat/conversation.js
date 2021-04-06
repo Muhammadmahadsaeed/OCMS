@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import CryptoJS from 'crypto-js';
+
 // import Sound from 'react-native-sound';
 import AudioRecorderPlayer, {
   AVEncoderAudioQualityIOSType,
@@ -19,7 +19,7 @@ class Conversation extends React.Component {
   isMyMessage = () => {
     const {message} = this.props;
     const senderId = '606c09f764a37520dc978307';
-    return senderId === message.senderId;
+    return senderId === message.id;
   };
   play = () => {
     setPlayAudio(true);
@@ -77,16 +77,7 @@ class Conversation extends React.Component {
   };
   render() {
     const {message} = this.props;
-    const msg = message.map((item) => {
-      let bytes = CryptoJS.AES.decrypt(
-        item.messageContent,
-        'secret key 123',
-      );
-      let plaintext = bytes.toString(CryptoJS.enc.Utf8);
-      return {plaintext}
-    });
-
-    console.log('msg from conversation========', msg);
+    console.log(message)
     return (
       <View style={styles.container}>
         <View
@@ -103,7 +94,7 @@ class Conversation extends React.Component {
             <Text>Play</Text>
           </TouchableOpacity> */}
           {/* {this.isMyMessage() && <Text style={styles.message}>mahad</Text>} */}
-          <Text style={styles.message}> {msg[0].plaintext} </Text>
+          <Text style={styles.message}> {message.plaintext} </Text>
           <Text style={styles.time}>11:45</Text>
         </View>
       </View>
