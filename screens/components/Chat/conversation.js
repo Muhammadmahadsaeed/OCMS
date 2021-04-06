@@ -14,15 +14,11 @@ class Conversation extends React.Component {
     super(props);
     this.audioRecorderPlayer = new AudioRecorderPlayer();
     this.audioRecorderPlayer.setSubscriptionDuration(0.09);
-    this.state = {};
   }
 
-  // let bytes = CryptoJS.AES.decrypt(message, 'secret key 123');
-  // let plaintext = bytes.toString(CryptoJS.enc.Utf8);
-  // const [playAudio, setPlayAudio] = useState(false);
   isMyMessage = () => {
     const {message} = this.props;
-    const senderId = '6062cb84ac8ec71b54bfcd2e';
+    const senderId = '606c09f764a37520dc978307';
     return senderId === message.senderId;
   };
   play = () => {
@@ -81,7 +77,16 @@ class Conversation extends React.Component {
   };
   render() {
     const {message} = this.props;
+    const msg = message.map((item) => {
+      let bytes = CryptoJS.AES.decrypt(
+        item.messageContent,
+        'secret key 123',
+      );
+      let plaintext = bytes.toString(CryptoJS.enc.Utf8);
+      return {plaintext}
+    });
 
+    console.log('msg from conversation========', msg);
     return (
       <View style={styles.container}>
         <View
@@ -97,9 +102,8 @@ class Conversation extends React.Component {
           {/* <TouchableOpacity onPress={this.onStartPlay} style={{backgroundColor:'red',height:60}}>
             <Text>Play</Text>
           </TouchableOpacity> */}
-          {this.isMyMessage() && (
-            <Text style={styles.message}>{message.messageContent}</Text>
-          )}
+          {/* {this.isMyMessage() && <Text style={styles.message}>mahad</Text>} */}
+          <Text style={styles.message}> {msg[0].plaintext} </Text>
           <Text style={styles.time}>11:45</Text>
         </View>
       </View>

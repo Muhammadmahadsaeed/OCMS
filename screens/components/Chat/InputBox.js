@@ -184,11 +184,9 @@ class InputBox extends React.Component {
   handleAudio = () => {
     if (!this.state.startAudio) {
       this.setState({startAudio: true});
-      console.log('start===');
       this.onStartRecording();
     } else {
       this.setState({startAudio: false});
-      console.log('stop===');
       this.onStopRecord();
     }
   };

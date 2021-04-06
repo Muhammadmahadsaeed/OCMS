@@ -55,6 +55,7 @@ export default class ChatTab extends Component {
     })
       .then((response) => response.json())
       .then((json) => {
+       
         this.setState({
           data: json.data,
           // data: this.state.data.concat(json),
@@ -159,9 +160,9 @@ export default class ChatTab extends Component {
                 showsVerticalScrollIndicator={false}
                 renderItem={(item) => this.renderItemComponent(item)}
                 keyExtractor={(item, index) => index.toString()}
-                onEndReached={this.handleLoadMore}
-                onEndReachedThreshold={0}
-                ListFooterComponent={this.renderFooter}
+                // onEndReached={this.handleLoadMore}
+                // onEndReachedThreshold={0}
+                // ListFooterComponent={this.renderFooter}
               />
             )}
           </View>
