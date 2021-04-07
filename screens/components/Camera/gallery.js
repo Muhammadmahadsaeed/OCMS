@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {View, Image, ScrollView, FlatList} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Image, ScrollView, FlatList, TouchableOpacity, Text } from 'react-native';
 import CameraRoll from '@react-native-community/cameraroll';
 import styles from './styles';
 
-const Gallery = ({captures = []}) => {
+const Gallery = ({ selectImageFromChat }) => {
   const [data, setData] = useState('');
+
   useEffect(() => {
     console.log('camera');
     CameraRoll.getPhotos({
@@ -12,7 +13,7 @@ const Gallery = ({captures = []}) => {
       assetType: 'Photos',
     })
       .then((res) => {
-       
+
         setData(res.edges);
         // this.setState({data: res.edges});
       })
@@ -20,20 +21,29 @@ const Gallery = ({captures = []}) => {
         console.log(error);
       });
   }, []);
+  const getImage = (uri) => {
+    selectImageFromChat(uri)
+  }
+
   return (
     <View>
+
       <FlatList
         style={[styles.bottomToolbar, styles.galleryContainer]}
         horizontal={true}
         data={data}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => (
-          <Image
-            style={styles.galleryImage}
-            source={{uri: item.node.image.uri}}
-          />
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => getImage(item.node.image.uri)}>
+            <Image
+              style={styles.galleryImage}
+              source={{ uri: item.node.image.uri }}
+            />
+          </TouchableOpacity>
+
         )}
       />
+
     </View>
   );
 };
