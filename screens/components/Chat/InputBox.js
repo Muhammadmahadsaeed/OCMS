@@ -19,7 +19,6 @@ import AudioRecorderPlayer, {
 } from 'react-native-audio-recorder-player';
 import CryptoJS from 'crypto-js';
 
-
 class InputBox extends React.Component {
   constructor(props) {
     super(props);
@@ -242,10 +241,17 @@ class InputBox extends React.Component {
               value={message}
               onChangeText={(text) => this.setState({message: text})}
             />
-            <Image
-              source={require('../../../asessts/images/searchIcon.png')}
-              style={styles.icon}
-            />
+            <TouchableOpacity
+              style={{padding: 5}}
+              onPress={() =>
+                this.props.navigation.navigation.navigate('cameraFromChat')
+              }>
+              <Image
+                source={require('../../../asessts/images/icon-gallery.png')}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+
             {!message && (
               <Image
                 source={require('../../../asessts/images/searchIcon.png')}

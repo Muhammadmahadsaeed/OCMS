@@ -40,19 +40,19 @@ class ChatRoom extends React.Component {
   }
   componentDidMount() {
     const userConversation = this.props.navigation.getParam('converstion');
-    // console.log(userConversation)
-    // this.setState({chatMessages: userConversation.conservations})
-    socket.on('output', (msg) => {
-    
-      const message = msg[0].conservations.map((item) => {
-        let bytes = CryptoJS.AES.decrypt(item.messageContent, 'secret key 123');
-        let plaintext = bytes.toString(CryptoJS.enc.Utf8);
-        return {id: item._id, plaintext};
-      });
+    console.log(userConversation);
+    this.setState({chatMessages: userConversation.conservations});
+    // socket.on('output', (msg) => {
 
-      console.log('msg from conversation========', ...message);
-      this.setState({chatMessages: [...this.state.chatMessages, ...message]});
-    });
+    //   const message = msg[0].conservations.map((item) => {
+    //     let bytes = CryptoJS.AES.decrypt(item.messageContent, 'secret key 123');
+    //     let plaintext = bytes.toString(CryptoJS.enc.Utf8);
+    //     return {id: item._id, plaintext};
+    //   });
+
+    //   console.log('msg from conversation========', message);
+    //   this.setState({chatMessages: [...this.state.chatMessages, ...message]});
+    // });
   }
   getDataFromInput = (msg) => {
     socket.emit('input', {
@@ -79,7 +79,10 @@ class ChatRoom extends React.Component {
               renderItem={({item}) => <Conversation myId={5} message={item} />}
               inverted={true}
             />
-            <InputBox getDataFromInput={this.getDataFromInput} />
+            <InputBox
+              getDataFromInput={this.getDataFromInput}
+              navigation={this.props}
+            />
           </View>
         </LinearGradient>
       </View>

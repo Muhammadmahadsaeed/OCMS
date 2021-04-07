@@ -155,6 +155,13 @@ const HomeStack = createStackNavigator(
         headerShown: false,
       }),
     },
+    cameraFromChat: {
+      screen: chat.CameraFromChat,
+      navigationOptions: ({navigation}) => ({
+        safeAreaInsets: {top: 0},
+        headerShown: false,
+      }),
+    },
     contact: {
       screen: contact.contact,
       navigationOptions: ({navigation}) => ({
@@ -179,11 +186,23 @@ const HomeStack = createStackNavigator(
     },
   },
 );
+Camera_StackNavigator.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
 
+  let routeName = navigation.state.routes[navigation.state.index].routeName;
+
+  if (routeName == 'camera') {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 const RootNavigator = createSwitchNavigator({
-  SplashScreen: AuthScreens.Splash,
-  TermAndConditionScreen: AuthScreens.TermAndCondition,
-  AuthScreen: Auth,
+  // SplashScreen: AuthScreens.Splash,
+  // TermAndConditionScreen: AuthScreens.TermAndCondition,
+  // AuthScreen: Auth,
   HomeScreen: HomeStack,
 });
 

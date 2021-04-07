@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {Component, PureComponent} from 'react';
 import {
   SafeAreaView,
   AppRegistry,
@@ -11,10 +11,10 @@ import {
   Image,
 } from 'react-native';
 import {RNCamera} from 'react-native-camera';
-import Toolbar from './toolbar';
-import styles from './styles';
-import Gallery from './gallery';
-import {dirPicutures} from './dirStorage';
+import Toolbar from '../Camera/toolbar';
+import styles from '../Camera/styles';
+import Gallery from '../Camera/gallery';
+import {dirPicutures} from '../Camera/dirStorage';
 const moment = require('moment');
 const RNFS = require('react-native-fs');
 let {height, width} = Dimensions.get('window');
@@ -41,7 +41,7 @@ const moveAttachment = async (filePath, newFilepath) => {
   });
 };
 
-export default class Camera extends PureComponent {
+export default class CameraFromChat extends Component {
   state = {
     captures: [],
     capturing: null,
@@ -133,7 +133,7 @@ export default class Camera extends PureComponent {
   renderCamera() {
     const {flashMode, cameraType, capturing, captures} = this.state;
     return (
-      <View style={styles.preview}>
+      <>
         <RNCamera
           type={cameraType}
           flashMode={flashMode}
@@ -141,7 +141,6 @@ export default class Camera extends PureComponent {
           ref={(camera) => (this.camera = camera)}
         />
         <Gallery />
-
         <Toolbar
           capturing={capturing}
           flashMode={flashMode}
@@ -153,7 +152,7 @@ export default class Camera extends PureComponent {
           onLongCapture={this.handleLongCapture}
           onShortCapture={this.handleShortCapture}
         />
-      </View>
+      </>
     );
   }
   render() {
