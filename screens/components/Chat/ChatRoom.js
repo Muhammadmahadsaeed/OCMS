@@ -15,14 +15,14 @@ import {
 import InputBox from './InputBox';
 import Conversation from './conversation';
 import ConversationHeader from './ConversationHeader';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
 import CryptoJS from 'crypto-js';
 import socketIO from 'socket.io-client';
-import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
+import RBSheet from "react-native-raw-bottom-sheet";
 const socket = socketIO('http://192.168.100.54:4000', {
   transports: ['websocket'],
   jsonp: false,
@@ -35,7 +35,7 @@ socket.on('connect', () => {
 class ChatRoom extends React.Component {
   constructor(props) {
     super(props);
-    this.attachmentModal = React.createRef();
+
     this.fall = new Animated.Value(1);
     this.state = {
       chatMessages: [],
@@ -44,7 +44,7 @@ class ChatRoom extends React.Component {
   componentDidMount() {
     const userConversation = this.props.navigation.getParam('converstion');
     console.log(userConversation);
-    this.setState({chatMessages: userConversation.conservations});
+    this.setState({ chatMessages: userConversation.conservations });
     // socket.on('output', (msg) => {
 
     //   const message = msg[0].conservations.map((item) => {
@@ -67,54 +67,65 @@ class ChatRoom extends React.Component {
     });
   };
   renderContent = () => (
-    <View
-      style={{
-        backgroundColor: 'white',
-        padding: 16,
-        height: 450,
-      }}>
-      <Text>Swipe down to close</Text>
+    <View style={{ flex: 1}}>
+      <TouchableOpacity>
+        <Text>Swipe down to close</Text>
+      </TouchableOpacity>
     </View>
   );
-  openAttachmentModal = ()=>{
-    this.attachmentModal.current.snapTo(0)
+  openAttachmentModal = () => {
+    this.RBSheet.open()
   }
+
+
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <ConversationHeader navigationProps={this.props} />
         <LinearGradient
           style={styles.container}
           colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-          start={{x: 0, y: 1}}
-          end={{x: 1, y: 1}}>
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 1 }}>
           <View style={styles.innerContainer}>
             <FlatList
               data={this.state.chatMessages}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => <Conversation myId={5} message={item} />}
+              renderItem={({ item }) => <Conversation myId={5} message={item} />}
               inverted={true}
             />
             <InputBox
               getDataFromInput={this.getDataFromInput}
               navigation={this.props}
               openAttachmentModal={this.openAttachmentModal}
+
             />
           </View>
         </LinearGradient>
-        <BottomSheet
-         
-           snapPoints={[280, 0]}
-          //  renderContent={this.renderInner}
-          //  renderHeader={this.renderHeader}
-          initialSnap={1}
-          callbackNode={this.fall}
-          enabledGestureInteraction={true}
-          ref={this.attachmentModal}
-          // snapPoints={[450, 300, 0]}
-          borderRadius={10}
-          renderContent={this.renderContent}
-        />
+        <RBSheet
+          ref={ref => {
+            this.RBSheet = ref;
+          }}
+
+          height={300}
+          closeOnDragDown={true}
+          openDuration={300}
+          keyboardAvoidingViewEnabled={true}
+          customStyles={{
+            wrapper: {
+              backgroundColor: "transparent"
+            },
+            draggableIcon: {
+              backgroundColor: "#000"
+            },
+            container: {
+              borderTopRightRadius: 30,
+              borderTopLeftRadius: 30
+            }
+          }}
+        >
+          {this.renderContent()}
+        </RBSheet>
       </View>
     );
   }

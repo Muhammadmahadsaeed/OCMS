@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -102,15 +102,15 @@ class InputBox extends React.Component {
   //   };
 
   onSendPress = async () => {
-    const {message} = this.state;
+    const { message } = this.state;
     // Encrypt
     var ciphertext = CryptoJS.AES.encrypt(message, 'secret key 123').toString();
     this.props.getDataFromInput(ciphertext);
-    this.setState({message: ''});
+    this.setState({ message: '' });
   };
   componentDidMount() {
     this.checkPermission().then(async (hasPermission) => {
-      this.setState({hasPermission});
+      this.setState({ hasPermission });
       if (!hasPermission) return;
     });
   }
@@ -182,10 +182,10 @@ class InputBox extends React.Component {
   };
   handleAudio = () => {
     if (!this.state.startAudio) {
-      this.setState({startAudio: true});
+      this.setState({ startAudio: true });
       this.onStartRecording();
     } else {
-      this.setState({startAudio: false});
+      this.setState({ startAudio: false });
       this.onStopRecord();
     }
   };
@@ -221,12 +221,12 @@ class InputBox extends React.Component {
     console.log(result);
   };
   render() {
-    const {message} = this.state;
+    const { message } = this.state;
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={100}
-        style={{width: '100%'}}>
+        style={{ width: '100%' }}>
         <View style={styles.container}>
           <View style={styles.mainContainer}>
             <Image
@@ -239,10 +239,10 @@ class InputBox extends React.Component {
               style={styles.textInput}
               multiline
               value={message}
-              onChangeText={(text) => this.setState({message: text})}
+              onChangeText={(text) => this.setState({ message: text })}
             />
             <TouchableOpacity
-              style={{padding: 5}}
+              style={{ padding: 5 }}
               onPress={() => this.props.openAttachmentModal()}>
               <Image
                 source={require('../../../asessts/images/icon-gallery.png')}
@@ -252,7 +252,7 @@ class InputBox extends React.Component {
 
             {!message && (
               <TouchableOpacity
-                style={{padding: 5}}
+                style={{ padding: 5 }}
                 onPress={() =>
                   this.props.navigation.navigation.navigate('cameraFromChat')
                 }>
