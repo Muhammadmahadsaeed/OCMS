@@ -15,20 +15,26 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
+import * as ImagePicker from 'react-native-image-picker';
 const RegisterScreen = (navigation) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
-  const [userAge, setUserAge] = useState('');
-  const [userAddress, setUserAddress] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [userPassword, setUserPassword] = useState('');
+  const [userConfirmPassword, setUserConfirmPassword] = useState('');
+  const [fileUri, setFileUri] = useState('');
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
+  const [agree, setAgree] = useState(false);
   const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
 
+  const userNameInputRef = createRef();
   const emailInputRef = createRef();
-  const ageInputRef = createRef();
-  const addressInputRef = createRef();
+  const companyInputRef = createRef();
+  const numberInputRef = createRef();
   const passwordInputRef = createRef();
+  const confirmPasswordInputRef = createRef();
 
   const handleSubmitButton = () => {
     // setErrortext('');
@@ -126,6 +132,53 @@ const RegisterScreen = (navigation) => {
   //       </View>
   //     );
   //   }
+  const setTermAndCondition = () => {
+    setAgree(!agree);
+  };
+  const launchImageLibrary = async () => {
+    // let options = {
+    //   storageOptions: {
+    //     skipBackup: true,
+    //     path: null,
+    //     base64: true,
+    //   },
+    // };
+    if (fileUri) {
+      setFileUri('');
+    } else {
+      ImagePicker.launchImageLibrary(
+        {
+          mediaType: 'photo',
+          includeBase64: true,
+        },
+        (response) => {
+          if (response.didCancel) {
+            console.log('User cancelled image picker');
+          } else if (response.error) {
+            console.log('ImagePicker Error: ', response.error);
+          } else if (response.customButton) {
+            console.log('User tapped custom button: ', response.customButton);
+            alert(response.customButton);
+          } else {
+            const source = {uri: response};
+            setFileUri(response.uri);
+          }
+        },
+      );
+    }
+  };
+  const renderFileUri = () => {
+    if (fileUri) {
+      return <Image source={{uri: fileUri}} style={styles.imageIconStyle} />;
+    } else {
+      return (
+        <Image
+          source={require('../../../asessts/images/admin.png')}
+          style={styles.imageIconStyle}
+        />
+      );
+    }
+  };
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
@@ -134,6 +187,7 @@ const RegisterScreen = (navigation) => {
       style={styles.linear}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           flexGrow: 1,
           flexDirection: 'column',
@@ -142,14 +196,24 @@ const RegisterScreen = (navigation) => {
         <View style={styles.header}>
           <View
             style={{
+              flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
             <View style={styles.imgView}>
-              <Image
-                style={styles.img}
-                source={require('../../../asessts/images/admin.png')}
-              />
+              <TouchableOpacity
+                onPress={launchImageLibrary}
+                style={styles.editBtnSection}>
+                <Image
+                  style={styles.imageIconStyle}
+                  source={
+                    fileUri
+                      ? require('../../../asessts/images/wrong.png')
+                      : require('../../../asessts/images/pencl.png')
+                  }
+                />
+              </TouchableOpacity>
+              {renderFileUri()}
             </View>
           </View>
           <View style={styles.headingView}>
@@ -159,10 +223,10 @@ const RegisterScreen = (navigation) => {
         </View>
         <View style={styles.form}>
           <KeyboardAvoidingView enabled>
-            <View style={styles.SectionStyle}>
+            <View style={[styles.SectionStyle, {marginTop: 40}]}>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(UserName) => setUserName(UserName)}
+                onChangeText={(text) => setUserName(text)}
                 underlineColorAndroid="#f000"
                 placeholder="Enter your username"
                 placeholderTextColor={colors.Colors.gray}
@@ -177,12 +241,44 @@ const RegisterScreen = (navigation) => {
             <View style={styles.SectionStyle}>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(UserEmail) => setUserEmail(UserEmail)}
+                onChangeText={(text) => setUserEmail(text)}
                 underlineColorAndroid="#f000"
                 placeholder="Enter your email"
                 placeholderTextColor={colors.Colors.gray}
                 keyboardType="email-address"
                 ref={emailInputRef}
+                returnKeyType="next"
+                onSubmitEditing={() =>
+                  companyInputRef.current && companyInputRef.current.focus()
+                }
+                blurOnSubmit={false}
+              />
+            </View>
+            <View style={styles.SectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(text) => setCompanyName(text)}
+                underlineColorAndroid="#f000"
+                placeholder="Enter your company name"
+                placeholderTextColor={colors.Colors.gray}
+                keyboardType="default"
+                ref={companyInputRef}
+                returnKeyType="next"
+                onSubmitEditing={() =>
+                  numberInputRef.current && numberInputRef.current.focus()
+                }
+                blurOnSubmit={false}
+              />
+            </View>
+            <View style={styles.SectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(number) => setPhoneNumber(number)}
+                underlineColorAndroid="#f000"
+                placeholder="Phone number"
+                placeholderTextColor={colors.Colors.gray}
+                keyboardType="numeric"
+                ref={numberInputRef}
                 returnKeyType="next"
                 onSubmitEditing={() =>
                   passwordInputRef.current && passwordInputRef.current.focus()
@@ -193,57 +289,56 @@ const RegisterScreen = (navigation) => {
             <View style={styles.SectionStyle}>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(UserAge) => setUserAge(UserAge)}
+                onChangeText={(text) => setUserPassword(text)}
                 underlineColorAndroid="#f000"
-                placeholder="Enter your company"
-                placeholderTextColor={colors.Colors.gray}
-                keyboardType="numeric"
-                ref={ageInputRef}
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                  addressInputRef.current && addressInputRef.current.focus()
-                }
-                blurOnSubmit={false}
-              />
-            </View>
-            
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(UserPassword) => setUserPassword(UserPassword)}
-                underlineColorAndroid="#f000"
-                placeholder="Enter Password"
+                placeholder="Enter password"
                 placeholderTextColor={colors.Colors.gray}
                 ref={passwordInputRef}
                 returnKeyType="next"
                 secureTextEntry={true}
                 onSubmitEditing={() =>
-                  ageInputRef.current && ageInputRef.current.focus()
+                  confirmPasswordInputRef.current &&
+                  confirmPasswordInputRef.current.focus()
                 }
                 blurOnSubmit={false}
               />
             </View>
-           
+
             <View style={styles.SectionStyle}>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(UserAddress) => setUserAddress(UserAddress)}
+                onChangeText={(text) => setUserConfirmPassword(text)}
                 underlineColorAndroid="#f000"
-                placeholder="Enter Address"
+                placeholder="Enter confirm password"
                 placeholderTextColor={colors.Colors.gray}
-                autoCapitalize="sentences"
-                ref={addressInputRef}
+                ref={confirmPasswordInputRef}
                 returnKeyType="next"
-                onSubmitEditing={Keyboard.dismiss}
+                secureTextEntry={true}
                 blurOnSubmit={false}
               />
             </View>
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}>{errortext}</Text>
             ) : null}
-            <View style={{paddingVertical: 10}}>
-              <Text>I agree</Text>
+            <View style={styles.textView}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={{padding: 10}}
+                onPress={() => setTermAndCondition()}>
+                <Image
+                  style={{height: 20, width: 20}}
+                  source={
+                    agree
+                      ? require('../../../asessts/images/Icon-check-circle.png')
+                      : require('../../../asessts/images/check-circle.png')
+                  }
+                />
+              </TouchableOpacity>
+              <Text style={styles.termText}>
+                I agree to the terms of use and privacy policy
+              </Text>
             </View>
+
             <LinearGradient
               colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
               style={styles.linearButton}>
@@ -266,27 +361,40 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: 250,
-    justifyContent: 'center',
+    flex: 1,
+    // height: 250,
+    // justifyContent: 'center',
+  },
+  editBtnSection: {
+    height: 30,
+    width: 30,
+    borderColor: 'white',
+    borderWidth: 2,
+    borderRadius: 50,
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    zIndex: 1,
+  },
+  imageIconStyle: {
+    height: '100%',
+    width: '100%',
+    resizeMode: 'cover',
+    borderRadius: 100,
   },
   imgView: {
-    height: 100,
-    width: 100,
-    backgroundColor: 'red',
+    height: 120,
+    width: 120,
     borderRadius: 100,
     borderWidth: 2,
     borderColor: 'white',
+    marginTop: 50,
   },
-  img: {
-    height: '100%',
-    width: '100%',
-    resizeMode: 'contain',
-  },
+
   headingView: {
-    paddingTop: 20,
+    paddingVertical: 20,
     marginLeft: 20,
     flexDirection: 'column',
-    justifyContent: 'flex-end',
+    // justifyContent: 'flex-end',
     alignItems: 'baseline',
   },
   heading: {
@@ -309,7 +417,7 @@ const styles = StyleSheet.create({
   SectionStyle: {
     flexDirection: 'row',
     height: 50,
-    marginTop: 20,
+    marginTop: 5,
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
@@ -334,7 +442,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 
- 
   buttonTextStyle: {
     color: '#81b840',
     paddingVertical: 10,
@@ -368,7 +475,7 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
     borderRadius: 50,
-    marginBottom: 20,
+    marginBottom: 40,
   },
   button: {
     marginVertical: 5,
@@ -382,5 +489,20 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontFamily: font.Fonts.josefBold,
     textAlign: 'center',
+  },
+  textView: {
+    flex: 1,
+    paddingVertical: 10,
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  termText: {
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 16,
+    color: '#707070',
+    marginLeft: 10,
   },
 });

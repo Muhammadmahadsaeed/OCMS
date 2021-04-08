@@ -10,7 +10,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Header from './common/Header';
 import colors from './constants/colors';
 import font from './constants/font';
-const GiverUserTabBar = (props) => {
+const CustomTabBar = (props) => {
   const {
     navigationState,
     navigation,
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-export default GiverUserTabBar;
+export default CustomTabBar;

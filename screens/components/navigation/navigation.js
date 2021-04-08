@@ -14,6 +14,7 @@ import ContactSearchBar from '../../common/ContactSearchbar';
 import colors from '../../constants/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
+import HeaderBackButton from '../../common/HeaderBack';
 const Auth = createStackNavigator(
   {
     TabScreen: {
@@ -33,17 +34,15 @@ const Auth = createStackNavigator(
     ForgotPwd: {
       screen: AuthScreens.ForgotPassword,
       navigationOptions: {
+        headerTransparent: true,
+        headerBackImage: () => <HeaderBackButton />,
         headerTitle: '',
-        headerStyle: {
-          backgroundColor: 'none',
-          shadowOffset: {
-            height: 0,
-            width: 0,
-          },
-          shadowOpacity: 0,
-          elevation: 0,
-        },
-        // headerBackImage: () => <CommonComponents.HeaderBackButton />,
+      },
+    },
+    PhoneRegister: {
+      screen: AuthScreens.PhoneRegister,
+      navigationOptions: {
+        headerShown: false,
       },
     },
     Phone: {
@@ -60,27 +59,10 @@ const Auth = createStackNavigator(
     },
     Register: {
       screen: AuthScreens.register,
-
       navigationOptions: {
-        // headerLeft: () => null,
-        // safeAreaInsets: {top: 0},
-        // title: 'SIGN UP YOUR ACCOUNT',
-        // headerTitleStyle: {
-        //   textAlign: 'center',
-        //   // flex: 1,
-        //   fontSize: 14,
-        //   fontFamily: 'Montserrat-Bold_0',
-        //   color: 'white',
-        // },
-        // headerStyle: {
-        //   backgroundColor: '#3d900e',
-        //   shadowOffset: {
-        //     height: 0,
-        //     width: 0,
-        //   },
-        //   shadowOpacity: 0,
-        //   elevation: 0,
-        // },
+        headerTransparent: true,
+        headerBackImage: () => <HeaderBackButton />,
+        headerTitle: '',
       },
     },
   },

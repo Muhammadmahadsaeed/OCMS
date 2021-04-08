@@ -5,43 +5,65 @@ import {
   TextInput,
   View,
   Text,
-  ScrollView,
   Image,
+  KeyboardAvoidingView,
   Keyboard,
   TouchableOpacity,
-  KeyboardAvoidingView,
+  ScrollView,
   Dimensions,
 } from 'react-native';
-
-const LoginWithEmail = ({navigation}) => {
+import LinearGradient from 'react-native-linear-gradient';
+import font from '../../constants/font';
+import colors from '../../constants/colors';
+const LoginWithEmail = (navigation) => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
 
+  const emailInputRef = createRef();
   const passwordInputRef = createRef();
 
-  const handleSubmitPress = () => {
-    navigation.navigate('HomeScreen');
+  const handleSubmitButton = () => {
+    navigation.navigation.navigate('HomeScreen');
     // setErrortext('');
+    // if (!userName) {
+    //   alert('Please fill Name');
+    //   return;
+    // }
     // if (!userEmail) {
     //   alert('Please fill Email');
+    //   return;
+    // }
+    // if (!userAge) {
+    //   alert('Please fill Age');
+    //   return;
+    // }
+    // if (!userAddress) {
+    //   alert('Please fill Address');
     //   return;
     // }
     // if (!userPassword) {
     //   alert('Please fill Password');
     //   return;
     // }
+    // //Show Loader
     // setLoading(true);
-    // let dataToSend = {email: userEmail, password: userPassword};
-    // let formBody = [];
-    // for (let key in dataToSend) {
-    //   let encodedKey = encodeURIComponent(key);
-    //   let encodedValue = encodeURIComponent(dataToSend[key]);
+    // var dataToSend = {
+    //   name: userName,
+    //   email: userEmail,
+    //   age: userAge,
+    //   address: userAddress,
+    //   password: userPassword,
+    // };
+    // var formBody = [];
+    // for (var key in dataToSend) {
+    //   var encodedKey = encodeURIComponent(key);
+    //   var encodedValue = encodeURIComponent(dataToSend[key]);
     //   formBody.push(encodedKey + '=' + encodedValue);
     // }
     // formBody = formBody.join('&');
-    // fetch('http://localhost:3000/api/user/login', {
+    // fetch('http://localhost:3000/api/user/register', {
     //   method: 'POST',
     //   body: formBody,
     //   headers: {
@@ -57,12 +79,12 @@ const LoginWithEmail = ({navigation}) => {
     //     console.log(responseJson);
     //     // If server response message same as Data Matched
     //     if (responseJson.status === 'success') {
-    //       AsyncStorage.setItem('user_id', responseJson.data.email);
-    //       console.log(responseJson.data.email);
-    //       navigation.replace('DrawerNavigationRoutes');
+    //       setIsRegistraionSuccess(true);
+    //       console.log(
+    //         'Registration Successful. Please Login to proceed'
+    //       );
     //     } else {
     //       setErrortext(responseJson.msg);
-    //       console.log('Please check your email id or password');
     //     }
     //   })
     //   .catch((error) => {
@@ -73,124 +95,153 @@ const LoginWithEmail = ({navigation}) => {
   };
 
   return (
-    <View style={styles.mainBody}>
-      <Image
-        style={styles.backgroundImage}
-        source={require('../../../asessts/images/bg.png')}
-      />
+    <LinearGradient
+      colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
+      style={styles.linear}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          flex: 1,
-          justifyContent: 'center',
-          alignContent: 'center',
+          flexGrow: 1,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
         }}>
-        <View>
+        <View style={styles.header}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <View style={styles.imgView}></View>
+          </View>
+          <View style={styles.headingView}>
+            <Text style={styles.heading}>Login your account</Text>
+          </View>
+        </View>
+        <View style={styles.form}>
           <KeyboardAvoidingView enabled>
-            <View style={{alignItems: 'center'}}>
-              <Image
-                source={require('../../../asessts/images/aboutreact.png')}
-                style={{
-                  width: '50%',
-                  height: 100,
-                  resizeMode: 'contain',
-                  // margin: 30,
-                }}
-              />
-            </View>
-            <View style={styles.SectionStyle}>
+            <View style={[styles.SectionStyle, {marginTop: 40}]}>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(UserEmail) => setUserEmail(UserEmail)}
-                placeholder="Enter Email" //dummy@abc.com
-                placeholderTextColor="white"
-                autoCapitalize="none"
+                onChangeText={(text) => setUserEmail(text)}
+                underlineColorAndroid="#f000"
+                placeholder="Enter your email"
+                placeholderTextColor={colors.Colors.gray}
                 keyboardType="email-address"
+                ref={emailInputRef}
                 returnKeyType="next"
                 onSubmitEditing={() =>
-                  passwordInputRef.current && passwordInputRef.current.focus()
+                  companyInputRef.current && companyInputRef.current.focus()
                 }
-                underlineColorAndroid="#f000"
                 blurOnSubmit={false}
               />
             </View>
             <View style={styles.SectionStyle}>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(UserPassword) => setUserPassword(UserPassword)}
-                placeholder="Enter Password" //12345
-                placeholderTextColor="white"
-                keyboardType="default"
-                ref={passwordInputRef}
-                onSubmitEditing={Keyboard.dismiss}
-                blurOnSubmit={false}
-                secureTextEntry={true}
+                onChangeText={(text) => setUserPassword(text)}
                 underlineColorAndroid="#f000"
+                placeholder="Enter password"
+                placeholderTextColor={colors.Colors.gray}
+                ref={passwordInputRef}
                 returnKeyType="next"
+                secureTextEntry={true}
+                onSubmitEditing={() =>
+                  confirmPasswordInputRef.current &&
+                  confirmPasswordInputRef.current.focus()
+                }
+                blurOnSubmit={false}
               />
             </View>
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}>{errortext}</Text>
             ) : null}
-            <TouchableOpacity
-              style={styles.forgotPassword}
-              onPress={() => navigation.navigate('ForgotPwd')}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontFamily: 'Montserrat-Bold_0',
-                  marginLeft: 5,
-                }}>
-                Forgot Password
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              activeOpacity={0.5}
-              onPress={handleSubmitPress}>
-              <Text style={styles.buttonTextStyle}>Sign in</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.SignUpbuttonStyle]}
-              activeOpacity={0.5}
-              onPress={() => navigation.navigate('Register')}>
-              <Text
-                style={[
-                  styles.buttonTextStyle,
-                  {paddingTop: 25, color: 'white'},
-                ]}>
-                Sign up
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.textView}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={{padding: 10}}
+                onPress={() => navigation.navigation.navigate('ForgotPwd')}>
+                <Text style={styles.termText}>Forgot Password?</Text>
+              </TouchableOpacity>
+            </View>
+
+            <LinearGradient
+              colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+              style={styles.linearButton}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleSubmitButton}>
+                <Text style={styles.buttonText}>Login</Text>
+              </TouchableOpacity>
+            </LinearGradient>
+            <LinearGradient
+              colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+              style={[styles.linearButton, {marginBottom: 40}]}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigation.navigate('Register')}>
+                <Text style={styles.buttonText}>Register</Text>
+              </TouchableOpacity>
+            </LinearGradient>
           </KeyboardAvoidingView>
         </View>
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 };
 export default LoginWithEmail;
 
 const styles = StyleSheet.create({
-  mainBody: {
+  linear: {
+    flex: 1,
+  },
+  header: {
     flex: 1,
     // justifyContent: 'center',
-    // alignContent: 'center',
   },
-  backgroundImage: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: '100%',
-    height: '100%',
+  imgView: {
+    height: 120,
+    width: 120,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: 'white',
+    marginTop: 50,
+  },
+
+  headingView: {
+    paddingVertical: 20,
+    marginLeft: 20,
+    flexDirection: 'column',
+    alignItems: 'baseline',
+  },
+  heading: {
+    color: 'white',
+    fontFamily: font.Fonts.josefBold,
+    fontSize: 26,
+  },
+  para: {
+    color: 'white',
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 16,
+  },
+  form: {
+    backgroundColor: '#FBFBFB',
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+    bottom: 0,
+    // height:'70%'
   },
   SectionStyle: {
     flexDirection: 'row',
     height: 50,
-    marginTop: 20,
+    marginTop: 5,
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
-    width: '80%',
+    width: '90%',
     alignSelf: 'center',
   },
   buttonStyle: {
@@ -218,50 +269,60 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     flex: 1,
-    color: 'white',
+    color: colors.Colors.gray,
     paddingLeft: 15,
     paddingRight: 15,
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: 'white',
-    fontFamily: 'Montserrat-Regular_0',
-    backgroundColor: '#a1ca70',
+    borderColor: '#d8d8d8',
+    fontFamily: font.Fonts.josefReg,
+    backgroundColor: '#F3F1F1',
+    fontSize: 20,
   },
-  SignUpbuttonStyle: {
-    width: 80,
-    color: 'white',
-    borderColor: '#7DE24E',
-    height: 80,
-    alignSelf: 'center',
-    alignItems: 'center',
-    borderRadius: 100,
-    paddingTop: 5,
-    paddingBottom: 5,
-    marginLeft: 35,
-    marginRight: 35,
-    marginTop: 20,
-    marginBottom: 20,
-    fontFamily: 'Montserrat-Regular_0',
-  },
-  registerTextStyle: {
-    color: '#FFFFFF',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 14,
-    alignSelf: 'center',
-    padding: 10,
-  },
+
   errorTextStyle: {
     color: 'red',
     textAlign: 'center',
     fontSize: 14,
   },
-  forgotPassword: {
-    // marginTop:10,
-    flexDirection: 'row',
-    marginLeft: 35,
-    marginRight: 35,
-    marginBottom: 15,
+  successTextStyle: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 18,
+    padding: 30,
+  },
+  linearButton: {
+    width: '90%',
+    alignSelf: 'center',
+    borderRadius: 50,
+    marginBottom: 20,
+  },
+  button: {
+    marginVertical: 5,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    textTransform: 'uppercase',
+    fontFamily: font.Fonts.josefBold,
+    textAlign: 'center',
+  },
+  textView: {
+    flex: 1,
+    marginVertical: 10,
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  termText: {
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 18,
+    color: colors.Colors.blueLight,
+    // marginLeft: 10,
   },
 });

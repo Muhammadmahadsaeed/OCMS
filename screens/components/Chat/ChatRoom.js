@@ -21,6 +21,8 @@ import colors from '../../constants/colors';
 import font from '../../constants/font';
 import CryptoJS from 'crypto-js';
 import socketIO from 'socket.io-client';
+import BottomSheet from 'reanimated-bottom-sheet';
+import Animated from 'react-native-reanimated';
 const socket = socketIO('http://192.168.100.54:4000', {
   transports: ['websocket'],
   jsonp: false,
@@ -33,7 +35,8 @@ socket.on('connect', () => {
 class ChatRoom extends React.Component {
   constructor(props) {
     super(props);
-
+    this.attachmentModal = React.createRef();
+    this.fall = new Animated.Value(1);
     this.state = {
       chatMessages: [],
     };
@@ -63,6 +66,19 @@ class ChatRoom extends React.Component {
       sentTime: '2021-03-31 09:37',
     });
   };
+  renderContent = () => (
+    <View
+      style={{
+        backgroundColor: 'white',
+        padding: 16,
+        height: 450,
+      }}>
+      <Text>Swipe down to close</Text>
+    </View>
+  );
+  openAttachmentModal = ()=>{
+    this.attachmentModal.current.snapTo(0)
+  }
   render() {
     return (
       <View style={{flex: 1}}>
@@ -82,9 +98,23 @@ class ChatRoom extends React.Component {
             <InputBox
               getDataFromInput={this.getDataFromInput}
               navigation={this.props}
+              openAttachmentModal={this.openAttachmentModal}
             />
           </View>
         </LinearGradient>
+        <BottomSheet
+         
+           snapPoints={[280, 0]}
+          //  renderContent={this.renderInner}
+          //  renderHeader={this.renderHeader}
+          initialSnap={1}
+          callbackNode={this.fall}
+          enabledGestureInteraction={true}
+          ref={this.attachmentModal}
+          // snapPoints={[450, 300, 0]}
+          borderRadius={10}
+          renderContent={this.renderContent}
+        />
       </View>
     );
   }

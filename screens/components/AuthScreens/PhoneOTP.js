@@ -20,6 +20,10 @@ const PhoneOTP = ({navigation}) => {
   const onSubmit = () => {
     console.log('submit');
     setSuccess(true);
+    // setTimeout(() => {
+    //   setSuccess(false);
+    //   navigation.navigate('HomeScreen');
+    // }, 3000);
   };
   if (isSuccess) {
     return (

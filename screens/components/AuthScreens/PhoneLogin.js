@@ -24,7 +24,7 @@ const PhoneLogin = ({navigation}) => {
   const passwordInputRef = createRef();
 
   const handleSubmitPress = () => {
-    navigation.navigate('PhoneOtp')
+    navigation.navigate('PhoneOtp');
   };
 
   return (
@@ -35,19 +35,26 @@ const PhoneLogin = ({navigation}) => {
       style={styles.mainBody}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          flex: 1,
+          flexGrow: 1,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
         }}>
-        <View style={styles.headerImage}>
-          <Text style={styles.headerText}>Community App</Text>
-        </View>
-        <View style={styles.footer}>
-          <View style={[styles.heading, {marginTop: 20}]}>
-            <Text style={styles.headingText}>
-              Enter your phone number to continue
-            </Text>
+        <View style={{flex: 1}}>
+          <View style={styles.headerImage}>
+            <Text style={styles.headerText}>Community App</Text>
           </View>
+        </View>
+
+        <View style={styles.footer}>
           <KeyboardAvoidingView enabled>
+            <View style={[styles.heading, {marginTop: 40}]}>
+              <Text style={styles.headingText}>
+                Enter your phone number to continue
+              </Text>
+            </View>
+
             <View style={styles.SectionStyle}>
               <TextInput
                 style={styles.inputStyle}
@@ -97,7 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerImage: {
-    // flex: 1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -107,14 +114,11 @@ const styles = StyleSheet.create({
     fontFamily: font.Fonts.josefBold,
   },
   footer: {
-    flex: 0.4,
-    backgroundColor: '#f6f6f6',
-    width: '100%',
-    position: 'absolute',
-    bottom: 0,
+    backgroundColor: '#FBFBFB',
     borderTopRightRadius: 30,
     borderTopLeftRadius: 30,
-    paddingBottom: 40,
+    bottom: 0,
+    // height:'70%'
   },
   heading: {
     width: '70%',
@@ -154,6 +158,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     marginTop: 15,
+    marginBottom: 40,
   },
   buttonView: {
     borderRadius: 30,

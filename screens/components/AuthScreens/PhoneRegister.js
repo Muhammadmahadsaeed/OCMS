@@ -15,7 +15,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
-const ForgotPassword = ({navigation}) => {
+const PhoneRegister = ({navigation}) => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -97,7 +97,7 @@ const ForgotPassword = ({navigation}) => {
     </LinearGradient>
   );
 };
-export default ForgotPassword;
+export default PhoneRegister;
 
 const styles = StyleSheet.create({
   mainBody: {

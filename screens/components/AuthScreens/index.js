@@ -7,6 +7,7 @@ import LoginPhoneEmailButton from './LoginPhoneEmailButton';
 import RegisterPhoneEmailButton from './RegisterPhoneEmailButton';
 import PhoneLogin from './PhoneLogin';
 import PhoneOTP from './PhoneOTP';
+import PhoneRegister from './PhoneRegister';
 export {
   login,
   Splash,
@@ -16,5 +17,6 @@ export {
   register,
   ForgotPassword,
   PhoneLogin,
-  PhoneOTP
+  PhoneOTP,
+  PhoneRegister
 };
