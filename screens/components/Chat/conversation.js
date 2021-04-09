@@ -17,9 +17,9 @@ class Conversation extends React.Component {
   }
 
   isMyMessage = () => {
-    const {message} = this.props;
+    const {message,myid} = this.props;
     const senderId = '606c09f764a37520dc978307';
-    return senderId === message.id;
+    return senderId === myid;
   };
   play = () => {
     setPlayAudio(true);
@@ -55,11 +55,10 @@ class Conversation extends React.Component {
     console.log('onStartPlay');
     const path = Platform.select({
       ios: 'hello.m4a',
-      android: `file:///sdcard/hello.mp4`,
+      android: `file:///sdcard/2f89d5bb-159d-4e82-b29c-c2f4783b6b97.mp4`,
     });
     const msg = await this.audioRecorderPlayer.startPlayer(path);
     this.audioRecorderPlayer.setVolume(1.0);
-    console.log('msg========', msg);
     this.audioRecorderPlayer.addPlayBackListener((e) => {
       if (e.current_position === e.duration) {
         console.log('finished');
@@ -84,17 +83,18 @@ class Conversation extends React.Component {
           style={[
             styles.messageBox,
             {
-              backgroundColor: this.isMyMessage() ? '#DCF8C5' : 'white',
-              marginLeft: this.isMyMessage() ? 50 : 0,
-              marginRight: this.isMyMessage() ? 0 : 50,
+              backgroundColor:'red'
+              // backgroundColor: this.isMyMessage() ? '#DCF8C5' : 'white',
+            //   marginLeft: this.isMyMessage() ? 50 : 0,
+            //   marginRight: this.isMyMessage() ? 0 : 50,
             },
           ]}>
           {/* {!isMyMessage() && <Text style={styles.name}>{plaintext}</Text>} */}
-          {/* <TouchableOpacity onPress={this.onStartPlay} style={{backgroundColor:'red',height:60}}>
+          <TouchableOpacity onPress={this.onStartPlay} style={{backgroundColor:'red',height:60}}>
             <Text>Play</Text>
-          </TouchableOpacity> */}
-          {/* {this.isMyMessage() && <Text style={styles.message}>mahad</Text>} */}
-          <Text style={styles.message}> {message.plaintext} </Text>
+          </TouchableOpacity>
+          {this.isMyMessage() && <Text style={styles.message}>mahad</Text>}
+          <Text style={styles.message}> {message.name} </Text>
           <Text style={styles.time}>11:45</Text>
         </View>
       </View>

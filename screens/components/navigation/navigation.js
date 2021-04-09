@@ -137,13 +137,13 @@ const HomeStack = createStackNavigator(
         headerShown: false,
       }),
     },
-    cameraFromChat: {
-      screen: chat.CameraFromChat,
-      navigationOptions: ({navigation}) => ({
-        safeAreaInsets: {top: 0},
-        headerShown: false,
-      }),
-    },
+    // cameraFromChat: {
+    //   screen: Camera_StackNavigator,
+    //   navigationOptions: ({navigation}) => ({
+    //     safeAreaInsets: {top: 0},
+    //     headerShown: false,
+    //   }),
+    // },
     contact: {
       screen: contact.contact,
       navigationOptions: ({navigation}) => ({
@@ -182,9 +182,9 @@ Camera_StackNavigator.navigationOptions = ({navigation}) => {
   };
 };
 const RootNavigator = createSwitchNavigator({
-  // SplashScreen: AuthScreens.Splash,
-  // TermAndConditionScreen: AuthScreens.TermAndCondition,
-  // AuthScreen: Auth,
+  SplashScreen: AuthScreens.Splash,
+  TermAndConditionScreen: AuthScreens.TermAndCondition,
+  AuthScreen: Auth,
   HomeScreen: HomeStack,
 });
 

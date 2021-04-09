@@ -32,7 +32,6 @@
     "react-native-safe-area-context": "^3.1.4",
     "react-native-screens": "^2.10.1",
     "react-native-segmented-control-tab": "^3.4.1",
-    "react-native-webrtc": "^1.89.1",
     "react-navigation": "^4.4.0",
     "react-navigation-drawer": "^2.5.0",
     "react-navigation-stack": "^2.8.2",
@@ -41,6 +40,7 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
+    "rn-fetch-blob": "^0.12.0",
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
