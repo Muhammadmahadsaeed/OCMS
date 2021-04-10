@@ -76,7 +76,7 @@ class Conversation extends React.Component {
   };
   render() {
     const {message} = this.props;
-    console.log(message)
+    console.log(message.name)
     return (
       <View style={styles.container}>
         <View
@@ -90,10 +90,10 @@ class Conversation extends React.Component {
             },
           ]}>
           {/* {!isMyMessage() && <Text style={styles.name}>{plaintext}</Text>} */}
-          <TouchableOpacity onPress={this.onStartPlay} style={{backgroundColor:'red',height:60}}>
+          <TouchableOpacity onPress={this.onStartPlay} style={{backgroundColor:'red'}}>
             <Text>Play</Text>
           </TouchableOpacity>
-          {this.isMyMessage() && <Text style={styles.message}>mahad</Text>}
+          {/* {this.isMyMessage() && <Text style={styles.message}>mahad</Text>} */}
           <Text style={styles.message}> {message.name} </Text>
           <Text style={styles.time}>11:45</Text>
         </View>
@@ -107,6 +107,7 @@ export default Conversation;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+    backgroundColor:'red'
   },
   messageBox: {
     borderRadius: 5,

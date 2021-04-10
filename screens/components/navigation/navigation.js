@@ -182,9 +182,9 @@ Camera_StackNavigator.navigationOptions = ({navigation}) => {
   };
 };
 const RootNavigator = createSwitchNavigator({
-  SplashScreen: AuthScreens.Splash,
-  TermAndConditionScreen: AuthScreens.TermAndCondition,
-  AuthScreen: Auth,
+  // SplashScreen: AuthScreens.Splash,
+  // TermAndConditionScreen: AuthScreens.TermAndCondition,
+  // AuthScreen: Auth,
   HomeScreen: HomeStack,
 });
 

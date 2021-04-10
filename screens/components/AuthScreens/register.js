@@ -1,5 +1,5 @@
 // Import React and Component
-import React, {useState, createRef} from 'react';
+import React, { useState, createRef } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -15,7 +15,9 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
-import * as ImagePicker from 'react-native-image-picker';
+// import * as ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
+
 const RegisterScreen = (navigation) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -136,40 +138,27 @@ const RegisterScreen = (navigation) => {
     setAgree(!agree);
   };
   const launchImageLibrary = async () => {
-    // let options = {
-    //   storageOptions: {
-    //     skipBackup: true,
-    //     path: null,
-    //     base64: true,
-    //   },
-    // };
     if (fileUri) {
       setFileUri('');
     } else {
-      ImagePicker.launchImageLibrary(
-        {
-          mediaType: 'photo',
-          includeBase64: true,
-        },
-        (response) => {
-          if (response.didCancel) {
-            console.log('User cancelled image picker');
-          } else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-          } else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
-            alert(response.customButton);
-          } else {
-            const source = {uri: response};
-            setFileUri(response.uri);
-          }
-        },
-      );
+      ImagePicker.openPicker({
+        mediaType: 'photo',
+        multiple: false,
+        includeBase64: true,
+        width: 300,
+        height: 400,
+        cropping: true,
+        freeStyleCropEnabled: true,
+
+      }).then(response => {
+        setFileUri(response.path);
+      })
+        .catch((err) => console.log(err))
     }
   };
   const renderFileUri = () => {
     if (fileUri) {
-      return <Image source={{uri: fileUri}} style={styles.imageIconStyle} />;
+      return <Image source={{ uri: fileUri }} style={styles.imageIconStyle} />;
     } else {
       return (
         <Image
@@ -182,8 +171,8 @@ const RegisterScreen = (navigation) => {
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 1}}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={styles.linear}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -223,7 +212,7 @@ const RegisterScreen = (navigation) => {
         </View>
         <View style={styles.form}>
           <KeyboardAvoidingView enabled>
-            <View style={[styles.SectionStyle, {marginTop: 40}]}>
+            <View style={[styles.SectionStyle, { marginTop: 40 }]}>
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(text) => setUserName(text)}
@@ -323,10 +312,10 @@ const RegisterScreen = (navigation) => {
             <View style={styles.textView}>
               <TouchableOpacity
                 activeOpacity={0.8}
-                style={{padding: 10}}
+                style={{ padding: 10 }}
                 onPress={() => setTermAndCondition()}>
                 <Image
-                  style={{height: 20, width: 20}}
+                  style={{ height: 20, width: 20 }}
                   source={
                     agree
                       ? require('../../../asessts/images/Icon-check-circle.png')

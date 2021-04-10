@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -18,11 +18,13 @@ import AudioRecorderPlayer, {
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
 import CryptoJS from 'crypto-js';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 class InputBox extends React.Component {
   constructor(props) {
     super(props);
+    this.inputRef = React.createRef()
     this.state = {
       message: '',
       isLoggingIn: false,
@@ -76,41 +78,17 @@ class InputBox extends React.Component {
   //     fetchUser();
   //   }, []);
   captureImage = async (type) => {
-    let options = {
+    ImagePicker.openCamera({
       mediaType: type,
-      maxWidth: 500,
-      maxHeight: 550,
-      quality: 1,
-      videoQuality: 'low',
-      durationLimit: 30, //Video max duration in seconds
-      saveToPhotos: true,
       includeBase64: true,
-    };
-    launchCamera(options, (response) => {
-      console.log('Response = ', response);
+      useFrontCamera: true
 
-      if (response.didCancel) {
-        alert('User cancelled camera picker');
-        return;
-      } else if (response.errorCode == 'camera_unavailable') {
-        alert('Camera not available on device');
-        return;
-      } else if (response.errorCode == 'permission') {
-        alert('Permission not satisfied');
-        return;
-      } else if (response.errorCode == 'others') {
-        alert(response.errorMessage);
-        return;
-      }
-      console.log('base64 -> ', response.base64);
-      console.log('uri -> ', response.uri);
-      console.log('width -> ', response.width);
-      console.log('height -> ', response.height);
-      console.log('fileSize -> ', response.fileSize);
-      console.log('type -> ', response.type);
-      console.log('fileName -> ', response.fileName);
-      // setFilePath(response);
-    });
+    }).then(res => {
+      
+      // console.log(image);
+    })
+      .catch((err) => console.log(err))
+
   };
 
   onMicrophonePress = () => {
@@ -140,15 +118,15 @@ class InputBox extends React.Component {
   //   };
 
   onSendPress = async () => {
-    const {message} = this.state;
+    const { message } = this.state;
     // Encrypt
     var ciphertext = CryptoJS.AES.encrypt(message, 'secret key 123').toString();
     this.props.getDataFromInput(ciphertext);
-    this.setState({message: ''});
+    this.setState({ message: '' });
   };
   componentDidMount() {
     this.checkPermission().then(async (hasPermission) => {
-      this.setState({hasPermission});
+      this.setState({ hasPermission });
       if (!hasPermission) return;
     });
   }
@@ -220,10 +198,10 @@ class InputBox extends React.Component {
   };
   handleAudio = () => {
     if (!this.state.startAudio) {
-      this.setState({startAudio: true});
+      this.setState({ startAudio: true });
       this.onStartRecording();
     } else {
-      this.setState({startAudio: false});
+      this.setState({ startAudio: false });
       this.onStopRecord();
     }
   };
@@ -247,9 +225,9 @@ class InputBox extends React.Component {
           Math.floor(e.current_position),
         ),
       });
-     
+
     });
-   
+
   };
   onStopRecord = async () => {
     const result = await this.audioRecorderPlayer.stopRecorder();
@@ -258,15 +236,15 @@ class InputBox extends React.Component {
       recordSecs: 0,
     });
     this.props.getDataFromInput(result);
-   
+
   };
   render() {
-    const {message} = this.state;
+    const { message } = this.state;
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={100}
-        style={{width: '100%'}}>
+        style={{ width: '100%' }}>
         <View style={styles.container}>
           <View style={styles.mainContainer}>
             <Image
@@ -275,14 +253,15 @@ class InputBox extends React.Component {
             />
 
             <TextInput
+              ref={this.inputRef}
               placeholder={'Type a message'}
               style={styles.textInput}
               multiline
               value={message}
-              onChangeText={(text) => this.setState({message: text})}
+              onChangeText={(text) => this.setState({ message: text })}
             />
             <TouchableOpacity
-              style={{padding: 5}}
+              style={{ padding: 5 }}
               onPress={() => this.props.openAttachmentModal()}>
               <Image
                 source={require('../../../asessts/images/icon-gallery.png')}
@@ -292,7 +271,7 @@ class InputBox extends React.Component {
 
             {!message && (
               <TouchableOpacity
-                style={{padding: 5}}
+                style={{ padding: 5 }}
                 onPress={() => this.captureImage('photo')}>
                 <Image
                   source={require('../../../asessts/images/searchIcon.png')}

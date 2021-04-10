@@ -122,6 +122,7 @@ export default class Camera extends PureComponent {
   };
   selectImageFromChat = async (uri) => {
     console.log(uri)
+    this.setState({ path: uri });
     //  this.saveImage(uri)
   }
   renderImage() {
