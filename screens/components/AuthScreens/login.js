@@ -1,5 +1,5 @@
 // Import React and Component
-import React, {useState, createRef} from 'react';
+import React, { useState, createRef } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -20,7 +20,8 @@ const LoginWithEmail = (navigation) => {
   const [userPassword, setUserPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
-
+  const [emailEmptyErorr, setemailEmptyErorr] = useState(false);
+  const [pwdEmptyErorr, setpwdEmptyErorr] = useState(false);
   const emailInputRef = createRef();
   const passwordInputRef = createRef();
 
@@ -97,8 +98,8 @@ const LoginWithEmail = (navigation) => {
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 1}}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={styles.linear}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -123,13 +124,14 @@ const LoginWithEmail = (navigation) => {
         </View>
         <View style={styles.form}>
           <KeyboardAvoidingView enabled>
-            <View style={[styles.SectionStyle, {marginTop: 40}]}>
-              <View style={styles.icons}>
+            <View style={[styles.SectionStyle, { marginTop: 40 }]}>
+              <View style={styles.iconLeft}>
                 <Image
                   source={require('../../../asessts/images/email-icon.png')}
-                  style={styles.iconImage}
+                  style={styles.iconLeftImage}
                 />
               </View>
+
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(text) => setUserEmail(text)}
@@ -144,8 +146,24 @@ const LoginWithEmail = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
+              {emailEmptyErorr &&
+                <View style={styles.iconRight}>
+
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                </View>
+              }
             </View>
             <View style={styles.SectionStyle}>
+              <View style={styles.iconLeft}>
+                <Image
+                  source={require('../../../asessts/images/pwd-icon.png')}
+                  style={styles.iconLeftImage}
+                />
+              </View>
+
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(text) => setUserPassword(text)}
@@ -161,6 +179,15 @@ const LoginWithEmail = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
+              {pwdEmptyErorr &&
+                <View style={styles.iconRight} >
+
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                </View>
+              }
             </View>
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}>{errortext}</Text>
@@ -168,7 +195,7 @@ const LoginWithEmail = (navigation) => {
             <View style={styles.textView}>
               <TouchableOpacity
                 activeOpacity={0.8}
-                style={{padding: 10}}
+                style={{ padding: 10 }}
                 onPress={() => navigation.navigation.navigate('ForgotPwd')}>
                 <Text style={styles.termText}>Forgot Password?</Text>
               </TouchableOpacity>
@@ -185,7 +212,7 @@ const LoginWithEmail = (navigation) => {
             </LinearGradient>
             <LinearGradient
               colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-              style={[styles.linearButton, {marginBottom: 40}]}>
+              style={[styles.linearButton, { marginBottom: 40 }]}>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => navigation.navigation.navigate('Register')}>
@@ -241,6 +268,7 @@ const styles = StyleSheet.create({
     // height:'70%'
   },
   SectionStyle: {
+    flex: 1,
     flexDirection: 'row',
     height: 50,
     marginTop: 5,
@@ -249,20 +277,38 @@ const styles = StyleSheet.create({
     margin: 10,
     width: '90%',
     alignSelf: 'center',
-    backgroundColor:'red'
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: '#d8d8d8',
+    backgroundColor: '#F3F1F1',
   },
-  icons: {
-    position: 'absolute',
+  iconLeft: {
     left: 3,
+    height: 50,
+    width: 25,
+    justifyContent: 'center',
+    paddingVertical: 4,
+    marginHorizontal: 8,
+    alignItems: 'center',
+
+  },
+  iconLeftImage: {
+    resizeMode: 'contain',
+    height: '70%',
+    width: '70%',
+  },
+  iconRight: {
+    position: 'absolute',
+    right: 3,
     height: 45,
     width: 35,
     justifyContent: 'center',
     padding: 4,
     alignItems: 'center',
-    backgroundColor:'green'
+
   },
-  iconImage: {
-    // resizeMode: 'contain',
+  iconRightImage: {
+    resizeMode: 'contain',
     height: '100%',
     width: '100%',
   },
@@ -294,11 +340,8 @@ const styles = StyleSheet.create({
     color: colors.Colors.gray,
     paddingLeft: 15,
     paddingRight: 15,
-    borderWidth: 1,
-    borderRadius: 30,
-    borderColor: '#d8d8d8',
     fontFamily: font.Fonts.josefReg,
-    backgroundColor: '#F3F1F1',
+
     fontSize: 20,
   },
 

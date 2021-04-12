@@ -15,9 +15,8 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
-// import * as ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
-
+import Toast from 'react-native-toast-message';
 const RegisterScreen = (navigation) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -30,7 +29,12 @@ const RegisterScreen = (navigation) => {
   const [errortext, setErrortext] = useState('');
   const [agree, setAgree] = useState(false);
   const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
-
+  const [nameEmptyErorr, setNameEmptyErorr] = useState(false);
+  const [emailEmptyErorr, setEmailEmptyErorr] = useState(false);
+  const [companyEmptyErorr, setCompanyEmptyErorr] = useState(false);
+  const [phoneEmptyErorr, setPhoneEmptyErorr] = useState(false);
+  const [pwdEmptyErorr, setpwdEmptyErorr] = useState(false);
+  const [confirmPwdEmptyErorr, setconfirmPwdEmptyErorr] = useState(false);
   const userNameInputRef = createRef();
   const emailInputRef = createRef();
   const companyInputRef = createRef();
@@ -39,6 +43,19 @@ const RegisterScreen = (navigation) => {
   const confirmPasswordInputRef = createRef();
 
   const handleSubmitButton = () => {
+    Toast.show({
+      type: 'success | error | info',
+      position: 'top | bottom',
+      text1: 'Hello',
+      text2: 'This is some something 👋',
+      visibilityTime: 4000,
+      autoHide: true,
+      topOffset: 30,
+      bottomOffset: 40,
+      onShow: () => {},
+      onHide: () => {},
+      onPress: () => {}
+    });
     // setErrortext('');
     // if (!userName) {
     //   alert('Please fill Name');
@@ -190,7 +207,7 @@ const RegisterScreen = (navigation) => {
               alignItems: 'center',
             }}>
             <View style={styles.imgView}>
-              <TouchableOpacity
+              <TouchableOpacity activeOpacity={0.8}
                 onPress={launchImageLibrary}
                 style={styles.editBtnSection}>
                 <Image
@@ -213,6 +230,13 @@ const RegisterScreen = (navigation) => {
         <View style={styles.form}>
           <KeyboardAvoidingView enabled>
             <View style={[styles.SectionStyle, { marginTop: 40 }]}>
+              <View style={styles.iconLeft}>
+                <Image
+                  source={require('../../../asessts/images/user-icon.png')}
+                  style={styles.iconLeftImage}
+                />
+              </View>
+
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(text) => setUserName(text)}
@@ -226,8 +250,23 @@ const RegisterScreen = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
+              {nameEmptyErorr &&
+                <View style={styles.iconRight} >
+
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                </View>
+              }
             </View>
             <View style={styles.SectionStyle}>
+              <View style={styles.iconLeft}>
+                <Image
+                  source={require('../../../asessts/images/email-icon.png')}
+                  style={styles.iconLeftImage}
+                />
+              </View>
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(text) => setUserEmail(text)}
@@ -242,8 +281,23 @@ const RegisterScreen = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
+              {emailEmptyErorr &&
+                <View style={styles.iconRight}>
+
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                </View>
+              }
             </View>
             <View style={styles.SectionStyle}>
+              <View style={styles.iconLeft}>
+                <Image
+                  source={require('../../../asessts/images/organization-icon.png')}
+                  style={styles.iconLeftImage}
+                />
+              </View>
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(text) => setCompanyName(text)}
@@ -258,8 +312,23 @@ const RegisterScreen = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
+              {companyEmptyErorr &&
+                <View style={styles.iconRight} >
+
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                </View>
+              }
             </View>
             <View style={styles.SectionStyle}>
+              <View style={styles.iconLeft}>
+                <Image
+                  source={require('../../../asessts/images/user-icon.png')}
+                  style={styles.iconLeftImage}
+                />
+              </View>
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(number) => setPhoneNumber(number)}
@@ -274,8 +343,23 @@ const RegisterScreen = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
+              {phoneEmptyErorr &&
+                <View style={styles.iconRight}>
+
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                </View>
+              }
             </View>
             <View style={styles.SectionStyle}>
+              <View style={styles.iconLeft}>
+                <Image
+                  source={require('../../../asessts/images/pwd-icon.png')}
+                  style={styles.iconLeftImage}
+                />
+              </View>
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(text) => setUserPassword(text)}
@@ -291,9 +375,24 @@ const RegisterScreen = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
+              {pwdEmptyErorr &&
+                <View style={styles.iconRight}>
+
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                </View>
+              }
             </View>
 
             <View style={styles.SectionStyle}>
+              <View style={styles.iconLeft}>
+                <Image
+                  source={require('../../../asessts/images/confirm-pwd-icon.png')}
+                  style={styles.iconLeftImage}
+                />
+              </View>
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(text) => setUserConfirmPassword(text)}
@@ -305,6 +404,15 @@ const RegisterScreen = (navigation) => {
                 secureTextEntry={true}
                 blurOnSubmit={false}
               />
+              {confirmPwdEmptyErorr &&
+                <View style={styles.iconRight}>
+
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                </View>
+              }
             </View>
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}>{errortext}</Text>
@@ -338,6 +446,7 @@ const RegisterScreen = (navigation) => {
               </TouchableOpacity>
             </LinearGradient>
           </KeyboardAvoidingView>
+          {/* <Toast ref={(ref) => Toast.setRef(ref)} /> */}
         </View>
       </ScrollView>
     </LinearGradient>
@@ -404,6 +513,7 @@ const styles = StyleSheet.create({
     // height:'70%'
   },
   SectionStyle: {
+    flex: 1,
     flexDirection: 'row',
     height: 50,
     marginTop: 5,
@@ -412,6 +522,39 @@ const styles = StyleSheet.create({
     margin: 10,
     width: '90%',
     alignSelf: 'center',
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: '#d8d8d8',
+    backgroundColor: '#F3F1F1',
+  },
+  iconLeft: {
+    left: 3,
+    height: 50,
+    width: 25,
+    justifyContent: 'center',
+    paddingVertical: 4,
+    marginHorizontal: 8,
+    alignItems: 'center',
+
+  },
+  iconRight: {
+    position: 'absolute',
+    right: 3,
+    height: 50,
+    width: 35,
+    justifyContent: 'center',
+    padding: 4,
+    alignItems: 'center',
+  },
+  iconLeftImage: {
+    resizeMode: 'contain',
+    height: '70%',
+    width: '70%',
+  },
+  iconRightImage: {
+    resizeMode: 'contain',
+    height: '100%',
+    width: '100%',
   },
   buttonStyle: {
     backgroundColor: '#FFFFFF',
@@ -441,11 +584,7 @@ const styles = StyleSheet.create({
     color: colors.Colors.gray,
     paddingLeft: 15,
     paddingRight: 15,
-    borderWidth: 1,
-    borderRadius: 30,
-    borderColor: '#d8d8d8',
     fontFamily: font.Fonts.josefReg,
-    backgroundColor: '#F3F1F1',
     fontSize: 20,
   },
 
