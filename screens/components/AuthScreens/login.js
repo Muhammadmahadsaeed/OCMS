@@ -124,6 +124,12 @@ const LoginWithEmail = (navigation) => {
         <View style={styles.form}>
           <KeyboardAvoidingView enabled>
             <View style={[styles.SectionStyle, {marginTop: 40}]}>
+              <View style={styles.icons}>
+                <Image
+                  source={require('../../../asessts/images/email-icon.png')}
+                  style={styles.iconImage}
+                />
+              </View>
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(text) => setUserEmail(text)}
@@ -243,6 +249,22 @@ const styles = StyleSheet.create({
     margin: 10,
     width: '90%',
     alignSelf: 'center',
+    backgroundColor:'red'
+  },
+  icons: {
+    position: 'absolute',
+    left: 3,
+    height: 45,
+    width: 35,
+    justifyContent: 'center',
+    padding: 4,
+    alignItems: 'center',
+    backgroundColor:'green'
+  },
+  iconImage: {
+    // resizeMode: 'contain',
+    height: '100%',
+    width: '100%',
   },
   buttonStyle: {
     backgroundColor: '#FFFFFF',

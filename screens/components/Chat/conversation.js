@@ -17,9 +17,9 @@ class Conversation extends React.Component {
   }
 
   isMyMessage = () => {
-    const {message,myid} = this.props;
-    const senderId = '606c09f764a37520dc978307';
-    return senderId === myid;
+    const {myId} = this.props;
+    const senderId = '6062cb84ac8ec71b54bfcd2e';
+    return senderId === myId;
   };
   play = () => {
     setPlayAudio(true);
@@ -76,27 +76,27 @@ class Conversation extends React.Component {
   };
   render() {
     const {message} = this.props;
-    console.log(message.name)
     return (
-      <View style={styles.container}>
-        <View
-          style={[
-            styles.messageBox,
-            {
-              backgroundColor:'red'
-              // backgroundColor: this.isMyMessage() ? '#DCF8C5' : 'white',
-            //   marginLeft: this.isMyMessage() ? 50 : 0,
-            //   marginRight: this.isMyMessage() ? 0 : 50,
-            },
-          ]}>
-          {/* {!isMyMessage() && <Text style={styles.name}>{plaintext}</Text>} */}
-          <TouchableOpacity onPress={this.onStartPlay} style={{backgroundColor:'red'}}>
-            <Text>Play</Text>
-          </TouchableOpacity>
-          {/* {this.isMyMessage() && <Text style={styles.message}>mahad</Text>} */}
-          <Text style={styles.message}> {message.name} </Text>
-          <Text style={styles.time}>11:45</Text>
-        </View>
+      <View
+        style={[
+          styles.messageBox,
+          {
+            backgroundColor: this.isMyMessage() ? '#DCF8C5' : 'white',
+            marginLeft: this.isMyMessage() ? 50 : 0,
+            marginRight: this.isMyMessage() ? 0 : 50,
+          },
+        ]}>
+        {/* {!isMyMessage() && <Text style={styles.name}>{plaintext}</Text>} */}
+        <TouchableOpacity
+          onPress={this.onStartPlay}
+          style={{backgroundColor: 'red'}}>
+          <Text>Play</Text>
+        </TouchableOpacity>
+        {/* {this.isMyMessage() && (
+          <Text style={styles.message}>{message.messageContent}</Text>
+        )} */}
+        <Text style={styles.message}> {message.name} </Text>
+        <Text style={styles.time}>11:45</Text>
       </View>
     );
   }
@@ -107,21 +107,17 @@ export default Conversation;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor:'red'
   },
   messageBox: {
     borderRadius: 5,
     padding: 10,
   },
   name: {
-    color: 'black',
     // color: Colors.light.tint,
     fontWeight: 'bold',
     marginBottom: 5,
   },
-  message: {
-    color: 'black',
-  },
+  message: {},
   time: {
     alignSelf: 'flex-end',
     color: 'grey',

@@ -248,7 +248,7 @@ class InputBox extends React.Component {
         <View style={styles.container}>
           <View style={styles.mainContainer}>
             <Image
-              source={require('../../../asessts/images/searchIcon.png')}
+              source={require('../../../asessts/images/emoji-smile.png')}
               style={styles.icon}
             />
 
@@ -264,7 +264,7 @@ class InputBox extends React.Component {
               style={{ padding: 5 }}
               onPress={() => this.props.openAttachmentModal()}>
               <Image
-                source={require('../../../asessts/images/icon-gallery.png')}
+                source={require('../../../asessts/images/attachment-line.png')}
                 style={styles.icon}
               />
             </TouchableOpacity>
@@ -274,7 +274,7 @@ class InputBox extends React.Component {
                 style={{ padding: 5 }}
                 onPress={() => this.captureImage('photo')}>
                 <Image
-                  source={require('../../../asessts/images/searchIcon.png')}
+                  source={require('../../../asessts/images/camera-icon.png')}
                   style={styles.icon}
                 />
               </TouchableOpacity>

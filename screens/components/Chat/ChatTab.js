@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   TextInput,
 } from 'react-native';
-import {fetchUser} from '../../config/env';
+import {fetchUser, api} from '../../config/env';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
@@ -44,15 +44,7 @@ export default class ChatTab extends Component {
         });
       })
       .catch((err) => console.log(err));
-
-    // fetch(`http://192.168.100.54:3000/contact`, {
-    //   method: 'POST',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify({
-    //     senderId: '6062cb84ac8ec71b54bfcd2e',
-    //     loginCompany: '605444a8e2924b2bec69e360',
-    //   }),
-    // })
+    // fetch(`${api}/message/6062cb84ac8ec71b54bfcd2e`)
     //   .then((response) => response.json())
     //   .then((json) => {
        
@@ -64,10 +56,28 @@ export default class ChatTab extends Component {
     //     });
     //   })
     //   .catch((err) => console.log(err));
+    // fetch(`http://192.168.100.54:3000/contact`, {
+    //   method: 'POST',
+    //   headers: {'Content-Type': 'application/json'},
+    //   body: JSON.stringify({
+    //     senderId: '6062cb84ac8ec71b54bfcd2e',
+    //     loginCompany: '605444a8e2924b2bec69e360',
+    //   }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((json) => {
+
+    //     this.setState({
+    //       data: json.data,
+    //       // data: this.state.data.concat(json),
+    //       isLoading: false,
+    //       loading: false,
+    //     });
+    //   })
+    //   .catch((err) => console.log(err));
   };
 
   renderItemComponent(props) {
-   
     return (
       <TouchableOpacity
         onPress={() =>

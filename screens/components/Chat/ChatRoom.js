@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  ListView,
   Image,
   Text,
   TouchableOpacity,
@@ -26,6 +25,8 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
+import axios from 'axios';
+import {api} from '../../config/env';
 const socket = socketIO('http://192.168.100.54:4000', {
   transports: ['websocket'],
   jsonp: false,
@@ -39,37 +40,68 @@ class ChatRoom extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      chatMessages: [
-        {name: 'mahad', id: 1},
-        {name: 'mahad', id: 2},
-      ],
+      userId: '',
+      data: [{name: 'mahad',name:'zaka',name: 'kashan'}],
+      receiverId: '',
     };
   }
   componentDidMount() {
-    const userConversation = this.props.navigation.getParam('converstion');
-    console.log(userConversation);
-    this.setState({chatMessages: userConversation.conservations});
+    const converstion = this.props.navigation.getParam('converstion');
+    // this.setState({
+    //   receiverId: converstion._id,
+    //   userId: '6062cb84ac8ec71b54bfcd2e',
+    // });
+    // this.getMessages();
     // socket.on('output', (msg) => {
-
-    //   const message = msg[0].conservations.map((item) => {
-    //     let bytes = CryptoJS.AES.decrypt(item.messageContent, 'secret key 123');
-    //     let plaintext = bytes.toString(CryptoJS.enc.Utf8);
-    //     return {id: item._id, plaintext};
-    //   });
-
-    //   console.log('msg from conversation========', message);
-    //   this.setState({chatMessages: [...this.state.chatMessages, ...message]});
+    //   this.getMessages();
     // });
   }
   getDataFromInput = (msg) => {
-    console.log('=========', msg);
     // socket.emit('input', {
     //   name: 'mahad',
     //   messageContent: msg,
-    //   senderId: '6062cb84ac8ec71b54bfcd2e',
-    //   receiverId: '605844544fbd710afc40b9ba',
+    //   senderId: '6062cb84ac8ec71b54bfcd2e', //login user id
+    //   receiverId: this.state.receiverId, //recvr user id
     //   sentTime: '2021-03-31 09:37',
     // });
+  };
+  getMessages = () => {
+    const converstion = this.props.navigation.getParam('converstion');
+
+    fetch(`${api}/message/conservation/`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        userId: '6062cb84ac8ec71b54bfcd2e', //login user id
+        chatUserId: converstion._id, //recvr user id
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        let message = json.data.map((item) => {
+          let bytes = CryptoJS.AES.decrypt(
+            item.messageContent,
+            'secret key 123',
+          );
+          let encryptedMsg = bytes.toString(CryptoJS.enc.Utf8);
+
+          return {
+            _id: item._id,
+            isRead: item.isRead,
+            messageContent: encryptedMsg,
+            messageType: item.messageType,
+            receivedTime: item.receivedTime,
+            receiverId: item.receiverId,
+            senderId: item.senderId,
+            sentTime: item.sentTime,
+          };
+        });
+
+        // this.setState({chatMessages: [...this.state.chatMessages, ...message]});
+        // this.setState({data: [...this.state.data, ...message]});
+        this.setState({data: message.reverse()});
+      })
+      .catch((err) => console.log(err));
   };
   selectDocument = async () => {
     try {
@@ -128,7 +160,6 @@ class ChatRoom extends React.Component {
   openAttachmentModal = () => {
     this.RBSheet.open();
   };
-
   render() {
     return (
       <View style={{flex: 1}}>
@@ -140,9 +171,16 @@ class ChatRoom extends React.Component {
           end={{x: 1, y: 1}}>
           <View style={styles.innerContainer}>
             <FlatList
-              data={this.state.chatMessages}
+              style={{
+                flex: 1,
+                borderTopLeftRadius: 30,
+                borderTopRightRadius: 30,
+              }}
+              data={this.state.data}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => <Conversation myId={5} message={item} />}
+              renderItem={({item}) => (
+                <Conversation myId={this.state.userId} message={item} />
+              )}
               inverted={true}
             />
             <InputBox
