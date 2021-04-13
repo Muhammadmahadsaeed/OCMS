@@ -29,7 +29,7 @@ const ConversationHeader = (props) => {
 
           <View style={styles.chatTitle}>
             <TouchableOpacity
-              onPress={() => props.navigationProps.navigate('profile')}
+              onPress={() => props.navigationProps.navigation.navigate('profile')}
               activeOpacity={0.8}>
               <Text style={styles.name} numberOfLines={1}>{user.userName}</Text>
               <Text style={styles.status}>last seen today 11:20 am</Text>

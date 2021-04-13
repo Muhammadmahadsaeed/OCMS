@@ -17,37 +17,35 @@ import font from '../../constants/font';
 import colors from '../../constants/colors';
 const LoginWithEmail = (navigation) => {
   const [userEmail, setUserEmail] = useState('');
+
   const [userPassword, setUserPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
   const [errortext, setErrortext] = useState('');
-  const [emailEmptyErorr, setemailEmptyErorr] = useState(false);
-  const [pwdEmptyErorr, setpwdEmptyErorr] = useState(false);
+  const [emailEmptyErorr, setEmailEmptyErorr] = useState(false);
+  const [pwdEmptyErorr, setPwdEmptyErorr] = useState(false);
+  const [isEmailWrong, setIsEmailWrong] = useState(false);
+  const [isEmailCorrect, setIsEmailCorrect] = useState(false);
+
   const emailInputRef = createRef();
   const passwordInputRef = createRef();
 
   const handleSubmitButton = () => {
-    navigation.navigation.navigate('HomeScreen');
+    // navigation.navigation.navigate('HomeScreen');
     // setErrortext('');
-    // if (!userName) {
-    //   alert('Please fill Name');
-    //   return;
-    // }
-    // if (!userEmail) {
-    //   alert('Please fill Email');
-    //   return;
-    // }
-    // if (!userAge) {
-    //   alert('Please fill Age');
-    //   return;
-    // }
-    // if (!userAddress) {
-    //   alert('Please fill Address');
-    //   return;
-    // }
-    // if (!userPassword) {
-    //   alert('Please fill Password');
-    //   return;
-    // }
+    if(!userEmail && !userPassword){
+      setEmailEmptyErorr(true)
+      setPwdEmptyErorr(true)
+      return;
+    }
+    else if (!userEmail) {
+      setEmailEmptyErorr(true)
+      return;
+    }
+    else if (!userPassword) {
+      setPwdEmptyErorr(true)
+      return;
+    }
     // //Show Loader
     // setLoading(true);
     // var dataToSend = {
@@ -95,6 +93,26 @@ const LoginWithEmail = (navigation) => {
     //   });
   };
 
+  const validate = (text) => {
+    let email = text.toLowerCase();
+    email = email.trim()
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(email) === false) {
+      setIsEmailCorrect(false);
+      setIsEmailWrong(true);
+      setEmailEmptyErorr(false);
+      setUserEmail(email);
+      return false;
+    } else {
+      setIsEmailCorrect(true);
+      setIsEmailWrong(false);
+      setEmailEmptyErorr(false);
+      setUserEmail(email);
+    }
+  };
+  const setPasswordVisibale = () => {
+    setHidePassword(!hidePassword)
+  }
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
@@ -134,27 +152,49 @@ const LoginWithEmail = (navigation) => {
 
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(text) => setUserEmail(text)}
+                onChangeText={(text) => validate(text)}
+                // onChangeText={(text) => setUserEmail(text)}
                 underlineColorAndroid="#f000"
                 placeholder="Enter your email"
                 placeholderTextColor={colors.Colors.gray}
                 keyboardType="email-address"
                 ref={emailInputRef}
+                onFocus={
+                  () => setEmailEmptyErorr(false)
+                  // this.setState({
+                  //   isloading: false,
+                  //   showEmailEmptyErorr: false,
+                  //   showInvalidErorr: false,
+                  // })
+                }
                 returnKeyType="next"
                 onSubmitEditing={() =>
-                  companyInputRef.current && companyInputRef.current.focus()
+                  emailInputRef.current && passwordInputRef.current.focus()
                 }
                 blurOnSubmit={false}
               />
-              {emailEmptyErorr &&
-                <View style={styles.iconRight}>
 
+              <View style={styles.iconRight}>
+                {isEmailWrong && (
+                  <Image
+                    source={require('../../../asessts/images/wrong.png')}
+                    style={styles.iconRightImage}
+                  />
+                )}
+                {isEmailCorrect && (
+                  <Image
+                    source={require('../../../asessts/images/correct.png')}
+                    style={styles.iconRightImage}
+                  />
+                )}
+                {emailEmptyErorr &&
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
-                </View>
-              }
+                }
+              </View>
+
             </View>
             <View style={styles.SectionStyle}>
               <View style={styles.iconLeft}>
@@ -172,22 +212,52 @@ const LoginWithEmail = (navigation) => {
                 placeholderTextColor={colors.Colors.gray}
                 ref={passwordInputRef}
                 returnKeyType="next"
-                secureTextEntry={true}
-                onSubmitEditing={() =>
-                  confirmPasswordInputRef.current &&
-                  confirmPasswordInputRef.current.focus()
-                }
+                secureTextEntry={hidePassword}
+                onSubmitEditing={Keyboard.dismiss}
                 blurOnSubmit={false}
+                onFocus={
+                  () => setPwdEmptyErorr(false)
+                  // this.setState({
+                  //   isloading: false,
+                  //   showEmailEmptyErorr: false,
+                  //   showInvalidErorr: false,
+                  // })
+                }
               />
-              {pwdEmptyErorr &&
-                <View style={styles.iconRight} >
 
+              <View style={styles.iconRight} >
+                {pwdEmptyErorr ?
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
-                </View>
-              }
+                  :
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: 3,
+                      height: 45,
+                      width: 35,
+                      justifyContent: 'center',
+                      padding: 4,
+                      alignItems: 'center',
+                    }}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      setPasswordVisibale()
+                    }}>
+                    <Image
+                      source={
+                        hidePassword
+                          ? require('../../../asessts/images/greenhide.png')
+                          : require('../../../asessts/images/greenview.png')
+                      }
+                      style={styles.iconRightImage}
+                    />
+                  </TouchableOpacity>
+                }
+              </View>
+
             </View>
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}>{errortext}</Text>
