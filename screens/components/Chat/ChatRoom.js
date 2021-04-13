@@ -41,7 +41,7 @@ class ChatRoom extends React.Component {
     super(props);
     this.state = {
       userId: '',
-      data: [{name: 'mahad',name:'zaka',name: 'kashan'}],
+      data: [{name: 'kashan'}, {name: 'mahad'}, {name: 'zaka'}],
       receiverId: '',
     };
   }
@@ -57,6 +57,7 @@ class ChatRoom extends React.Component {
     // });
   }
   getDataFromInput = (msg) => {
+    this.setState({data: [...this.state.data, ...msg]});
     // socket.emit('input', {
     //   name: 'mahad',
     //   messageContent: msg,
@@ -65,44 +66,44 @@ class ChatRoom extends React.Component {
     //   sentTime: '2021-03-31 09:37',
     // });
   };
-  getMessages = () => {
-    const converstion = this.props.navigation.getParam('converstion');
+  // getMessages = () => {
+  //   const converstion = this.props.navigation.getParam('converstion');
 
-    fetch(`${api}/message/conservation/`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        userId: '6062cb84ac8ec71b54bfcd2e', //login user id
-        chatUserId: converstion._id, //recvr user id
-      }),
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        let message = json.data.map((item) => {
-          let bytes = CryptoJS.AES.decrypt(
-            item.messageContent,
-            'secret key 123',
-          );
-          let encryptedMsg = bytes.toString(CryptoJS.enc.Utf8);
+  //   fetch(`${api}/message/conservation/`, {
+  //     method: 'POST',
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: JSON.stringify({
+  //       userId: '6062cb84ac8ec71b54bfcd2e', //login user id
+  //       chatUserId: converstion._id, //recvr user id
+  //     }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       let message = json.data.map((item) => {
+  //         let bytes = CryptoJS.AES.decrypt(
+  //           item.messageContent,
+  //           'secret key 123',
+  //         );
+  //         let encryptedMsg = bytes.toString(CryptoJS.enc.Utf8);
 
-          return {
-            _id: item._id,
-            isRead: item.isRead,
-            messageContent: encryptedMsg,
-            messageType: item.messageType,
-            receivedTime: item.receivedTime,
-            receiverId: item.receiverId,
-            senderId: item.senderId,
-            sentTime: item.sentTime,
-          };
-        });
+  //         return {
+  //           _id: item._id,
+  //           isRead: item.isRead,
+  //           messageContent: encryptedMsg,
+  //           messageType: item.messageType,
+  //           receivedTime: item.receivedTime,
+  //           receiverId: item.receiverId,
+  //           senderId: item.senderId,
+  //           sentTime: item.sentTime,
+  //         };
+  //       });
 
-        // this.setState({chatMessages: [...this.state.chatMessages, ...message]});
-        // this.setState({data: [...this.state.data, ...message]});
-        this.setState({data: message.reverse()});
-      })
-      .catch((err) => console.log(err));
-  };
+  //       // this.setState({chatMessages: [...this.state.chatMessages, ...message]});
+  //       // this.setState({data: [...this.state.data, ...message]});
+  //       this.setState({data: message.reverse()});
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
   selectDocument = async () => {
     try {
       const res = await DocumentPicker.pick({
@@ -173,8 +174,8 @@ class ChatRoom extends React.Component {
             <FlatList
               style={{
                 flex: 1,
-                borderTopLeftRadius: 30,
-                borderTopRightRadius: 30,
+                // borderTopLeftRadius: 30,
+                // borderTopRightRadius: 30,
               }}
               data={this.state.data}
               keyExtractor={(item, index) => index.toString()}

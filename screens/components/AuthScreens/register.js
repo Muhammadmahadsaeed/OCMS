@@ -1,5 +1,5 @@
 // Import React and Component
-import React, { useState, createRef } from 'react';
+import React, {useState, createRef} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -11,12 +11,15 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  ToastAndroid,
+  Platform,
+  AlertIOS,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
 import ImagePicker from 'react-native-image-crop-picker';
-import Toast from 'react-native-toast-message';
+
 const RegisterScreen = (navigation) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -43,19 +46,12 @@ const RegisterScreen = (navigation) => {
   const confirmPasswordInputRef = createRef();
 
   const handleSubmitButton = () => {
-    Toast.show({
-      type: 'success | error | info',
-      position: 'top | bottom',
-      text1: 'Hello',
-      text2: 'This is some something 👋',
-      visibilityTime: 4000,
-      autoHide: true,
-      topOffset: 30,
-      bottomOffset: 40,
-      onShow: () => {},
-      onHide: () => {},
-      onPress: () => {}
-    });
+    const msg = 'Please check your email';
+    if (Platform.OS === 'android') {
+      ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+    } else {
+      AlertIOS.alert(msg);
+    }
     // setErrortext('');
     // if (!userName) {
     //   alert('Please fill Name');
@@ -166,16 +162,16 @@ const RegisterScreen = (navigation) => {
         height: 400,
         cropping: true,
         freeStyleCropEnabled: true,
-
-      }).then(response => {
-        setFileUri(response.path);
       })
-        .catch((err) => console.log(err))
+        .then((response) => {
+          setFileUri(response.path);
+        })
+        .catch((err) => console.log(err));
     }
   };
   const renderFileUri = () => {
     if (fileUri) {
-      return <Image source={{ uri: fileUri }} style={styles.imageIconStyle} />;
+      return <Image source={{uri: fileUri}} style={styles.imageIconStyle} />;
     } else {
       return (
         <Image
@@ -188,8 +184,8 @@ const RegisterScreen = (navigation) => {
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
       style={styles.linear}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -207,7 +203,8 @@ const RegisterScreen = (navigation) => {
               alignItems: 'center',
             }}>
             <View style={styles.imgView}>
-              <TouchableOpacity activeOpacity={0.8}
+              <TouchableOpacity
+                activeOpacity={0.8}
                 onPress={launchImageLibrary}
                 style={styles.editBtnSection}>
                 <Image
@@ -229,7 +226,7 @@ const RegisterScreen = (navigation) => {
         </View>
         <View style={styles.form}>
           <KeyboardAvoidingView enabled>
-            <View style={[styles.SectionStyle, { marginTop: 40 }]}>
+            <View style={[styles.SectionStyle, {marginTop: 40}]}>
               <View style={styles.iconLeft}>
                 <Image
                   source={require('../../../asessts/images/user-icon.png')}
@@ -250,15 +247,14 @@ const RegisterScreen = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
-              {nameEmptyErorr &&
-                <View style={styles.iconRight} >
-
+              {nameEmptyErorr && (
+                <View style={styles.iconRight}>
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
                 </View>
-              }
+              )}
             </View>
             <View style={styles.SectionStyle}>
               <View style={styles.iconLeft}>
@@ -281,15 +277,14 @@ const RegisterScreen = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
-              {emailEmptyErorr &&
+              {emailEmptyErorr && (
                 <View style={styles.iconRight}>
-
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
                 </View>
-              }
+              )}
             </View>
             <View style={styles.SectionStyle}>
               <View style={styles.iconLeft}>
@@ -312,15 +307,14 @@ const RegisterScreen = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
-              {companyEmptyErorr &&
-                <View style={styles.iconRight} >
-
+              {companyEmptyErorr && (
+                <View style={styles.iconRight}>
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
                 </View>
-              }
+              )}
             </View>
             <View style={styles.SectionStyle}>
               <View style={styles.iconLeft}>
@@ -343,15 +337,14 @@ const RegisterScreen = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
-              {phoneEmptyErorr &&
+              {phoneEmptyErorr && (
                 <View style={styles.iconRight}>
-
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
                 </View>
-              }
+              )}
             </View>
             <View style={styles.SectionStyle}>
               <View style={styles.iconLeft}>
@@ -375,15 +368,14 @@ const RegisterScreen = (navigation) => {
                 }
                 blurOnSubmit={false}
               />
-              {pwdEmptyErorr &&
+              {pwdEmptyErorr && (
                 <View style={styles.iconRight}>
-
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
                 </View>
-              }
+              )}
             </View>
 
             <View style={styles.SectionStyle}>
@@ -404,15 +396,14 @@ const RegisterScreen = (navigation) => {
                 secureTextEntry={true}
                 blurOnSubmit={false}
               />
-              {confirmPwdEmptyErorr &&
+              {confirmPwdEmptyErorr && (
                 <View style={styles.iconRight}>
-
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
                 </View>
-              }
+              )}
             </View>
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}>{errortext}</Text>
@@ -420,10 +411,10 @@ const RegisterScreen = (navigation) => {
             <View style={styles.textView}>
               <TouchableOpacity
                 activeOpacity={0.8}
-                style={{ padding: 10 }}
+                style={{padding: 10}}
                 onPress={() => setTermAndCondition()}>
                 <Image
-                  style={{ height: 20, width: 20 }}
+                  style={{height: 20, width: 20}}
                   source={
                     agree
                       ? require('../../../asessts/images/Icon-check-circle.png')
@@ -446,7 +437,6 @@ const RegisterScreen = (navigation) => {
               </TouchableOpacity>
             </LinearGradient>
           </KeyboardAvoidingView>
-          {/* <Toast ref={(ref) => Toast.setRef(ref)} /> */}
         </View>
       </ScrollView>
     </LinearGradient>
@@ -535,7 +525,6 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     marginHorizontal: 8,
     alignItems: 'center',
-
   },
   iconRight: {
     position: 'absolute',

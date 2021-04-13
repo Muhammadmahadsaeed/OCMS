@@ -57,6 +57,12 @@ const Auth = createStackNavigator(
         headerShown: false,
       }),
     },
+    EmailOtp: {
+      screen: AuthScreens.EmailOTP,
+      navigationOptions: ({navigation}) => ({
+        headerShown: false,
+      }),
+    },
     Register: {
       screen: AuthScreens.register,
       navigationOptions: {
@@ -182,9 +188,9 @@ Camera_StackNavigator.navigationOptions = ({navigation}) => {
   };
 };
 const RootNavigator = createSwitchNavigator({
-  SplashScreen: AuthScreens.Splash,
-  TermAndConditionScreen: AuthScreens.TermAndCondition,
-  AuthScreen: Auth,
+  // SplashScreen: AuthScreens.Splash,
+  // TermAndConditionScreen: AuthScreens.TermAndCondition,
+  // AuthScreen: Auth,
   HomeScreen: HomeStack,
 });
 

@@ -7,6 +7,7 @@ import LoginPhoneEmailButton from './LoginPhoneEmailButton';
 import RegisterPhoneEmailButton from './RegisterPhoneEmailButton';
 import PhoneLogin from './PhoneLogin';
 import PhoneOTP from './PhoneOTP';
+import EmailOTP from './EmailOTP';
 import PhoneRegister from './PhoneRegister';
 export {
   login,
@@ -18,5 +19,6 @@ export {
   ForgotPassword,
   PhoneLogin,
   PhoneOTP,
-  PhoneRegister
+  PhoneRegister,
+  EmailOTP
 };

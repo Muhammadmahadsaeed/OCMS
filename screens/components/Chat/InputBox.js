@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from 'react';
+import React, {createRef, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -19,12 +19,12 @@ import AudioRecorderPlayer, {
 } from 'react-native-audio-recorder-player';
 import CryptoJS from 'crypto-js';
 import ImagePicker from 'react-native-image-crop-picker';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import RNFS from 'react-native-fs';
 class InputBox extends React.Component {
   constructor(props) {
     super(props);
-    this.inputRef = React.createRef()
+    this.inputRef = React.createRef();
     this.state = {
       message: '',
       isLoggingIn: false,
@@ -81,14 +81,12 @@ class InputBox extends React.Component {
     ImagePicker.openCamera({
       mediaType: type,
       includeBase64: true,
-      useFrontCamera: true
-
-    }).then(res => {
-      
-      // console.log(image);
+      useFrontCamera: true,
     })
-      .catch((err) => console.log(err))
-
+      .then((res) => {
+        // console.log(image);
+      })
+      .catch((err) => console.log(err));
   };
 
   onMicrophonePress = () => {
@@ -118,15 +116,15 @@ class InputBox extends React.Component {
   //   };
 
   onSendPress = async () => {
-    const { message } = this.state;
+    const {message} = this.state;
     // Encrypt
     var ciphertext = CryptoJS.AES.encrypt(message, 'secret key 123').toString();
     this.props.getDataFromInput(ciphertext);
-    this.setState({ message: '' });
+    this.setState({message: ''});
   };
   componentDidMount() {
     this.checkPermission().then(async (hasPermission) => {
-      this.setState({ hasPermission });
+      this.setState({hasPermission});
       if (!hasPermission) return;
     });
   }
@@ -198,15 +196,17 @@ class InputBox extends React.Component {
   };
   handleAudio = () => {
     if (!this.state.startAudio) {
-      this.setState({ startAudio: true });
+      this.setState({startAudio: true});
       this.onStartRecording();
     } else {
-      this.setState({ startAudio: false });
+      this.setState({startAudio: false});
       this.onStopRecord();
     }
   };
   onStartRecording = async () => {
     const path = Platform.select({
+      // ios: `${RNFS.DocumentDirectoryPath}/OCMS`,
+      // android: `${RNFS.DocumentDirectoryPath}/OCMS/audio/${this.messageIdGenerator()}.mp4`
       ios: 'hello.m4a',
       android: `sdcard/${this.messageIdGenerator()}.mp4`,
     });
@@ -225,9 +225,7 @@ class InputBox extends React.Component {
           Math.floor(e.current_position),
         ),
       });
-
     });
-
   };
   onStopRecord = async () => {
     const result = await this.audioRecorderPlayer.stopRecorder();
@@ -235,16 +233,20 @@ class InputBox extends React.Component {
     this.setState({
       recordSecs: 0,
     });
-    this.props.getDataFromInput(result);
-
+    let arr = []
+    let audio = {
+      uri : result
+    }
+    arr.push(audio)
+    this.props.getDataFromInput(arr);
   };
   render() {
-    const { message } = this.state;
+    const {message} = this.state;
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={100}
-        style={{ width: '100%' }}>
+        style={{width: '100%'}}>
         <View style={styles.container}>
           <View style={styles.mainContainer}>
             <Image
@@ -258,10 +260,10 @@ class InputBox extends React.Component {
               style={styles.textInput}
               multiline
               value={message}
-              onChangeText={(text) => this.setState({ message: text })}
+              onChangeText={(text) => this.setState({message: text})}
             />
             <TouchableOpacity
-              style={{ padding: 5 }}
+              style={{padding: 5}}
               onPress={() => this.props.openAttachmentModal()}>
               <Image
                 source={require('../../../asessts/images/attachment-line.png')}
@@ -271,7 +273,7 @@ class InputBox extends React.Component {
 
             {!message && (
               <TouchableOpacity
-                style={{ padding: 5 }}
+                style={{padding: 5}}
                 onPress={() => this.captureImage('photo')}>
                 <Image
                   source={require('../../../asessts/images/camera-icon.png')}
