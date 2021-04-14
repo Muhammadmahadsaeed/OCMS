@@ -21,6 +21,7 @@ import CryptoJS from 'crypto-js';
 import ImagePicker from 'react-native-image-crop-picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
+import RNFetchBlob from 'rn-fetch-blob';
 class InputBox extends React.Component {
   constructor(props) {
     super(props);
@@ -233,12 +234,30 @@ class InputBox extends React.Component {
     this.setState({
       recordSecs: 0,
     });
-    let arr = []
-    let audio = {
-      uri : result
-    }
-    arr.push(audio)
-    this.props.getDataFromInput(arr);
+    let arr = [];
+    const fileName = result.replace('file:///', '');
+    RNFetchBlob.fs.readStream(fileName, 'base64', 1048576).then((ifStream) => {
+      ifStream.open();
+      ifStream.onData((data) => {
+        let base64 = `data:audio/mpeg;base64,${data}`;
+        const param = {
+          base64: base64,
+          size: 1048576, // size, in bytes
+          // type: res.type,
+          // name: res.name,
+        };
+        console.log('params doc==', param);
+        let audio = {
+          uri: param.base64,
+        };
+        arr.push(audio);
+        this.props.getDataFromInput(arr);
+      });
+      ifStream.onError((err) => {
+        console.log(err);
+      });
+    });
+   
   };
   render() {
     const {message} = this.state;

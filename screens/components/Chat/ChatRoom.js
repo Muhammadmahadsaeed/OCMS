@@ -14,7 +14,7 @@ import {
 import InputBox from './InputBox';
 import Conversation from './conversation';
 import ConversationHeader from './ConversationHeader';
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
@@ -26,7 +26,7 @@ import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
 import axios from 'axios';
-import { api } from '../../config/env';
+import {api} from '../../config/env';
 const socket = socketIO('http://192.168.100.54:4000', {
   transports: ['websocket'],
   jsonp: false,
@@ -41,7 +41,7 @@ class ChatRoom extends React.Component {
     super(props);
     this.state = {
       userId: '',
-      data: [{ name: 'kashan' }, { name: 'mahad' }, { name: 'zaka' }],
+      data: [{name: 'kashan'}, {name: 'mahad'}, {name: 'zaka'}],
       receiverId: '',
     };
   }
@@ -57,7 +57,7 @@ class ChatRoom extends React.Component {
     // });
   }
   getDataFromInput = (msg) => {
-    this.setState({ data: [...this.state.data, ...msg] });
+    this.setState({data: [...this.state.data, ...msg]});
     // socket.emit('input', {
     //   name: 'mahad',
     //   messageContent: msg,
@@ -148,30 +148,82 @@ class ChatRoom extends React.Component {
       }
     }
   };
-  selectImage = async () =>{
-    
-  }
+  selectImage = async () => {};
+  selectAudio = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.audio],
+      });
+      console.log("res===",res)
+      const fileName = res.uri.replace('file://', '');
+      RNFetchBlob.fs
+        .readStream(fileName, 'base64', 1048576)
+        .then((ifStream) => {
+          ifStream.open();
+          ifStream.onData((data) => {
+            let base64 = `data:${res.type};base64,${data}`;
+            const param = {
+              base64: base64,
+              width: 300,
+              height: 300,
+              fileName: res.name,
+              size: 1048576, // size, in bytes
+              type: res.type,
+              name: res.name,
+            };
+            console.log('params doc==', param);
+          });
+          ifStream.onError((err) => {
+            console.log(err);
+          });
+        });
+    } catch (err) {
+      //Handling any exception (If any)
+      if (DocumentPicker.isCancel(err)) {
+        //If user canceled the document selection
+        console.log('Canceled from single doc picker');
+      } else {
+        //For Unknown Error
+        console.log('Unknown Error: ' + JSON.stringify(err));
+        throw err;
+      }
+    }
+  };
   renderContent = () => (
-    <View style={{ flex: 1, }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 10 }}>
+    <View style={{flex: 1}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-evenly',
+          marginVertical: 10,
+        }}>
         <View>
-          <TouchableOpacity onPress={() => this.selectImage()} activeOpacity={0.8}>
-            <Image source={require('../../../asessts/images/gallery-icon.png')} />
+          <TouchableOpacity
+            onPress={() => this.selectImage()}
+            activeOpacity={0.8}>
+            <Image
+              source={require('../../../asessts/images/gallery-icon.png')}
+            />
           </TouchableOpacity>
         </View>
 
         <View>
-          <TouchableOpacity onPress={() => this.selectDocument()} activeOpacity={0.8}>
+          <TouchableOpacity
+            onPress={() => this.selectDocument()}
+            activeOpacity={0.8}>
             <Image source={require('../../../asessts/images/doc-icon.png')} />
           </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity>
-            <Image source={require('../../../asessts/images/gallery-icon.png')} />
+          <TouchableOpacity
+            onPress={() => this.selectAudio()}
+            activeOpacity={0.8}>
+            <Image
+              source={require('../../../asessts/images/gallery-icon.png')}
+            />
           </TouchableOpacity>
         </View>
       </View>
-
     </View>
   );
   openAttachmentModal = () => {
@@ -179,13 +231,13 @@ class ChatRoom extends React.Component {
   };
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <ConversationHeader navigationProps={this.props} />
         <LinearGradient
           style={styles.container}
           colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 1 }}>
+          start={{x: 0, y: 1}}
+          end={{x: 1, y: 1}}>
           <View style={styles.innerContainer}>
             <FlatList
               style={{
@@ -195,7 +247,7 @@ class ChatRoom extends React.Component {
               }}
               data={this.state.data}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
+              renderItem={({item}) => (
                 <Conversation myId={this.state.userId} message={item} />
               )}
               inverted={true}

@@ -14,11 +14,13 @@ import {
   ToastAndroid,
   Platform,
   AlertIOS,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
 import ImagePicker from 'react-native-image-crop-picker';
+import {api} from '../../config/env';
 
 const RegisterScreen = (navigation) => {
   const [userName, setUserName] = useState('');
@@ -28,16 +30,26 @@ const RegisterScreen = (navigation) => {
   const [userPassword, setUserPassword] = useState('');
   const [userConfirmPassword, setUserConfirmPassword] = useState('');
   const [fileUri, setFileUri] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [imgUri, setImgUri] = useState('');
   const [errortext, setErrortext] = useState('');
+
+  const [loading, setLoading] = useState(false);
   const [agree, setAgree] = useState(false);
   const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
+  const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
+
   const [nameEmptyErorr, setNameEmptyErorr] = useState(false);
   const [emailEmptyErorr, setEmailEmptyErorr] = useState(false);
   const [companyEmptyErorr, setCompanyEmptyErorr] = useState(false);
   const [phoneEmptyErorr, setPhoneEmptyErorr] = useState(false);
   const [pwdEmptyErorr, setpwdEmptyErorr] = useState(false);
   const [confirmPwdEmptyErorr, setconfirmPwdEmptyErorr] = useState(false);
+  const [isEmailWrong, setIsEmailWrong] = useState(false);
+  const [isEmailCorrect, setIsEmailCorrect] = useState(false);
+  const [passwordConfirmed, setPasswordConfirmed] = useState(false);
+  const [showPasswordNotMatch, setShowPasswordNotMatch] = useState(false);
+
   const userNameInputRef = createRef();
   const emailInputRef = createRef();
   const companyInputRef = createRef();
@@ -46,113 +58,111 @@ const RegisterScreen = (navigation) => {
   const confirmPasswordInputRef = createRef();
 
   const handleSubmitButton = () => {
-    const msg = 'Please check your email';
-    if (Platform.OS === 'android') {
-      ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+    if (
+      !userName &&
+      !userEmail &&
+      !companyName &&
+      !phoneNumber &&
+      !userPassword &&
+      !userConfirmPassword
+    ) {
+      setNameEmptyErorr(true);
+      setEmailEmptyErorr(true);
+      setCompanyEmptyErorr(true);
+      setpwdEmptyErorr(true);
+      setPhoneEmptyErorr(true);
+      setconfirmPwdEmptyErorr(true);
+      setIsEmailCorrect(false);
+      setIsEmailWrong(false);
+    } else if (!userName) {
+      setNameEmptyErorr(true);
+      return;
+    } else if (!userEmail) {
+      setIsEmailCorrect(false);
+      setIsEmailWrong(false);
+      setEmailEmptyErorr(true);
+      return;
+    } else if (!companyName) {
+      setCompanyEmptyErorr(true);
+      return;
+    } else if (!phoneNumber) {
+      setPhoneEmptyErorr(true);
+      return;
+    } else if (!userPassword) {
+      setpwdEmptyErorr(true);
+      return;
+    } else if (!userConfirmPassword) {
+      setconfirmPwdEmptyErorr(true);
+      return;
     } else {
-      AlertIOS.alert(msg);
+      const msg = 'Please check your email';
+      setLoading(true);
+      const user = {
+        userName: userName,
+        mobileNo: phoneNumber,
+        email: userEmail,
+        profile: imgUri,
+        password: userPassword,
+        age: '23',
+        role: 'user',
+        loginCompany: 'Mutex',
+      };
+      fetch(`${api}user/`, {
+        method: 'POST',
+        body: JSON.stringify(user),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          //Hide Loader
+          setLoading(false);
+          console.log(responseJson);
+
+          if (responseJson.status === '1') {
+            if (Platform.OS === 'android') {
+              ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+            } else {
+              AlertIOS.alert(msg);
+            }
+            setErrortext('');
+            console.log('Registration Successful. Please Login to proceed');
+          } else {
+            setErrortext(responseJson.data[0].msg);
+          }
+        })
+        .catch((error) => {
+          //Hide Loader
+          setLoading(false);
+          console.error(error);
+        });
     }
-    // setErrortext('');
-    // if (!userName) {
-    //   alert('Please fill Name');
-    //   return;
-    // }
-    // if (!userEmail) {
-    //   alert('Please fill Email');
-    //   return;
-    // }
-    // if (!userAge) {
-    //   alert('Please fill Age');
-    //   return;
-    // }
-    // if (!userAddress) {
-    //   alert('Please fill Address');
-    //   return;
-    // }
-    // if (!userPassword) {
-    //   alert('Please fill Password');
-    //   return;
-    // }
-    // //Show Loader
-    // setLoading(true);
-    // var dataToSend = {
-    //   name: userName,
-    //   email: userEmail,
-    //   age: userAge,
-    //   address: userAddress,
-    //   password: userPassword,
-    // };
-    // var formBody = [];
-    // for (var key in dataToSend) {
-    //   var encodedKey = encodeURIComponent(key);
-    //   var encodedValue = encodeURIComponent(dataToSend[key]);
-    //   formBody.push(encodedKey + '=' + encodedValue);
-    // }
-    // formBody = formBody.join('&');
-    // fetch('http://localhost:3000/api/user/register', {
-    //   method: 'POST',
-    //   body: formBody,
-    //   headers: {
-    //     //Header Defination
-    //     'Content-Type':
-    //     'application/x-www-form-urlencoded;charset=UTF-8',
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     //Hide Loader
-    //     setLoading(false);
-    //     console.log(responseJson);
-    //     // If server response message same as Data Matched
-    //     if (responseJson.status === 'success') {
-    //       setIsRegistraionSuccess(true);
-    //       console.log(
-    //         'Registration Successful. Please Login to proceed'
-    //       );
-    //     } else {
-    //       setErrortext(responseJson.msg);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     //Hide Loader
-    //     setLoading(false);
-    //     console.error(error);
-    //   });
   };
-  //   if (isRegistraionSuccess) {
-  //     return (
-  //       <View
-  //         style={{
-  //           flex: 1,
-  //           backgroundColor: '#307ecc',
-  //           justifyContent: 'center',
-  //         }}>
-  //         <Image
-  //           source={require('../Image/success.png')}
-  //           style={{
-  //             height: 150,
-  //             resizeMode: 'contain',
-  //             alignSelf: 'center'
-  //           }}
-  //         />
-  //         <Text style={styles.successTextStyle}>
-  //           Registration Successful
-  //         </Text>
-  //         <TouchableOpacity
-  //           style={styles.buttonStyle}
-  //           activeOpacity={0.5}
-  //           onPress={() => props.navigation.navigate('LoginScreen')}>
-  //           <Text style={styles.buttonTextStyle}>Login Now</Text>
-  //         </TouchableOpacity>
-  //       </View>
-  //     );
-  //   }
+  const checkPassword = (e) => {
+    if (userPassword === e) {
+      setPasswordConfirmed(true);
+      setShowPasswordNotMatch(false);
+      setUserConfirmPassword(e);
+    } else {
+      setPasswordConfirmed(false);
+      setShowPasswordNotMatch(true);
+    }
+  };
   const setTermAndCondition = () => {
     setAgree(!agree);
   };
+  const setPasswordVisibale = () => {
+    setHidePassword(!hidePassword);
+  };
+  const setConfirmPasswordVisibale = () => {
+    setHideConfirmPassword(!hideConfirmPassword);
+  };
+
   const launchImageLibrary = async () => {
     if (fileUri) {
       setFileUri('');
+      setImgUri('');
     } else {
       ImagePicker.openPicker({
         mediaType: 'photo',
@@ -164,6 +174,8 @@ const RegisterScreen = (navigation) => {
         freeStyleCropEnabled: true,
       })
         .then((response) => {
+          let base64 = `data:${response.mime};base64,${response.data}`;
+          setImgUri(base64);
           setFileUri(response.path);
         })
         .catch((err) => console.log(err));
@@ -179,6 +191,22 @@ const RegisterScreen = (navigation) => {
           style={styles.imageIconStyle}
         />
       );
+    }
+  };
+  const validate = (text) => {
+    let email = text.toLowerCase();
+    email = email.trim();
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(email) === false) {
+      setIsEmailCorrect(false);
+      setIsEmailWrong(true);
+      setEmailEmptyErorr(false);
+      return false;
+    } else {
+      setIsEmailCorrect(true);
+      setIsEmailWrong(false);
+      setEmailEmptyErorr(false);
+      setUserEmail(email);
     }
   };
   return (
@@ -242,6 +270,9 @@ const RegisterScreen = (navigation) => {
                 placeholderTextColor={colors.Colors.gray}
                 autoCapitalize="sentences"
                 returnKeyType="next"
+                onFocus={() => {
+                  setNameEmptyErorr(false);
+                }}
                 onSubmitEditing={() =>
                   emailInputRef.current && emailInputRef.current.focus()
                 }
@@ -265,26 +296,43 @@ const RegisterScreen = (navigation) => {
               </View>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(text) => setUserEmail(text)}
+                onChangeText={(text) => validate(text)}
+                // onChangeText={(text) => setUserEmail(text)}
                 underlineColorAndroid="#f000"
                 placeholder="Enter your email"
                 placeholderTextColor={colors.Colors.gray}
                 keyboardType="email-address"
                 ref={emailInputRef}
                 returnKeyType="next"
+                onFocus={() => {
+                  setEmailEmptyErorr(false);
+                }}
                 onSubmitEditing={() =>
                   companyInputRef.current && companyInputRef.current.focus()
                 }
                 blurOnSubmit={false}
               />
-              {emailEmptyErorr && (
-                <View style={styles.iconRight}>
+
+              <View style={styles.iconRight}>
+                {isEmailWrong && (
+                  <Image
+                    source={require('../../../asessts/images/wrong.png')}
+                    style={styles.iconRightImage}
+                  />
+                )}
+                {isEmailCorrect && (
+                  <Image
+                    source={require('../../../asessts/images/correct.png')}
+                    style={styles.iconRightImage}
+                  />
+                )}
+                {emailEmptyErorr && (
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
-                </View>
-              )}
+                )}
+              </View>
             </View>
             <View style={styles.SectionStyle}>
               <View style={styles.iconLeft}>
@@ -302,6 +350,9 @@ const RegisterScreen = (navigation) => {
                 keyboardType="default"
                 ref={companyInputRef}
                 returnKeyType="next"
+                onFocus={() => {
+                  setCompanyEmptyErorr(false);
+                }}
                 onSubmitEditing={() =>
                   numberInputRef.current && numberInputRef.current.focus()
                 }
@@ -332,6 +383,9 @@ const RegisterScreen = (navigation) => {
                 keyboardType="numeric"
                 ref={numberInputRef}
                 returnKeyType="next"
+                onFocus={() => {
+                  setPhoneEmptyErorr(false);
+                }}
                 onSubmitEditing={() =>
                   passwordInputRef.current && passwordInputRef.current.focus()
                 }
@@ -361,21 +415,49 @@ const RegisterScreen = (navigation) => {
                 placeholderTextColor={colors.Colors.gray}
                 ref={passwordInputRef}
                 returnKeyType="next"
-                secureTextEntry={true}
+                onFocus={() => {
+                  setpwdEmptyErorr(false);
+                }}
+                secureTextEntry={hidePassword}
                 onSubmitEditing={() =>
                   confirmPasswordInputRef.current &&
                   confirmPasswordInputRef.current.focus()
                 }
                 blurOnSubmit={false}
               />
-              {pwdEmptyErorr && (
-                <View style={styles.iconRight}>
+
+              <View style={styles.iconRight}>
+                {pwdEmptyErorr ? (
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
-                </View>
-              )}
+                ) : (
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: 3,
+                      height: 45,
+                      width: 35,
+                      justifyContent: 'center',
+                      padding: 4,
+                      alignItems: 'center',
+                    }}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      setPasswordVisibale();
+                    }}>
+                    <Image
+                      source={
+                        hidePassword
+                          ? require('../../../asessts/images/greenhide.png')
+                          : require('../../../asessts/images/greenview.png')
+                      }
+                      style={styles.iconRightImage}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
 
             <View style={styles.SectionStyle}>
@@ -387,26 +469,80 @@ const RegisterScreen = (navigation) => {
               </View>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(text) => setUserConfirmPassword(text)}
+                onChangeText={(e) => checkPassword(e)}
+                // onChangeText={(text) => setUserConfirmPassword(text)}
                 underlineColorAndroid="#f000"
                 placeholder="Enter confirm password"
                 placeholderTextColor={colors.Colors.gray}
                 ref={confirmPasswordInputRef}
                 returnKeyType="next"
-                secureTextEntry={true}
+                onFocus={() => {
+                  setconfirmPwdEmptyErorr(false);
+                }}
+                secureTextEntry={hideConfirmPassword}
                 blurOnSubmit={false}
               />
-              {confirmPwdEmptyErorr && (
-                <View style={styles.iconRight}>
+
+              <View style={styles.iconRight}>
+                {confirmPwdEmptyErorr ? (
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
-                </View>
-              )}
+                ) : (
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: 3,
+                      height: 45,
+                      width: 35,
+                      justifyContent: 'center',
+                      padding: 4,
+                      alignItems: 'center',
+                    }}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      setConfirmPasswordVisibale();
+                    }}>
+                    <Image
+                      source={
+                        hideConfirmPassword
+                          ? require('../../../asessts/images/greenhide.png')
+                          : require('../../../asessts/images/greenview.png')
+                      }
+                      style={styles.iconRightImage}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
+            {passwordConfirmed && (
+              <View style={styles.textView}>
+                <Text
+                  style={{
+                    color: 'green',
+                    fontFamily: font.Fonts.josefReg,
+                  }}>
+                  Password match
+                </Text>
+              </View>
+            )}
+            {showPasswordNotMatch && (
+              <View style={styles.textView}>
+                <Text
+                  style={{
+                    color: 'red',
+                    fontFamily: font.Fonts.josefReg,
+                  }}>
+                  Password does not match
+                </Text>
+              </View>
+            )}
+
             {errortext != '' ? (
-              <Text style={styles.errorTextStyle}>{errortext}</Text>
+              <View style={styles.errorView}>
+                <Text style={styles.errorTextStyle}>{errortext}</Text>
+              </View>
             ) : null}
             <View style={styles.textView}>
               <TouchableOpacity
@@ -433,7 +569,11 @@ const RegisterScreen = (navigation) => {
               <TouchableOpacity
                 style={styles.button}
                 onPress={handleSubmitButton}>
-                <Text style={styles.buttonText}>Register</Text>
+                {loading ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Text style={styles.buttonText}>Register</Text>
+                )}
               </TouchableOpacity>
             </LinearGradient>
           </KeyboardAvoidingView>
@@ -579,8 +719,9 @@ const styles = StyleSheet.create({
 
   errorTextStyle: {
     color: 'red',
-    textAlign: 'center',
-    fontSize: 14,
+    textAlign: 'left',
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 16,
   },
   successTextStyle: {
     color: 'white',
@@ -606,6 +747,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontFamily: font.Fonts.josefBold,
     textAlign: 'center',
+  },
+  errorView: {
+    flex: 1,
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
   textView: {
     flex: 1,

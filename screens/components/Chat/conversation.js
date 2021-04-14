@@ -52,12 +52,15 @@ class Conversation extends React.Component {
   };
 
   onStartPlay = async (e) => {
-    console.log('onStartPlay');
+   
+    const fileName = e.uri.replace('file:///', '');
+    console.log('onStartPlay', fileName);
     const path = Platform.select({
       ios: 'hello.m4a',
-      android: `sdcard/`,
+      android: fileName
+      // android: `sdcard/1a12d76b-30a3-4c8d-ac8c-3da437854e18.mp4`,
     });
-    console.log(path)
+    console.log(path);
     const msg = await this.audioRecorderPlayer.startPlayer(path);
     this.audioRecorderPlayer.setVolume(1.0);
     this.audioRecorderPlayer.addPlayBackListener((e) => {
@@ -77,7 +80,7 @@ class Conversation extends React.Component {
   };
   render() {
     const {message} = this.props;
-    console.log(message)
+    console.log(message);
     return (
       <View
         style={[
@@ -90,7 +93,7 @@ class Conversation extends React.Component {
         ]}>
         {/* {!isMyMessage() && <Text style={styles.name}>{plaintext}</Text>} */}
         <TouchableOpacity
-          onPress={this.onStartPlay}
+          onPress={() => this.onStartPlay(message)}
           style={{backgroundColor: 'red'}}>
           <Text>Play</Text>
         </TouchableOpacity>

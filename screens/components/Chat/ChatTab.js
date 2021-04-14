@@ -47,7 +47,7 @@ export default class ChatTab extends Component {
     // fetch(`${api}/message/6062cb84ac8ec71b54bfcd2e`)
     //   .then((response) => response.json())
     //   .then((json) => {
-       
+    //    console.log(json)
     //     this.setState({
     //       data: json.data,
     //       // data: this.state.data.concat(json),

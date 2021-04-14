@@ -1,5 +1,5 @@
 // Import React and Component
-import React, { useState, createRef } from 'react';
+import React, {useState, createRef} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -11,10 +11,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
+import {api} from '../../config/env';
 const LoginWithEmail = (navigation) => {
   const [userEmail, setUserEmail] = useState('');
 
@@ -31,77 +33,62 @@ const LoginWithEmail = (navigation) => {
   const passwordInputRef = createRef();
 
   const handleSubmitButton = () => {
-    // navigation.navigation.navigate('HomeScreen');
     // setErrortext('');
-    if(!userEmail && !userPassword){
-      setEmailEmptyErorr(true)
-      setPwdEmptyErorr(true)
+    if (!userEmail && !userPassword) {
+      setEmailEmptyErorr(true);
+      setPwdEmptyErorr(true);
+      setIsEmailCorrect(false);
+      setIsEmailWrong(false);
       return;
-    }
-    else if (!userEmail) {
-      setEmailEmptyErorr(true)
+    } else if (!userEmail) {
+      setEmailEmptyErorr(true);
+      setIsEmailCorrect(false);
+      setIsEmailWrong(false);
       return;
-    }
-    else if (!userPassword) {
-      setPwdEmptyErorr(true)
+    } else if (!userPassword) {
+      setPwdEmptyErorr(true);
       return;
+    } else {
+      setLoading(true);
+      let user = {
+        email: userEmail,
+        password: userPassword,
+        loginCompany: '605444a8e2924b2bec69e360',
+      };
+      fetch(`${api}auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          //Hide Loader
+          setLoading(false);
+          if (responseJson.status === '1') {
+            navigation.navigation.navigate('HomeScreen');
+            console.log('Registration Successful. Please Login to proceed');
+          } else {
+            setErrortext('Invalid email and password');
+          }
+        })
+        .catch((error) => {
+          //Hide Loader
+          setLoading(false);
+          console.error(error);
+        });
     }
-    // //Show Loader
-    // setLoading(true);
-    // var dataToSend = {
-    //   name: userName,
-    //   email: userEmail,
-    //   age: userAge,
-    //   address: userAddress,
-    //   password: userPassword,
-    // };
-    // var formBody = [];
-    // for (var key in dataToSend) {
-    //   var encodedKey = encodeURIComponent(key);
-    //   var encodedValue = encodeURIComponent(dataToSend[key]);
-    //   formBody.push(encodedKey + '=' + encodedValue);
-    // }
-    // formBody = formBody.join('&');
-    // fetch('http://localhost:3000/api/user/register', {
-    //   method: 'POST',
-    //   body: formBody,
-    //   headers: {
-    //     //Header Defination
-    //     'Content-Type':
-    //     'application/x-www-form-urlencoded;charset=UTF-8',
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     //Hide Loader
-    //     setLoading(false);
-    //     console.log(responseJson);
-    //     // If server response message same as Data Matched
-    //     if (responseJson.status === 'success') {
-    //       setIsRegistraionSuccess(true);
-    //       console.log(
-    //         'Registration Successful. Please Login to proceed'
-    //       );
-    //     } else {
-    //       setErrortext(responseJson.msg);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     //Hide Loader
-    //     setLoading(false);
-    //     console.error(error);
-    //   });
   };
 
   const validate = (text) => {
     let email = text.toLowerCase();
-    email = email.trim()
+    email = email.trim();
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(email) === false) {
       setIsEmailCorrect(false);
       setIsEmailWrong(true);
       setEmailEmptyErorr(false);
-      setUserEmail(email);
       return false;
     } else {
       setIsEmailCorrect(true);
@@ -111,13 +98,13 @@ const LoginWithEmail = (navigation) => {
     }
   };
   const setPasswordVisibale = () => {
-    setHidePassword(!hidePassword)
-  }
+    setHidePassword(!hidePassword);
+  };
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
       style={styles.linear}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -142,7 +129,7 @@ const LoginWithEmail = (navigation) => {
         </View>
         <View style={styles.form}>
           <KeyboardAvoidingView enabled>
-            <View style={[styles.SectionStyle, { marginTop: 40 }]}>
+            <View style={[styles.SectionStyle, {marginTop: 40}]}>
               <View style={styles.iconLeft}>
                 <Image
                   source={require('../../../asessts/images/email-icon.png')}
@@ -187,14 +174,13 @@ const LoginWithEmail = (navigation) => {
                     style={styles.iconRightImage}
                   />
                 )}
-                {emailEmptyErorr &&
+                {emailEmptyErorr && (
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
-                }
+                )}
               </View>
-
             </View>
             <View style={styles.SectionStyle}>
               <View style={styles.iconLeft}>
@@ -225,13 +211,13 @@ const LoginWithEmail = (navigation) => {
                 }
               />
 
-              <View style={styles.iconRight} >
-                {pwdEmptyErorr ?
+              <View style={styles.iconRight}>
+                {pwdEmptyErorr ? (
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
-                  :
+                ) : (
                   <TouchableOpacity
                     style={{
                       position: 'absolute',
@@ -244,7 +230,7 @@ const LoginWithEmail = (navigation) => {
                     }}
                     activeOpacity={0.8}
                     onPress={() => {
-                      setPasswordVisibale()
+                      setPasswordVisibale();
                     }}>
                     <Image
                       source={
@@ -255,17 +241,18 @@ const LoginWithEmail = (navigation) => {
                       style={styles.iconRightImage}
                     />
                   </TouchableOpacity>
-                }
+                )}
               </View>
-
             </View>
             {errortext != '' ? (
-              <Text style={styles.errorTextStyle}>{errortext}</Text>
+              <View style={styles.errorView}>
+                <Text style={styles.errorTextStyle}>{errortext}</Text>
+              </View>
             ) : null}
             <View style={styles.textView}>
               <TouchableOpacity
                 activeOpacity={0.8}
-                style={{ padding: 10 }}
+                style={{padding: 10}}
                 onPress={() => navigation.navigation.navigate('ForgotPwd')}>
                 <Text style={styles.termText}>Forgot Password?</Text>
               </TouchableOpacity>
@@ -277,12 +264,16 @@ const LoginWithEmail = (navigation) => {
               <TouchableOpacity
                 style={styles.button}
                 onPress={handleSubmitButton}>
-                <Text style={styles.buttonText}>Login</Text>
+                {loading ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Text style={styles.buttonText}>Login</Text>
+                )}
               </TouchableOpacity>
             </LinearGradient>
             <LinearGradient
               colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-              style={[styles.linearButton, { marginBottom: 40 }]}>
+              style={[styles.linearButton, {marginBottom: 40}]}>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => navigation.navigation.navigate('Register')}>
@@ -360,7 +351,6 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     marginHorizontal: 8,
     alignItems: 'center',
-
   },
   iconLeftImage: {
     resizeMode: 'contain',
@@ -375,7 +365,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 4,
     alignItems: 'center',
-
   },
   iconRightImage: {
     resizeMode: 'contain',
@@ -417,8 +406,9 @@ const styles = StyleSheet.create({
 
   errorTextStyle: {
     color: 'red',
-    textAlign: 'center',
-    fontSize: 14,
+    textAlign: 'left',
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 16,
   },
   successTextStyle: {
     color: 'white',
@@ -444,6 +434,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontFamily: font.Fonts.josefBold,
     textAlign: 'center',
+  },
+  errorView:{
+    flex: 1,
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
   textView: {
     flex: 1,
