@@ -14,6 +14,17 @@ class Conversation extends React.Component {
     super(props);
     this.audioRecorderPlayer = new AudioRecorderPlayer();
     this.audioRecorderPlayer.setSubscriptionDuration(0.09);
+    this.state = {
+      message: '',
+      isLoggingIn: false,
+      recordSecs: 0,
+      recordTime: '00:00:00',
+      currentPositionSec: 0,
+      currentDurationSec: 0,
+      playTime: '00:00:00',
+      duration: '00:00:00',
+      startAudio: false,
+    };
   }
 
   isMyMessage = () => {
@@ -21,66 +32,40 @@ class Conversation extends React.Component {
     const senderId = '6062cb84ac8ec71b54bfcd2e';
     return senderId === myId;
   };
-  play = () => {
-    setPlayAudio(true);
-    console.log('play');
-    const sound = new Sound(message.audio, '', (error) => {
-      if (error) {
-        console.log('failed to load the sound', error);
-      }
-      setPlayAudio(false);
-      sound.play((success) => {
-        console.log(success, 'success play');
-        if (!success) {
-          Alert.alert('There was an error playing this audio');
-        }
-      });
-    });
-  };
-  renderAudio = () => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          play();
-        }}>
-        <Image
-          source={require('../../../asessts/images/play.png')}
-          style={styles.icon}
-        />
-      </TouchableOpacity>
-    );
-  };
+
+  renderAudio = () => {};
 
   onStartPlay = async (e) => {
-   
     const fileName = e.uri.replace('file:///', '');
-    console.log('onStartPlay', fileName);
     const path = Platform.select({
       ios: 'hello.m4a',
-      android: fileName
+      android: fileName,
       // android: `sdcard/1a12d76b-30a3-4c8d-ac8c-3da437854e18.mp4`,
     });
-    console.log(path);
-    const msg = await this.audioRecorderPlayer.startPlayer(path);
-    this.audioRecorderPlayer.setVolume(1.0);
-    this.audioRecorderPlayer.addPlayBackListener((e) => {
-      if (e.current_position === e.duration) {
-        console.log('finished');
-        this.audioRecorderPlayer.stopPlayer();
-      }
-      // this.setState({
-      //   currentPositionSec: e.current_position,
-      //   currentDurationSec: e.duration,
-      //   playTime: this.audioRecorderPlayer.mmssss(
-      //     Math.floor(e.current_position),
-      //   ),
-      //   duration: this.audioRecorderPlayer.mmssss(Math.floor(e.duration)),
-      // });
-    });
+    try {
+      const msg = await this.audioRecorderPlayer.startPlayer(path);
+      this.audioRecorderPlayer.setVolume(1.0);
+      this.audioRecorderPlayer.addPlayBackListener((e) => {
+        if (e.current_position === e.duration) {
+          console.log('finished');
+          // this.audioRecorderPlayer.stopPlayer();
+          // this.audioRecorderPlayer.removePlayBackListener();
+        }
+        this.setState({
+          currentPositionSec: e.current_position,
+          currentDurationSec: e.duration,
+          playTime: this.audioRecorderPlayer.mmssss(
+            Math.floor(e.current_position),
+          ),
+          duration: this.audioRecorderPlayer.mmssss(Math.floor(e.duration)),
+        });
+      });
+    } catch (e) {
+      console.log("err======",e)
+    }
   };
   render() {
     const {message} = this.props;
-    console.log(message);
     return (
       <View
         style={[
@@ -92,15 +77,21 @@ class Conversation extends React.Component {
           // },
         ]}>
         {/* {!isMyMessage() && <Text style={styles.name}>{plaintext}</Text>} */}
-        <TouchableOpacity
-          onPress={() => this.onStartPlay(message)}
-          style={{backgroundColor: 'red'}}>
-          <Text>Play</Text>
-        </TouchableOpacity>
+        {message.uri ? (
+          <TouchableOpacity
+            onPress={() => this.onStartPlay(message)}
+            style={{backgroundColor: 'red'}}>
+            <Text>Play</Text>
+            <Text>
+              {this.state.playTime} / {this.state.duration}
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <Text style={styles.message}> {message.name} </Text>
+        )}
         {/* {this.isMyMessage() && (
           <Text style={styles.message}>{message.messageContent}</Text>
         )} */}
-        <Text style={styles.message}> {message.name} </Text>
         <Text style={styles.time}>11:45</Text>
       </View>
     );

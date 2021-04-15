@@ -171,9 +171,9 @@ export default class ChatTab extends Component {
                 showsVerticalScrollIndicator={false}
                 renderItem={(item) => this.renderItemComponent(item)}
                 keyExtractor={(item, index) => index.toString()}
-                onEndReached={this.handleLoadMore}
-                onEndReachedThreshold={0}
-                ListFooterComponent={this.renderFooter}
+                // onEndReached={this.handleLoadMore}
+                // onEndReachedThreshold={0}
+                // ListFooterComponent={this.renderFooter}
               />
             )}
           </View>

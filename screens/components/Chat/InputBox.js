@@ -9,6 +9,7 @@ import {
   Platform,
   Image,
   PermissionsAndroid,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import AudioRecorderPlayer, {
   AVEncoderAudioQualityIOSType,
@@ -21,6 +22,8 @@ import CryptoJS from 'crypto-js';
 import ImagePicker from 'react-native-image-crop-picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
+import colors from '../../constants/colors';
+import font from '../../constants/font';
 import RNFetchBlob from 'rn-fetch-blob';
 class InputBox extends React.Component {
   constructor(props) {
@@ -226,9 +229,11 @@ class InputBox extends React.Component {
           Math.floor(e.current_position),
         ),
       });
+      // return;
     });
   };
   onStopRecord = async () => {
+    console.log('onstop=======');
     const result = await this.audioRecorderPlayer.stopRecorder();
     this.audioRecorderPlayer.removeRecordBackListener();
     this.setState({
@@ -246,7 +251,6 @@ class InputBox extends React.Component {
           // type: res.type,
           // name: res.name,
         };
-        console.log('params doc==', param);
         let audio = {
           uri: param.base64,
         };
@@ -257,7 +261,32 @@ class InputBox extends React.Component {
         console.log(err);
       });
     });
-   
+  };
+  onCancel = async () => {
+    console.log('cancel');
+    console.log('onStopPlay');
+    const result = await this.audioRecorderPlayer.stopRecorder();
+    this.audioRecorderPlayer.removeRecordBackListener();
+    this.setState({
+      recordSecs: 0,
+      startAudio: false,
+    });
+  };
+  renderAudioRecorder = () => {
+    return (
+      <View style={styles.audioContainer}>
+        {/* <TouchableOpacity>
+          <Text>Delete</Text>
+        </TouchableOpacity> */}
+        <Text style={styles.audioTimerText}>{this.state.recordTime}</Text>
+        <TouchableOpacity
+          style={{padding: 5}}
+          activeOpacity={0.8}
+          onPress={this.onCancel}>
+          <Text style={styles.cancelText}>cancel</Text>
+        </TouchableOpacity>
+      </View>
+    );
   };
   render() {
     const {message} = this.state;
@@ -267,41 +296,45 @@ class InputBox extends React.Component {
         keyboardVerticalOffset={100}
         style={{width: '100%'}}>
         <View style={styles.container}>
-          <View style={styles.mainContainer}>
-            <Image
-              source={require('../../../asessts/images/emoji-smile.png')}
-              style={styles.icon}
-            />
-
-            <TextInput
-              ref={this.inputRef}
-              placeholder={'Type a message'}
-              style={styles.textInput}
-              multiline
-              value={message}
-              onChangeText={(text) => this.setState({message: text})}
-            />
-            <TouchableOpacity
-              style={{padding: 5}}
-              onPress={() => this.props.openAttachmentModal()}>
+          {this.state.startAudio ? (
+            this.renderAudioRecorder()
+          ) : (
+            <View style={styles.mainContainer}>
               <Image
-                source={require('../../../asessts/images/attachment-line.png')}
+                source={require('../../../asessts/images/emoji-smile.png')}
                 style={styles.icon}
               />
-            </TouchableOpacity>
 
-            {!message && (
+              <TextInput
+                ref={this.inputRef}
+                placeholder={'Type a message'}
+                style={styles.textInput}
+                multiline
+                value={message}
+                onChangeText={(text) => this.setState({message: text})}
+              />
               <TouchableOpacity
                 style={{padding: 5}}
-                onPress={() => this.captureImage('photo')}>
+                onPress={() => this.props.openAttachmentModal()}>
                 <Image
-                  source={require('../../../asessts/images/camera-icon.png')}
+                  source={require('../../../asessts/images/attachment-line.png')}
                   style={styles.icon}
                 />
               </TouchableOpacity>
-            )}
-          </View>
-          <TouchableOpacity onPress={this.onPress}>
+
+              {!message && (
+                <TouchableOpacity
+                  style={{padding: 5}}
+                  onPress={() => this.captureImage('photo')}>
+                  <Image
+                    source={require('../../../asessts/images/camera-icon.png')}
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+          <TouchableOpacity onPress={this.onPress} activeOpacity={0.8}>
             <View style={styles.buttonContainer}>
               {!message ? (
                 <Image
@@ -309,13 +342,7 @@ class InputBox extends React.Component {
                   style={styles.icon}
                 />
               ) : (
-                //   <MaterialCommunityIcons
-                //     name="microphone"
-                //     size={28}
-                //     color="white"
-                //   />
                 <Text>ll</Text>
-                //   <MaterialIcons name="send" size={28} color="white" />
               )}
             </View>
           </TouchableOpacity>
@@ -332,6 +359,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: 5,
     alignItems: 'flex-end',
+  },
+  audioContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    padding: 10,
+
+    borderRadius: 50,
+    marginRight: 7,
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  audioTimerText: {
+    color: 'black',
+    fontSize: 20,
+    // padding: 10,
+    fontFamily: font.Fonts.josefBold,
+  },
+  cancelText: {
+    color: 'red',
+    fontSize: 16,
+    // padding: 12,
+    fontFamily: font.Fonts.josefReg,
   },
   mainContainer: {
     flexDirection: 'row',

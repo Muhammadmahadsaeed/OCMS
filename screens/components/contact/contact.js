@@ -11,10 +11,11 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import ContactSearchBar from '../../common/ContactSearchbar';
-import {fetchUser} from '../../config/env';
+import {fetchUser, api} from '../../config/env';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
+var axios = require('axios');
 export default class contact extends Component {
   constructor() {
     super();
@@ -33,19 +34,37 @@ export default class contact extends Component {
   getData = async () => {
     const {limit} = this.state;
 
-    fetch(`${fetchUser}?_limit=${limit}`)
+    // fetch(`${fetchUser}?_limit=${limit}`)
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     this.setState({
+    //       data: this.state.data.concat(json),
+    //       isLoading: false,
+    //       loading: false,
+    //     });
+    //   })
+    //   .catch((err) => console.log(err));
+    const companyName = {
+      loginCompany: '605444a8e2924b2bec69e360',
+    };
+    fetch(`${api}contact/getAllContact/${limit}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(companyName),
+    })
       .then((response) => response.json())
       .then((json) => {
+        console.log(json.data);
         this.setState({
-          data: this.state.data.concat(json),
+          data: this.state.data.concat(json.data),
           isLoading: false,
           loading: false,
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log('==========', err));
   };
   searchUser = (value) => {
-    console.log(value)
+    console.log(value);
     this.setState({text: value});
   };
   renderItemComponent(props) {
@@ -158,7 +177,7 @@ const styles = StyleSheet.create({
   nameContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    flex:1,
+    flex: 1,
   },
   nameTxt: {
     color: 'black',

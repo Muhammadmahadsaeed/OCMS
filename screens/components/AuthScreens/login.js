@@ -64,9 +64,10 @@ const LoginWithEmail = (navigation) => {
       })
         .then((response) => response.json())
         .then((responseJson) => {
+          console.log(responseJson)
           //Hide Loader
           setLoading(false);
-          if (responseJson.status === '1') {
+          if (responseJson.status == '1') {
             navigation.navigation.navigate('HomeScreen');
             console.log('Registration Successful. Please Login to proceed');
           } else {
@@ -435,7 +436,7 @@ const styles = StyleSheet.create({
     fontFamily: font.Fonts.josefBold,
     textAlign: 'center',
   },
-  errorView:{
+  errorView: {
     flex: 1,
     width: '90%',
     alignSelf: 'center',

@@ -58,6 +58,7 @@ export default class Camera extends PureComponent {
   };
 
   handleCaptureOut = () => {
+    console.log("long press stopp========")
     if (this.state.capturing) this.camera.stopRecording();
   };
   saveImage = async (filePath) => {
@@ -91,7 +92,7 @@ export default class Camera extends PureComponent {
 
   handleLongCapture = async () => {
     const videoData = await this.camera.recordAsync();
-
+    console.log("long press========",videoData)
     this.setState({
       capturing: false,
       captures: [videoData, ...this.state.captures],

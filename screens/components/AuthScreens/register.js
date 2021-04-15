@@ -120,16 +120,17 @@ const RegisterScreen = (navigation) => {
           setLoading(false);
           console.log(responseJson);
 
-          if (responseJson.status === '1') {
+          if (responseJson.status == '1') {
             if (Platform.OS === 'android') {
               ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+              navigation.navigation.navigate('EmailOtp')
             } else {
               AlertIOS.alert(msg);
             }
             setErrortext('');
             console.log('Registration Successful. Please Login to proceed');
           } else {
-            setErrortext(responseJson.data[0].msg);
+            setErrortext(responseJson.data[0].msg || responseJson.message);
           }
         })
         .catch((error) => {
