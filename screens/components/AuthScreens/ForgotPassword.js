@@ -42,19 +42,12 @@ const ForgotPassword = ({navigation}) => {
     }
   };
   const handleSubmitPress = () => {
-    console.log(userEmail)
     if (userEmail === '') {
       setIsEmailCorrect(false);
       setIsEmailWrong(false);
       setEmailEmptyErorr(true);
-      // this.setState({
-      //   showEmailEmptyErorr: true,
-      //   showPasswordEmptyErorr: true,
-      //   correct: false,
-      //   wrong: false,
-      // });
     } else {
-      console.log(userEmail)
+      console.log(userEmail);
       const msg = 'Please check your email';
       if (Platform.OS === 'android') {
         ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);

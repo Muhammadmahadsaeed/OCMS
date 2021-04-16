@@ -12,6 +12,9 @@ import {
   ScrollView,
   Dimensions,
   ActivityIndicator,
+  ToastAndroid,
+  Platform,
+  AlertIOS,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
@@ -33,7 +36,7 @@ const LoginWithEmail = (navigation) => {
   const passwordInputRef = createRef();
 
   const handleSubmitButton = () => {
-    // setErrortext('');
+    const msg = 'Please verify your email';
     if (!userEmail && !userPassword) {
       setEmailEmptyErorr(true);
       setPwdEmptyErorr(true);
@@ -64,14 +67,21 @@ const LoginWithEmail = (navigation) => {
       })
         .then((response) => response.json())
         .then((responseJson) => {
-          console.log(responseJson)
-          //Hide Loader
           setLoading(false);
-          if (responseJson.status == '1') {
-            navigation.navigation.navigate('HomeScreen');
-            console.log('Registration Successful. Please Login to proceed');
-          } else {
+          if (responseJson.status == '0') {
+            //when email is not verified
+            if (Platform.OS === 'android') {
+              ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+              navigation.navigation.navigate('EmailOtp',{email: userEmail});
+            } else {
+              AlertIOS.alert(msg);
+            }
+            setErrortext('');
+          } // when email and password incorrect
+          else if (responseJson.status == '2') {
             setErrortext('Invalid email and password');
+          } else {
+            navigation.navigation.navigate('HomeScreen');
           }
         })
         .catch((error) => {
