@@ -11,20 +11,51 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Dimensions,
+  ToastAndroid,
+  Platform,
+  AlertIOS,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
 const PhoneLogin = ({navigation}) => {
   const [userEmail, setUserEmail] = useState('');
-  const [userPassword, setUserPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
+  const [emailEmptyErorr, setEmailEmptyErorr] = useState(false);
+  const [isEmailWrong, setIsEmailWrong] = useState(false);
+  const [isEmailCorrect, setIsEmailCorrect] = useState(false);
 
-  const passwordInputRef = createRef();
-
+  const validate = (text) => {
+    const email = text.toLowerCase();
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(email) === false) {
+      setIsEmailCorrect(false);
+      setIsEmailWrong(true);
+      setEmailEmptyErorr(false);
+      return false;
+    } else {
+      setIsEmailCorrect(true);
+      setIsEmailWrong(false);
+      setEmailEmptyErorr(false);
+      setUserEmail(email);
+    }
+  };
   const handleSubmitPress = () => {
-    navigation.navigate('PhoneOtp');
+    if (userEmail === '') {
+      setIsEmailCorrect(false);
+      setIsEmailWrong(false);
+      setEmailEmptyErorr(true);
+    } else {
+      console.log(userEmail);
+      const msg = 'Please check your email';
+      if (Platform.OS === 'android') {
+        ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+      } else {
+        AlertIOS.alert(msg);
+      }
+      navigation.navigate('PhoneOtp');
+    }
   };
 
   return (
@@ -54,21 +85,55 @@ const PhoneLogin = ({navigation}) => {
                 Enter your phone number to continue
               </Text>
             </View>
-
             <View style={styles.SectionStyle}>
+              <View style={styles.iconLeft}>
+                <Image
+                  source={require('../../../asessts/images/user-icon.png')}
+                  style={styles.iconLeftImage}
+                />
+              </View>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(UserPassword) => setUserPassword(UserPassword)}
-                placeholder="3409755265" //12345
+                onChangeText={(text) => validate(text)}
+                underlineColorAndroid="#f000"
+                placeholder="Enter your phone number"
                 placeholderTextColor={colors.Colors.gray}
-                keyboardType="default"
-                ref={passwordInputRef}
+                keyboardType="email-address"
+                returnKeyType="next"
                 onSubmitEditing={Keyboard.dismiss}
                 blurOnSubmit={false}
-                underlineColorAndroid="#f000"
-                returnKeyType="next"
+                onFocus={
+                  () => setEmailEmptyErorr(false)
+                  // this.setState({
+                  //   isloading: false,
+                  //   showEmailEmptyErorr: false,
+                  //   showInvalidErorr: false,
+                  // })
+                }
               />
+
+              <View style={styles.iconRight}>
+                {isEmailWrong && (
+                  <Image
+                    source={require('../../../asessts/images/wrong.png')}
+                    style={styles.iconRightImage}
+                  />
+                )}
+                {isEmailCorrect && (
+                  <Image
+                    source={require('../../../asessts/images/correct.png')}
+                    style={styles.iconRightImage}
+                  />
+                )}
+                {emailEmptyErorr && (
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                )}
+              </View>
             </View>
+
             <View style={styles.heading}>
               <Text style={styles.headingText}>
                 Enter an OTP pin sent to your phone number for confirmation
@@ -131,24 +196,54 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   SectionStyle: {
+    flex: 1,
     flexDirection: 'row',
     height: 50,
+    marginTop: 5,
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
     width: '90%',
     alignSelf: 'center',
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: '#d8d8d8',
+    backgroundColor: '#F3F1F1',
+  },
+  iconLeft: {
+    left: 3,
+    height: 50,
+    width: 25,
+    justifyContent: 'center',
+    paddingVertical: 4,
+    marginHorizontal: 8,
+    alignItems: 'center',
+  },
+  iconRight: {
+    position: 'absolute',
+    right: 3,
+    height: 50,
+    width: 35,
+    justifyContent: 'center',
+    padding: 4,
+    alignItems: 'center',
+  },
+  iconLeftImage: {
+    resizeMode: 'contain',
+    height: '70%',
+    width: '70%',
+  },
+  iconRightImage: {
+    resizeMode: 'contain',
+    height: '100%',
+    width: '100%',
   },
   inputStyle: {
     flex: 1,
     color: colors.Colors.gray,
     paddingLeft: 15,
     paddingRight: 15,
-    borderWidth: 1,
-    borderRadius: 30,
-    borderColor: '#d8d8d8',
     fontFamily: font.Fonts.josefReg,
-    backgroundColor: '#F3F1F1',
     fontSize: 20,
   },
   row: {

@@ -58,88 +58,87 @@ const RegisterScreen = (navigation) => {
   const confirmPasswordInputRef = createRef();
 
   const handleSubmitButton = () => {
-    navigation.navigation.navigate('EmailOtp');
-    // if (
-    //   !userName &&
-    //   !userEmail &&
-    //   !companyName &&
-    //   !phoneNumber &&
-    //   !userPassword &&
-    //   !userConfirmPassword
-    // ) {
-    //   setNameEmptyErorr(true);
-    //   setEmailEmptyErorr(true);
-    //   setCompanyEmptyErorr(true);
-    //   setpwdEmptyErorr(true);
-    //   setPhoneEmptyErorr(true);
-    //   setconfirmPwdEmptyErorr(true);
-    //   setIsEmailCorrect(false);
-    //   setIsEmailWrong(false);
-    // } else if (!userName) {
-    //   setNameEmptyErorr(true);
-    //   return;
-    // } else if (!userEmail) {
-    //   setIsEmailCorrect(false);
-    //   setIsEmailWrong(false);
-    //   setEmailEmptyErorr(true);
-    //   return;
-    // } else if (!companyName) {
-    //   setCompanyEmptyErorr(true);
-    //   return;
-    // } else if (!phoneNumber) {
-    //   setPhoneEmptyErorr(true);
-    //   return;
-    // } else if (!userPassword) {
-    //   setpwdEmptyErorr(true);
-    //   return;
-    // } else if (!userConfirmPassword) {
-    //   setconfirmPwdEmptyErorr(true);
-    //   return;
-    // } else {
-    //   const msg = 'Please check your email';
-    //   setLoading(true);
-    //   const user = {
-    //     userName: userName,
-    //     mobileNo: phoneNumber,
-    //     email: userEmail,
-    //     profile: imgUri,
-    //     password: userPassword,
-    //     age: '23',
-    //     role: 'user',
-    //     loginCompany: 'Mutex',
-    //   };
-    //   fetch(`${api}user/`, {
-    //     method: 'POST',
-    //     body: JSON.stringify(user),
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //   })
-    //     .then((response) => response.json())
-    //     .then((responseJson) => {
-    //       //Hide Loader
-    //       setLoading(false);
-    //       console.log(responseJson);
+    if (
+      !userName &&
+      !userEmail &&
+      !companyName &&
+      !phoneNumber &&
+      !userPassword &&
+      !userConfirmPassword
+    ) {
+      setNameEmptyErorr(true);
+      setEmailEmptyErorr(true);
+      setCompanyEmptyErorr(true);
+      setpwdEmptyErorr(true);
+      setPhoneEmptyErorr(true);
+      setconfirmPwdEmptyErorr(true);
+      setIsEmailCorrect(false);
+      setIsEmailWrong(false);
+    } else if (!userName) {
+      setNameEmptyErorr(true);
+      return;
+    } else if (!userEmail) {
+      setIsEmailCorrect(false);
+      setIsEmailWrong(false);
+      setEmailEmptyErorr(true);
+      return;
+    } else if (!companyName) {
+      setCompanyEmptyErorr(true);
+      return;
+    } else if (!phoneNumber) {
+      setPhoneEmptyErorr(true);
+      return;
+    } else if (!userPassword) {
+      setpwdEmptyErorr(true);
+      return;
+    } else if (!userConfirmPassword) {
+      setconfirmPwdEmptyErorr(true);
+      return;
+    } else {
+      const msg = 'Please check your email';
+      setLoading(true);
+      const user = {
+        userName: userName,
+        mobileNo: phoneNumber,
+        email: userEmail,
+        profile: imgUri,
+        password: userPassword,
+        age: '23',
+        role: 'user',
+        loginCompany: 'Mutex',
+      };
+      fetch(`${api}user/`, {
+        method: 'POST',
+        body: JSON.stringify(user),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          //Hide Loader
+          setLoading(false);
+          console.log(responseJson);
 
-    //       if (responseJson.status == '1') {
-    //         if (Platform.OS === 'android') {
-    //           ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
-    //           navigation.navigation.navigate('EmailOtp')
-    //         } else {
-    //           AlertIOS.alert(msg);
-    //         }
-    //         setErrortext('');
-    //         console.log('Registration Successful. Please Login to proceed');
-    //       } else {
-    //         setErrortext(responseJson.data[0].msg || responseJson.message);
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       //Hide Loader
-    //       setLoading(false);
-    //       console.error(error);
-    //     });
-    // }
+          if (responseJson.status == '1') {
+            if (Platform.OS === 'android') {
+              ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+              navigation.navigation.navigate('EmailOtp', {email: userEmail});
+            } else {
+              AlertIOS.alert(msg);
+            }
+            setErrortext('');
+            console.log('Registration Successful. Please Login to proceed');
+          } else {
+            setErrortext(responseJson.data[0].msg || responseJson.message);
+          }
+        })
+        .catch((error) => {
+          //Hide Loader
+          setLoading(false);
+          console.error(error);
+        });
+    }
   };
   const checkPassword = (e) => {
     if (userPassword === e) {

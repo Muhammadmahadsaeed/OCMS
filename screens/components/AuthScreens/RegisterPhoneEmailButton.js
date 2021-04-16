@@ -6,8 +6,12 @@ import colors from '../../constants/colors';
 const RegisterPhoneEmailButton = ({navigationProps}) => {
   return (
     <View style={styles.container}>
-      <LinearGradient colors={[colors.Colors.blueLight, colors.Colors.blueDark]} style={styles.linear}>
-        <TouchableOpacity style={styles.button}>
+      <LinearGradient
+        colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+        style={styles.linear}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigationProps.navigation.navigate('Phone')}>
           <Text style={styles.buttonText}>sign up via phone number</Text>
         </TouchableOpacity>
       </LinearGradient>

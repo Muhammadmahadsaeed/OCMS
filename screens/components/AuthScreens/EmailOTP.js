@@ -94,12 +94,6 @@ const EmailOTP = ({navigation}) => {
           console.log(err);
         });
     }
-    //
-
-    // setTimeout(() => {
-    //   setSuccess(false);
-    //   navigation.navigate('HomeScreen');
-    // }, 3000);
   };
   const onResendOtpButtonPress = () => {
     const msg = 'Please verify your email';
@@ -169,10 +163,9 @@ const EmailOTP = ({navigation}) => {
     );
   }
   //here we get permission from user
-  const askForPermission = () =>{
-    navigation.navigate('HomeScreen')
-    
-  }
+  const askForPermission = () => {
+    navigation.navigate('HomeScreen');
+  };
   const refCallback = (textInputRef) => (node) => {
     textInputRef.current = node;
   };
@@ -201,9 +194,7 @@ const EmailOTP = ({navigation}) => {
   const onOTPKeyPress = (index) => {
     return ({nativeEvent: {key: value}}) => {
       //autofocus to previous input if the value is blank and existing value is also blank
-      console.log('opt ky pe', value, otpArray[index]);
       if (value === 'Backspace' && otpArray[index] === '') {
-        console.log('index====', index);
         if (index === 1) {
           inputRef1.current.focus();
         } else if (index === 2) {
