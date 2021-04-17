@@ -14,7 +14,7 @@ import {
 import InputBox from './InputBox';
 import Conversation from './conversation';
 import ConversationHeader from './ConversationHeader';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
@@ -26,7 +26,8 @@ import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
 import axios from 'axios';
-import {api} from '../../config/env';
+import { api } from '../../config/env';
+import ImagePicker from 'react-native-image-crop-picker';
 const socket = socketIO('http://192.168.100.54:4000', {
   transports: ['websocket'],
   jsonp: false,
@@ -39,9 +40,10 @@ socket.on('connect', () => {
 class ChatRoom extends React.Component {
   constructor(props) {
     super(props);
+    this.InputBoxRef = React.createRef();
     this.state = {
       userId: '',
-      data: [{name: 'kashan'}, {name: 'mahad'}, {name: 'zaka'}],
+      data: [{ name: 'kashan' }, { name: 'mahad' }, { name: 'zaka' }],
       receiverId: '',
     };
   }
@@ -57,7 +59,7 @@ class ChatRoom extends React.Component {
     // });
   }
   getDataFromInput = (msg) => {
-    this.setState({data: [...this.state.data, ...msg]});
+    this.setState({ data: [...this.state.data, ...msg] });
     // socket.emit('input', {
     //   name: 'mahad',
     //   messageContent: msg,
@@ -148,13 +150,36 @@ class ChatRoom extends React.Component {
       }
     }
   };
-  selectImage = async () => {};
+  selectImage = () => {
+    this.RBSheet.close();
+    this.props.navigation.navigate('imageGrid')
+    // this.InputBoxRef.current.getAlert();
+    // ImagePicker.openPicker({
+    //   multiple: true,
+    //   // includeBase64: true,
+    //   compressImageQuality: 0.8,
+    //   maxFiles: 5,
+    //   mediaType: 'photo'
+    // }).then(images => {
+    //   this.RBSheet.close();
+    //   if(images.length > 5){
+
+    //     console.log("5 s zaida h bhai")
+    //   }
+    //   else{
+    //     console.log(images)
+    //     // this.setState({ data: [...this.state.data, images] });
+    //     console.log("chlega")
+    //   }
+
+    // }).catch((err) => console.log(err))
+  };
   selectAudio = async () => {
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.audio],
       });
-      console.log("res===",res)
+      console.log("res===", res)
       const fileName = res.uri.replace('file://', '');
       RNFetchBlob.fs
         .readStream(fileName, 'base64', 1048576)
@@ -190,7 +215,7 @@ class ChatRoom extends React.Component {
     }
   };
   renderContent = () => (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <View
         style={{
           flexDirection: 'row',
@@ -231,13 +256,13 @@ class ChatRoom extends React.Component {
   };
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <ConversationHeader navigationProps={this.props} />
         <LinearGradient
           style={styles.container}
           colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-          start={{x: 0, y: 1}}
-          end={{x: 1, y: 1}}>
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 1 }}>
           <View style={styles.innerContainer}>
             <FlatList
               style={{
@@ -247,12 +272,13 @@ class ChatRoom extends React.Component {
               }}
               data={this.state.data}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <Conversation myId={this.state.userId} message={item} />
               )}
               inverted={true}
             />
             <InputBox
+              ref={this.InputBoxRef}
               getDataFromInput={this.getDataFromInput}
               navigation={this.props}
               openAttachmentModal={this.openAttachmentModal}

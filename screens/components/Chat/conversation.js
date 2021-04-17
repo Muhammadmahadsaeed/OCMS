@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Image} from 'react-native';
-
+import React, { useState } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import Images from 'react-native-chat-images';
 // import Sound from 'react-native-sound';
 import AudioRecorderPlayer, {
   AVEncoderAudioQualityIOSType,
@@ -15,6 +15,7 @@ class Conversation extends React.Component {
     this.audioRecorderPlayer = new AudioRecorderPlayer();
     this.audioRecorderPlayer.setSubscriptionDuration(0.09);
     this.state = {
+
       message: '',
       isLoggingIn: false,
       recordSecs: 0,
@@ -28,12 +29,12 @@ class Conversation extends React.Component {
   }
 
   isMyMessage = () => {
-    const {myId} = this.props;
+    const { myId } = this.props;
     const senderId = '6062cb84ac8ec71b54bfcd2e';
     return senderId === myId;
   };
 
-  renderAudio = () => {};
+  renderAudio = () => { };
 
   onStartPlay = async (e) => {
     const fileName = e.uri.replace('file:///', '');
@@ -61,11 +62,12 @@ class Conversation extends React.Component {
         });
       });
     } catch (e) {
-      console.log("err======",e)
+      console.log("err======", e)
     }
   };
   render() {
-    const {message} = this.props;
+    const { message } = this.props;
+    console.log(message)
     return (
       <View
         style={[
@@ -80,7 +82,7 @@ class Conversation extends React.Component {
         {message.uri ? (
           <TouchableOpacity
             onPress={() => this.onStartPlay(message)}
-            style={{backgroundColor: 'red'}}>
+            style={{ backgroundColor: 'red' }}>
             <Text>Play</Text>
             <Text>
               {this.state.playTime} / {this.state.duration}
@@ -92,6 +94,7 @@ class Conversation extends React.Component {
         {/* {this.isMyMessage() && (
           <Text style={styles.message}>{message.messageContent}</Text>
         )} */}
+
         <Text style={styles.time}>11:45</Text>
       </View>
     );

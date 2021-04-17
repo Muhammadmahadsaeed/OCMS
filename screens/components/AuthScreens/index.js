@@ -9,6 +9,7 @@ import PhoneLogin from './PhoneLogin';
 import PhoneOTP from './PhoneOTP';
 import EmailOTP from './EmailOTP';
 import PhoneRegister from './PhoneRegister';
+import ResetPassword from './ResetPassword'
 export {
   login,
   Splash,
@@ -20,5 +21,6 @@ export {
   PhoneLogin,
   PhoneOTP,
   PhoneRegister,
-  EmailOTP
+  EmailOTP,
+  ResetPassword
 };

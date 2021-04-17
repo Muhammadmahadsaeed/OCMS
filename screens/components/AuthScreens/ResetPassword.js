@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
-
-//Import all required component
+// Import React and Component
+import React, {useState, createRef} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -11,215 +10,554 @@ import {
   Keyboard,
   TouchableOpacity,
   ScrollView,
-  ImageBackground,
   Dimensions,
+  ToastAndroid,
+  Platform,
+  AlertIOS,
+  ActivityIndicator,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import font from '../../constants/font';
+import colors from '../../constants/colors';
+import ImagePicker from 'react-native-image-crop-picker';
+import {api} from '../../config/env';
 
-class ResetPassword extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      hidePassword: true,
-      hideConfirmPassword : true
-    };
-  }
+const ResetPassword = (navigation) => {
+  const [otp, setOTP] = useState('');
+  const [userPassword, setUserPassword] = useState('');
+  const [userConfirmPassword, setUserConfirmPassword] = useState('');
+  const [fileUri, setFileUri] = useState('');
+  const [imgUri, setImgUri] = useState('');
+  const [errortext, setErrortext] = useState('');
 
-  moveToLoginScreen() {
-    this.props.navigation.navigate('Login');
-  }
-  setPasswordVisibale(){
-    
-    this.setState({hidePassword : !this.state.hidePassword})
-  }
-  setConfirmPasswordVisibale(){
-    
-    this.setState({hideConfirmPassword : !this.state.hideConfirmPassword})
-  }
-  render() {
-    return (
-      <View style={{flex: 1}}>
+  const [loading, setLoading] = useState(false);
+  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
+  const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
+
+  const [otpEmptyErorr, setotpEmptyErorr] = useState(false);
+  const [pwdEmptyErorr, setpwdEmptyErorr] = useState(false);
+  const [confirmPwdEmptyErorr, setconfirmPwdEmptyErorr] = useState(false);
+  const [passwordConfirmed, setPasswordConfirmed] = useState(false);
+  const [showPasswordNotMatch, setShowPasswordNotMatch] = useState(false);
+
+  const numberInputRef = createRef();
+  const passwordInputRef = createRef();
+  const confirmPasswordInputRef = createRef();
+
+  const handleSubmitButton = () => {
+    if (
+      !otp &&
+      !userPassword &&
+      !userConfirmPassword
+    ) {
+
+      setpwdEmptyErorr(true);
+      setotpEmptyErorr(true);
+      setconfirmPwdEmptyErorr(true);
+    } else if (!otp) {
+      setotpEmptyErorr(true);
+      return;
+    } else if (!userPassword) {
+      setpwdEmptyErorr(true);
+      return;
+    } else if (!userConfirmPassword) {
+      setconfirmPwdEmptyErorr(true);
+      return;
+    } else {
+      const msg = 'Please check your email';
+      setLoading(true);
+      // const user = {
+      //   mobileNo: otp,
+      //   password: userPassword,
+      // };
+      // fetch(`${api}user/`, {
+      //   method: 'POST',
+      //   body: JSON.stringify(user),
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      // })
+      //   .then((response) => response.json())
+      //   .then((responseJson) => {
+      //     //Hide Loader
+      //     setLoading(false);
+      //     console.log(responseJson);
+
+      //     if (responseJson.status == '1') {
+      //       if (Platform.OS === 'android') {
+      //         ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+      //         navigation.navigation.navigate('EmailOtp', {email: userEmail});
+      //       } else {
+      //         AlertIOS.alert(msg);
+      //       }
+      //       setErrortext('');
+      //       console.log('Registration Successful. Please Login to proceed');
+      //     } else {
+      //       setErrortext(responseJson.data[0].msg || responseJson.message);
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     //Hide Loader
+      //     setLoading(false);
+      //     console.error(error);
+      //   });
+    }
+  };
+  const checkPassword = (e) => {
+    if (userPassword === e) {
+      setPasswordConfirmed(true);
+      setShowPasswordNotMatch(false);
+      setUserConfirmPassword(e);
+    } else {
+      setPasswordConfirmed(false);
+      setShowPasswordNotMatch(true);
+    }
+  };
+
+  const setPasswordVisibale = () => {
+    setHidePassword(!hidePassword);
+  };
+  const setConfirmPasswordVisibale = () => {
+    setHideConfirmPassword(!hideConfirmPassword);
+  };
+
+ 
+  const renderFileUri = () => {
+    if (fileUri) {
+      return <Image source={{uri: fileUri}} style={styles.imageIconStyle} />;
+    } else {
+      return (
         <Image
-          style={styles.backgroundImage}
-          source={require('../../../asessts/images/bg1.png')}
+          source={require('../../../asessts/images/admin.png')}
+          style={styles.imageIconStyle}
         />
-        <ScrollView keyboardShouldPersistTaps="handled">
-          <View style={{alignItems: 'center', marginTop: 60}}>
-            <Image
-              source={require('../../../asessts/images/resetpassword.png')}
-              style={{
-                width: 180,
-                height: 180,
-                borderRadius: 100,
-                resizeMode: 'contain',
-              }}
-            />
+      );
+    }
+  };
+ 
+  return (
+    <LinearGradient
+      colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
+      style={styles.linear}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          flexGrow: 1,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}>
+        <View style={styles.header}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <View style={styles.imgView}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+               
+                style={styles.editBtnSection}>
+                <Image
+                  style={styles.imageIconStyle}
+                  source={
+                    fileUri
+                      ? require('../../../asessts/images/wrong.png')
+                      : require('../../../asessts/images/pencl.png')
+                  }
+                />
+              </TouchableOpacity>
+              {renderFileUri()}
+            </View>
           </View>
-          <View style={styles.forgortPasswordText}>
-            <Text style={{fontSize: 20,fontFamily:'Montserrat-Bold_0', color: '#81b840'}}>
-              Reset Your Password
-            </Text>
-            <Text style={{marginTop: 5, color: '#a1a1a1',fontFamily:'Montserrat-Regular_0'}}>
-              We have sent a four digit code on your
-            </Text>
-            <Text style={{color: '#a1a1a1',fontFamily:'Montserrat-Regular_0'}}>phone/email</Text>
+          <View style={styles.headingView}>
+            <Text style={styles.heading}>Create an account</Text>
+            <Text style={styles.para}>Enter your credentials</Text>
           </View>
+        </View>
+        <View style={styles.form}>
           <KeyboardAvoidingView enabled>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                placeholder="Four digit code"
-                placeholderTextColor="#81b840"
-                returnKeyType="next"
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                placeholder="New Password"
-                placeholderTextColor="#81b840"
-                secureTextEntry={this.state.hidePassword}
-                returnKeyType="next"
-              />
-              <TouchableOpacity
-                style={styles.touchableButton}
-                activeOpacity={0.8}
-                onPress={() => {
-                  this.setPasswordVisibale();
-                }}>
+            
+            <View style={[styles.SectionStyle,{marginTop:40}]}>
+              <View style={styles.iconLeft}>
                 <Image
-                  source={
-                    this.state.hidePassword
-                      ? require('../../../asessts/images/greenhide.png')
-                      : require('../../../asessts/images/greenview.png')
-                  }
-                  style={styles.buttonImage}
+                  source={require('../../../asessts/images/user-icon.png')}
+                  style={styles.iconLeftImage}
                 />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.SectionStyle}>
+              </View>
               <TextInput
                 style={styles.inputStyle}
-                placeholder="Confirm Password"
-                placeholderTextColor="#81b840"
-                secureTextEntry={this.state.hideConfirmPassword}
+                onChangeText={(number) => setOTP(number)}
+                underlineColorAndroid="#f000"
+                placeholder="Enter your four digit OTP"
+                placeholderTextColor={colors.Colors.gray}
+                keyboardType="numeric"
+                ref={numberInputRef}
+                maxLength={4}
                 returnKeyType="next"
+                onFocus={() => {
+                  setotpEmptyErorr(false);
+                }}
+                onSubmitEditing={() =>
+                  passwordInputRef.current && passwordInputRef.current.focus()
+                }
+                blurOnSubmit={false}
               />
-              <TouchableOpacity
-                style={styles.touchableButton}
-                activeOpacity={0.8}
-                onPress={() => {
-                  this.setConfirmPasswordVisibale();
-                }}>
+              {otpEmptyErorr && (
+                <View style={styles.iconRight}>
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                </View>
+              )}
+            </View>
+           
+            <View style={styles.SectionStyle}>
+              <View style={styles.iconLeft}>
                 <Image
-                  source={
-                    this.state.hideConfirmPassword
-                      ? require('../../../asessts/images/greenhide.png')
-                      : require('../../../asessts/images/greenview.png')
-                  }
-                  style={styles.buttonImage}
+                  source={require('../../../asessts/images/pwd-icon.png')}
+                  style={styles.iconLeftImage}
                 />
-              </TouchableOpacity>
+              </View>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(text) => setUserPassword(text)}
+                underlineColorAndroid="#f000"
+                placeholder="Enter password"
+                placeholderTextColor={colors.Colors.gray}
+                ref={passwordInputRef}
+                returnKeyType="next"
+                onFocus={() => {
+                  setpwdEmptyErorr(false);
+                }}
+                secureTextEntry={hidePassword}
+                onSubmitEditing={() =>
+                  confirmPasswordInputRef.current &&
+                  confirmPasswordInputRef.current.focus()
+                }
+                blurOnSubmit={false}
+              />
+
+              <View style={styles.iconRight}>
+                {pwdEmptyErorr ? (
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                ) : (
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: 3,
+                      height: 45,
+                      width: 35,
+                      justifyContent: 'center',
+                      padding: 4,
+                      alignItems: 'center',
+                    }}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      setPasswordVisibale();
+                    }}>
+                    <Image
+                      source={
+                        hidePassword
+                          ? require('../../../asessts/images/greenhide.png')
+                          : require('../../../asessts/images/greenview.png')
+                      }
+                      style={styles.iconRightImage}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
 
-            <TouchableOpacity
-              onPress={() => {
-                this.moveToLoginScreen();
-              }}
-              style={styles.buttonStyle}
-              activeOpacity={0.5}>
-              <Text style={styles.buttonTextStyle}>Reset Password</Text>
-            </TouchableOpacity>
+            <View style={styles.SectionStyle}>
+              <View style={styles.iconLeft}>
+                <Image
+                  source={require('../../../asessts/images/confirm-pwd-icon.png')}
+                  style={styles.iconLeftImage}
+                />
+              </View>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(e) => checkPassword(e)}
+                // onChangeText={(text) => setUserConfirmPassword(text)}
+                underlineColorAndroid="#f000"
+                placeholder="Enter confirm password"
+                placeholderTextColor={colors.Colors.gray}
+                ref={confirmPasswordInputRef}
+                returnKeyType="next"
+                onFocus={() => {
+                  setconfirmPwdEmptyErorr(false);
+                }}
+                secureTextEntry={hideConfirmPassword}
+                blurOnSubmit={false}
+              />
+
+              <View style={styles.iconRight}>
+                {confirmPwdEmptyErorr ? (
+                  <Image
+                    source={require('../../../asessts/images/invalidIcon.png')}
+                    style={styles.iconRightImage}
+                  />
+                ) : (
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: 3,
+                      height: 45,
+                      width: 35,
+                      justifyContent: 'center',
+                      padding: 4,
+                      alignItems: 'center',
+                    }}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      setConfirmPasswordVisibale();
+                    }}>
+                    <Image
+                      source={
+                        hideConfirmPassword
+                          ? require('../../../asessts/images/greenhide.png')
+                          : require('../../../asessts/images/greenview.png')
+                      }
+                      style={styles.iconRightImage}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+            {passwordConfirmed && (
+              <View style={styles.textView}>
+                <Text
+                  style={{
+                    color: 'green',
+                    fontFamily: font.Fonts.josefReg,
+                  }}>
+                  Password match
+                </Text>
+              </View>
+            )}
+            {showPasswordNotMatch && (
+              <View style={styles.textView}>
+                <Text
+                  style={{
+                    color: 'red',
+                    fontFamily: font.Fonts.josefReg,
+                  }}>
+                  Password does not match
+                </Text>
+              </View>
+            )}
+
+            {errortext != '' ? (
+              <View style={styles.errorView}>
+                <Text style={styles.errorTextStyle}>{errortext}</Text>
+              </View>
+            ) : null}
+         
+
+            <LinearGradient
+              colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+              style={styles.linearButton}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleSubmitButton}>
+                {loading ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Text style={styles.buttonText}>Register</Text>
+                )}
+              </TouchableOpacity>
+            </LinearGradient>
           </KeyboardAvoidingView>
-        </ScrollView>
-      </View>
-    );
-  }
-}
+        </View>
+      </ScrollView>
+    </LinearGradient>
+  );
+};
 export default ResetPassword;
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+  linear: {
+    flex: 1,
   },
-  forgortPasswordText: {
-    marginTop: 15,
-    marginBottom: 15,
+  header: {
+    flex: 1,
+    // height: 250,
+    // justifyContent: 'center',
+  },
+  editBtnSection: {
+    height: 30,
+    width: 30,
+    borderColor: 'white',
+    borderWidth: 2,
+    borderRadius: 50,
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    zIndex: 1,
+  },
+  imageIconStyle: {
+    height: '100%',
+    width: '100%',
+    resizeMode: 'cover',
+    borderRadius: 100,
+  },
+  imgView: {
+    height: 120,
+    width: 120,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: 'white',
+    marginTop: 50,
+  },
+
+  headingView: {
+    paddingVertical: 20,
+    marginLeft: 20,
+    flexDirection: 'column',
+    // justifyContent: 'flex-end',
+    alignItems: 'baseline',
+  },
+  heading: {
+    color: 'white',
+    fontFamily: font.Fonts.josefBold,
+    fontSize: 26,
+  },
+  para: {
+    color: 'white',
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 16,
+  },
+  form: {
+    backgroundColor: '#FBFBFB',
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+    bottom: 0,
+    // height:'70%'
+  },
+  SectionStyle: {
+    flex: 1,
+    flexDirection: 'row',
+    height: 50,
+    marginTop: 5,
+    marginLeft: 35,
+    marginRight: 35,
+    margin: 10,
+    width: '90%',
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: '#d8d8d8',
+    backgroundColor: '#F3F1F1',
+  },
+  iconLeft: {
+    left: 3,
+    height: 50,
+    width: 25,
+    justifyContent: 'center',
+    paddingVertical: 4,
+    marginHorizontal: 8,
     alignItems: 'center',
   },
-  touchableButton: {
+  iconRight: {
     position: 'absolute',
     right: 3,
-    height: 45,
+    height: 50,
     width: 35,
     justifyContent: 'center',
     padding: 4,
     alignItems: 'center',
   },
-  buttonImage: {
+  iconLeftImage: {
     resizeMode: 'contain',
     height: '70%',
     width: '70%',
   },
-  SectionStyle: {
-    flexDirection: 'row',
-    height: 45,
-    width: '70%',
-    // marginTop: 10,
-    marginLeft: 35,
-    marginRight: 35,
-    margin: 10,
-    alignSelf: 'center',
-   
+  iconRightImage: {
+    resizeMode: 'contain',
+    height: '100%',
+    width: '100%',
   },
   buttonStyle: {
-    backgroundColor: '#81b840',
+    backgroundColor: '#FFFFFF',
     borderWidth: 0,
     color: 'black',
     borderColor: '#7DE24E',
     height: 50,
-    width: '70%',
+    width: '80%',
     alignItems: 'center',
-    borderRadius: 50,
+    borderRadius: 30,
     paddingTop: 5,
     paddingBottom: 5,
     marginLeft: 35,
     marginRight: 35,
+    marginTop: 20,
     marginBottom: 20,
     alignSelf: 'center',
-    marginTop:10
-    
   },
 
   buttonTextStyle: {
-    color: 'white',
+    color: '#81b840',
     paddingVertical: 10,
     fontSize: 16,
-    fontFamily:'Montserrat-Bold_0'
   },
   inputStyle: {
     flex: 1,
-    color: '#81b840',
+    color: colors.Colors.gray,
     paddingLeft: 15,
     paddingRight: 15,
-    borderWidth: 1,
-    borderRadius: 50,
-    borderColor: '#81b840',
-    fontFamily:'Montserrat-Regular_0',
-    backgroundColor:'#d7e5c3'
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 20,
   },
+
   errorTextStyle: {
     color: 'red',
-    textAlign: 'center',
-    fontSize: 14,
+    textAlign: 'left',
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 16,
   },
-  successTextStyle: {
+  linearButton: {
+    width: '90%',
+    alignSelf: 'center',
+    borderRadius: 50,
+    marginVertical: 40,
+  },
+  button: {
+    marginVertical: 5,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
     color: 'white',
+    textTransform: 'uppercase',
+    fontFamily: font.Fonts.josefBold,
     textAlign: 'center',
-    fontSize: 18,
-    padding: 30,
   },
+  errorView: {
+    flex: 1,
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  textView: {
+    flex: 1,
+    paddingVertical: 10,
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+
 });

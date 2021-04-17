@@ -96,14 +96,6 @@ class InputBox extends React.Component {
   onMicrophonePress = () => {
     console.warn('Microphone');
   };
-  messageIdGenerator() {
-    // generates uuid.
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      let r = (Math.random() * 16) | 0,
-        v = c == 'x' ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
   //   updateChatRoomLastMessage = async (messageId) => {
   //     try {
   //       await API.graphql(
@@ -118,7 +110,9 @@ class InputBox extends React.Component {
   //       console.log(e);
   //     }
   //   };
-
+  getAlert(){
+    console.log("alert=======")
+  }
   onSendPress = async () => {
     const {message} = this.state;
     // Encrypt
@@ -288,6 +282,7 @@ class InputBox extends React.Component {
       </View>
     );
   };
+  
   render() {
     const {message} = this.state;
     return (

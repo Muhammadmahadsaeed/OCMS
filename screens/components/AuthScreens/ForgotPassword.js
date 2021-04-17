@@ -54,7 +54,7 @@ const ForgotPassword = ({navigation}) => {
       } else {
         AlertIOS.alert(msg);
       }
-      navigation.navigate('EmailOtp');
+      navigation.navigate('ResetPassword');
     }
   };
 
