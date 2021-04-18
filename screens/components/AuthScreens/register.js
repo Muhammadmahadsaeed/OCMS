@@ -35,7 +35,6 @@ const RegisterScreen = (navigation) => {
 
   const [loading, setLoading] = useState(false);
   const [agree, setAgree] = useState(false);
-  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
 

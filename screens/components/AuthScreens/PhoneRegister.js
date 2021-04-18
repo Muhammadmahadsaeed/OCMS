@@ -24,141 +24,30 @@ import {api} from '../../config/env';
 
 const PhoneRegister = (navigation) => {
   const [userName, setUserName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-  const [companyName, setCompanyName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [userPassword, setUserPassword] = useState('');
-  const [userConfirmPassword, setUserConfirmPassword] = useState('');
   const [fileUri, setFileUri] = useState('');
   const [imgUri, setImgUri] = useState('');
   const [errortext, setErrortext] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [agree, setAgree] = useState(false);
-  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
-  const [hidePassword, setHidePassword] = useState(true);
-  const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
+  const [isSuccess, setSuccess] = useState(false);
 
-  const [nameEmptyErorr, setNameEmptyErorr] = useState(false);
-  const [emailEmptyErorr, setEmailEmptyErorr] = useState(false);
-  const [companyEmptyErorr, setCompanyEmptyErorr] = useState(false);
-  const [phoneEmptyErorr, setPhoneEmptyErorr] = useState(false);
-  const [pwdEmptyErorr, setpwdEmptyErorr] = useState(false);
-  const [confirmPwdEmptyErorr, setconfirmPwdEmptyErorr] = useState(false);
-  const [isEmailWrong, setIsEmailWrong] = useState(false);
-  const [isEmailCorrect, setIsEmailCorrect] = useState(false);
-  const [passwordConfirmed, setPasswordConfirmed] = useState(false);
-  const [showPasswordNotMatch, setShowPasswordNotMatch] = useState(false);
-
-  const userNameInputRef = createRef();
-  const emailInputRef = createRef();
-  const companyInputRef = createRef();
-  const numberInputRef = createRef();
-  const passwordInputRef = createRef();
-  const confirmPasswordInputRef = createRef();
+  const [nameEmptyErorr, setNameEmptyErorr] = useState(false)
 
   const handleSubmitButton = () => {
-    if (
-      !userName &&
-      !userEmail &&
-      !companyName &&
-      !phoneNumber &&
-      !userPassword &&
-      !userConfirmPassword
-    ) {
+    if (!userName ) {
       setNameEmptyErorr(true);
-      setEmailEmptyErorr(true);
-      setCompanyEmptyErorr(true);
-      setpwdEmptyErorr(true);
-      setPhoneEmptyErorr(true);
-      setconfirmPwdEmptyErorr(true);
-      setIsEmailCorrect(false);
-      setIsEmailWrong(false);
-    } else if (!userName) {
-      setNameEmptyErorr(true);
-      return;
-    } else if (!userEmail) {
-      setIsEmailCorrect(false);
-      setIsEmailWrong(false);
-      setEmailEmptyErorr(true);
-      return;
-    } else if (!companyName) {
-      setCompanyEmptyErorr(true);
-      return;
-    } else if (!phoneNumber) {
-      setPhoneEmptyErorr(true);
-      return;
-    } else if (!userPassword) {
-      setpwdEmptyErorr(true);
-      return;
-    } else if (!userConfirmPassword) {
-      setconfirmPwdEmptyErorr(true);
-      return;
     } else {
       const msg = 'Please check your email';
       setLoading(true);
-      const user = {
-        userName: userName,
-        mobileNo: phoneNumber,
-        email: userEmail,
-        profile: imgUri,
-        password: userPassword,
-        age: '23',
-        role: 'user',
-        loginCompany: 'Mutex',
-      };
-      fetch(`${api}user/`, {
-        method: 'POST',
-        body: JSON.stringify(user),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          //Hide Loader
-          setLoading(false);
-          console.log(responseJson);
-
-          if (responseJson.status == '1') {
-            if (Platform.OS === 'android') {
-              ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
-              navigation.navigation.navigate('EmailOtp', {email: userEmail});
-            } else {
-              AlertIOS.alert(msg);
-            }
-            setErrortext('');
-            console.log('Registration Successful. Please Login to proceed');
-          } else {
-            setErrortext(responseJson.data[0].msg || responseJson.message);
-          }
-        })
-        .catch((error) => {
-          //Hide Loader
-          setLoading(false);
-          console.error(error);
-        });
+      setSuccess(true)
     }
   };
-  const checkPassword = (e) => {
-    if (userPassword === e) {
-      setPasswordConfirmed(true);
-      setShowPasswordNotMatch(false);
-      setUserConfirmPassword(e);
-    } else {
-      setPasswordConfirmed(false);
-      setShowPasswordNotMatch(true);
-    }
-  };
+ 
   const setTermAndCondition = () => {
     setAgree(!agree);
   };
-  const setPasswordVisibale = () => {
-    setHidePassword(!hidePassword);
-  };
-  const setConfirmPasswordVisibale = () => {
-    setHideConfirmPassword(!hideConfirmPassword);
-  };
+
 
   const launchImageLibrary = async () => {
     if (fileUri) {
@@ -194,22 +83,40 @@ const PhoneRegister = (navigation) => {
       );
     }
   };
-  const validate = (text) => {
-    let email = text.toLowerCase();
-    email = email.trim();
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (reg.test(email) === false) {
-      setIsEmailCorrect(false);
-      setIsEmailWrong(true);
-      setEmailEmptyErorr(false);
-      return false;
-    } else {
-      setIsEmailCorrect(true);
-      setIsEmailWrong(false);
-      setEmailEmptyErorr(false);
-      setUserEmail(email);
-    }
-  };
+  const askForPermissions = () =>{
+    console.log("=====")
+  }
+  if (isSuccess) {
+    return (
+      <View style={styles.successContainer}>
+        <View style={styles.successImg}>
+          <Image
+            source={require('../../../asessts/images/success.png')}
+            style={styles.img}
+          />
+        </View>
+        <View style={styles.successText}>
+          <Text style={styles.successTextHeading}>Successful</Text>
+          <Text style={styles.successTextPara}>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+            nonumy eirmod labore et dolore magna aliquyam erat, sed diam
+            voluptua. At vero eos et accusam et justo duo.
+          </Text>
+        </View>
+        <LinearGradient
+          colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
+          style={[styles.linearBtn, {marginTop: 50}]}>
+          <TouchableOpacity activeOpacity={0.8}
+            style={styles.button}
+            onPress={() => askForPermissions()}>
+            <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
+        </LinearGradient>
+      </View>
+    );
+  }
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
@@ -274,9 +181,6 @@ const PhoneRegister = (navigation) => {
                 onFocus={() => {
                   setNameEmptyErorr(false);
                 }}
-                onSubmitEditing={() =>
-                  emailInputRef.current && emailInputRef.current.focus()
-                }
                 blurOnSubmit={false}
               />
               {nameEmptyErorr && (
@@ -515,5 +419,44 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#707070',
     marginLeft: 10,
+  },
+ 
+
+
+
+  successContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  successImg: {
+    height: 200,
+    width: 200,
+  },
+  img: {
+    height: '100%',
+    width: '100%',
+  },
+  successText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+  },
+  successTextHeading: {
+    color: '#43AEFF',
+    fontSize: 30,
+    fontFamily: font.Fonts.josefLight,
+  },
+  successTextPara: {
+    fontSize: 16,
+    color: '#707070',
+    fontFamily: font.Fonts.josefReg,
+    textAlign: 'center',
+  },
+  linearBtn: {
+    width: '90%',
+    alignSelf: 'center',
+    borderRadius: 50,
+    marginBottom: 20,
   },
 });

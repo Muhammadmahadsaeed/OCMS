@@ -26,12 +26,10 @@ const ResetPassword = (navigation) => {
   const [otp, setOTP] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [userConfirmPassword, setUserConfirmPassword] = useState('');
-  const [fileUri, setFileUri] = useState('');
-  const [imgUri, setImgUri] = useState('');
   const [errortext, setErrortext] = useState('');
 
   const [loading, setLoading] = useState(false);
-  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
+  const [isSuccess, setSuccess] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
 
@@ -41,7 +39,7 @@ const ResetPassword = (navigation) => {
   const [passwordConfirmed, setPasswordConfirmed] = useState(false);
   const [showPasswordNotMatch, setShowPasswordNotMatch] = useState(false);
 
-  const numberInputRef = createRef();
+  const optInputRef = createRef();
   const passwordInputRef = createRef();
   const confirmPasswordInputRef = createRef();
 
@@ -51,7 +49,6 @@ const ResetPassword = (navigation) => {
       !userPassword &&
       !userConfirmPassword
     ) {
-
       setpwdEmptyErorr(true);
       setotpEmptyErorr(true);
       setconfirmPwdEmptyErorr(true);
@@ -67,6 +64,7 @@ const ResetPassword = (navigation) => {
     } else {
       const msg = 'Please check your email';
       setLoading(true);
+      setSuccess(true)
       // const user = {
       //   mobileNo: otp,
       //   password: userPassword,
@@ -122,20 +120,37 @@ const ResetPassword = (navigation) => {
     setHideConfirmPassword(!hideConfirmPassword);
   };
 
- 
-  const renderFileUri = () => {
-    if (fileUri) {
-      return <Image source={{uri: fileUri}} style={styles.imageIconStyle} />;
-    } else {
-      return (
-        <Image
-          source={require('../../../asessts/images/admin.png')}
-          style={styles.imageIconStyle}
-        />
-      );
-    }
-  };
- 
+  if (isSuccess) {
+    return (
+      <View style={styles.successContainer}>
+        <View style={styles.successImg}>
+          <Image
+            source={require('../../../asessts/images/success.png')}
+            style={styles.img}
+          />
+        </View>
+        <View style={styles.successText}>
+          <Text style={styles.successTextHeading}>Successful</Text>
+          <Text style={styles.successTextPara}>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+            nonumy eirmod labore et dolore magna aliquyam erat, sed diam
+            voluptua. At vero eos et accusam et justo duo.
+          </Text>
+        </View>
+        <LinearGradient
+          colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
+          style={[styles.linear, {marginTop: 50}]}>
+          <TouchableOpacity activeOpacity={0.8}
+            style={styles.button}
+            onPress={() => navigation.navigation.navigate('Login')}>
+            <Text style={styles.buttonText}>Login Now</Text>
+          </TouchableOpacity>
+        </LinearGradient>
+      </View>
+    );
+  }
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
@@ -157,22 +172,7 @@ const ResetPassword = (navigation) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <View style={styles.imgView}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-               
-                style={styles.editBtnSection}>
-                <Image
-                  style={styles.imageIconStyle}
-                  source={
-                    fileUri
-                      ? require('../../../asessts/images/wrong.png')
-                      : require('../../../asessts/images/pencl.png')
-                  }
-                />
-              </TouchableOpacity>
-              {renderFileUri()}
-            </View>
+           <Text>Reset password</Text>
           </View>
           <View style={styles.headingView}>
             <Text style={styles.heading}>Create an account</Text>
@@ -196,7 +196,7 @@ const ResetPassword = (navigation) => {
                 placeholder="Enter your four digit OTP"
                 placeholderTextColor={colors.Colors.gray}
                 keyboardType="numeric"
-                ref={numberInputRef}
+                ref={optInputRef}
                 maxLength={4}
                 returnKeyType="next"
                 onFocus={() => {
@@ -372,7 +372,7 @@ const ResetPassword = (navigation) => {
                 {loading ? (
                   <ActivityIndicator size="small" color="white" />
                 ) : (
-                  <Text style={styles.buttonText}>Register</Text>
+                  <Text style={styles.buttonText}>Submit</Text>
                 )}
               </TouchableOpacity>
             </LinearGradient>
@@ -559,5 +559,39 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
-
+  successContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  successImg: {
+    height: 200,
+    width: 200,
+  },
+  img: {
+    height: '100%',
+    width: '100%',
+  },
+  successText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+  },
+  successTextHeading: {
+    color: '#43AEFF',
+    fontSize: 30,
+    fontFamily: font.Fonts.josefLight,
+  },
+  successTextPara: {
+    fontSize: 16,
+    color: '#707070',
+    fontFamily: font.Fonts.josefReg,
+    textAlign: 'center',
+  },
+  linear: {
+    width: '90%',
+    alignSelf: 'center',
+    borderRadius: 50,
+    marginBottom: 20,
+  },
 });

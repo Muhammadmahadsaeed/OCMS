@@ -47,7 +47,6 @@ const PhoneLogin = ({navigation}) => {
       setIsEmailWrong(false);
       setEmailEmptyErorr(true);
     } else {
-      console.log(userEmail);
       const msg = 'Please check your email';
       if (Platform.OS === 'android') {
         ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);

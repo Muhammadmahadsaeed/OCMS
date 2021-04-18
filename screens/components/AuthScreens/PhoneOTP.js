@@ -212,11 +212,6 @@ const PhoneOTP = ({navigation}) => {
                       placeholder="?" //12345
                       textAlign={'center'}
                       placeholderTextColor={colors.Colors.gray}
-                      keyboardType="numeric"
-                      // onSubmitEditing={Keyboard.dismiss}
-                      // blurOnSubmit={false}
-                      // underlineColorAndroid="#f000"
-                      // returnKeyType="next"
                       onFocus={() => setErrortext('')}
                       maxLength={1}
                       onChangeText={onOptChange(i)}
@@ -348,6 +343,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   inputStyle: {
+    flex:1,
     color: colors.Colors.gray,
     borderWidth: 1,
     borderRadius: 100,
