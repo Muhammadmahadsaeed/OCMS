@@ -62,10 +62,11 @@ class Gallery extends React.Component {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={item.node.isSelect == true ? { backgroundColor: '#000000', borderColor: 'blue', borderWidth: 2 } : { backgroundColor: 'green', height: 100, width: 100 }}
-              onPress={() => this.onPressHandler(item.node.id)}
+              style={item.node.isSelect == true ? { backgroundColor: '#000000', borderColor: 'blue', borderWidth: 2 } : { backgroundColor: 'green' }}
+              onLongPress={() => this.onPressHandler(item.node.id)}
             >
               <Image
+              blurRadius={1}
                 style={styles.galleryImage}
                 source={{ uri: item.node.image.uri }}
               />
