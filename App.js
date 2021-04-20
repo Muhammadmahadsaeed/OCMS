@@ -1,23 +1,17 @@
 import React from 'react';
-
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
 import MainNavigator from './screens/components/navigation/navigation';
+import {Provider} from 'react-redux';
+import {store, persistor} from './screens/Redux/Store/configureStore';
+import {PersistGate} from 'redux-persist/integration/react';
 
-const App = () => {
+function App() {
   return (
-    <MainNavigator />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <MainNavigator />
+      </PersistGate>
+    </Provider>
   );
-};
-
-
+}
 
 export default App;

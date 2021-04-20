@@ -3,8 +3,8 @@ import user from '../Reducer/reducer';
 import AsyncStorage from '@react-native-community/async-storage';
 import counter from '../Reducer/countReducer';
 import {persistStore, persistReducer} from 'redux-persist';
-import thunk from 'redux-thunk';
-import logger from 'redux-logger';
+// import thunk from 'redux-thunk';
+// import logger from 'redux-logger';
 const persistConfig = {
   // configuration object for redux-persist
   key: 'root',

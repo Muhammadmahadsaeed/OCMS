@@ -21,7 +21,7 @@ const CustomTabBar = (props) => {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <Header navigationProps={props} />
       <LinearGradient
         colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
         start={{x: 0, y: 0.5}}

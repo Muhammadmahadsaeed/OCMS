@@ -1,31 +1,34 @@
 import React, {useState, useEffect} from 'react';
 import {ActivityIndicator, View, StyleSheet, Image} from 'react-native';
-
+import {connect, useDispatch, useSelector} from 'react-redux';
 const SplashScreen = ({navigation}) => {
   const [animating, setAnimating] = useState(true);
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     setTimeout(() => {
       setAnimating(false);
-      navigation.navigate('TermAndConditionScreen');
+      // if (user) {
+      //   navigation.navigate('HomeScreen');
+      // } else {
+        navigation.navigate('TermAndConditionScreen');
+      // }
     }, 3000);
-  }, []);
+  }, [user]);
 
   return (
     <View style={styles.container}>
-      
-        <Image
-          source={require('../../../asessts/images/aboutreact.png')}
-          style={{width: '90%', resizeMode: 'contain', margin: 30}}
-        />
-        <ActivityIndicator
-          animating={animating}
-          color="#FFFFFF"
-          // size="large"
-          style={styles.activityIndicator}
-          size={50}
-        />
-     
+      <Image
+        source={require('../../../asessts/images/aboutreact.png')}
+        style={{width: '90%', resizeMode: 'contain', margin: 30}}
+      />
+      <ActivityIndicator
+        animating={animating}
+        color="#FFFFFF"
+        // size="large"
+        style={styles.activityIndicator}
+        size={50}
+      />
     </View>
   );
 };

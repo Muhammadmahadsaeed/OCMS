@@ -13,47 +13,44 @@ import {
   Dimensions,
   ToastAndroid,
   Platform,
-  AlertIOS,
+  AlertIOS,ActivityIndicator
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
+import {api} from '../../config/env';
 const PhoneLogin = ({navigation}) => {
-  const [userEmail, setUserEmail] = useState('');
+  const [userPhone, setUserPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
-  const [emailEmptyErorr, setEmailEmptyErorr] = useState(false);
-  const [isEmailWrong, setIsEmailWrong] = useState(false);
-  const [isEmailCorrect, setIsEmailCorrect] = useState(false);
+  const [phoneEmptyErorr, setphoneEmptyErorr] = useState(false);
 
-  const validate = (text) => {
-    const email = text.toLowerCase();
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (reg.test(email) === false) {
-      setIsEmailCorrect(false);
-      setIsEmailWrong(true);
-      setEmailEmptyErorr(false);
-      return false;
-    } else {
-      setIsEmailCorrect(true);
-      setIsEmailWrong(false);
-      setEmailEmptyErorr(false);
-      setUserEmail(email);
-    }
-  };
   const handleSubmitPress = () => {
-    if (userEmail === '') {
-      setIsEmailCorrect(false);
-      setIsEmailWrong(false);
-      setEmailEmptyErorr(true);
+    if (userPhone === '') {
+      setphoneEmptyErorr(true);
     } else {
-      const msg = 'Please check your email';
-      if (Platform.OS === 'android') {
-        ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
-      } else {
-        AlertIOS.alert(msg);
-      }
-      navigation.navigate('PhoneOtp');
+      fetch(`${api}public/gKey`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({mobileNo: userPhone}),
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          setLoading(false);
+          if (responseJson.status == '0') {
+            setErrortext(responseJson.data[0].msg);
+          } else {
+            setLoading(false);
+            navigation.navigate('PhoneOtp');
+          }
+        })
+        .catch((error) => {
+          //Hide Loader
+          setLoading(false);
+          console.error(error);
+        });
     }
   };
 
@@ -93,38 +90,19 @@ const PhoneLogin = ({navigation}) => {
               </View>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(text) => validate(text)}
+                onChangeText={(text) => setUserPhone(text)}
                 underlineColorAndroid="#f000"
                 placeholder="Enter your phone number"
                 placeholderTextColor={colors.Colors.gray}
-                keyboardType="email-address"
+                keyboardType="number-pad"
                 returnKeyType="next"
                 onSubmitEditing={Keyboard.dismiss}
                 blurOnSubmit={false}
-                onFocus={
-                  () => setEmailEmptyErorr(false)
-                  // this.setState({
-                  //   isloading: false,
-                  //   showEmailEmptyErorr: false,
-                  //   showInvalidErorr: false,
-                  // })
-                }
+                onFocus={() => setphoneEmptyErorr(false)}
               />
 
               <View style={styles.iconRight}>
-                {isEmailWrong && (
-                  <Image
-                    source={require('../../../asessts/images/wrong.png')}
-                    style={styles.iconRightImage}
-                  />
-                )}
-                {isEmailCorrect && (
-                  <Image
-                    source={require('../../../asessts/images/correct.png')}
-                    style={styles.iconRightImage}
-                  />
-                )}
-                {emailEmptyErorr && (
+                {phoneEmptyErorr && (
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
@@ -132,7 +110,11 @@ const PhoneLogin = ({navigation}) => {
                 )}
               </View>
             </View>
-
+            {errortext != '' ? (
+              <View style={styles.errorView}>
+                <Text style={styles.errorTextStyle}>{errortext}</Text>
+              </View>
+            ) : null}
             <View style={styles.heading}>
               <Text style={styles.headingText}>
                 Enter an OTP pin sent to your phone number for confirmation
@@ -151,7 +133,11 @@ const PhoneLogin = ({navigation}) => {
                   style={styles.buttonStyle}
                   activeOpacity={0.5}
                   onPress={handleSubmitPress}>
-                  <Text style={styles.buttonTextStyle}>Next</Text>
+                  {loading ? (
+                    <ActivityIndicator size="small" color="white" />
+                  ) : (
+                    <Text style={styles.buttonTextStyle}>Next</Text>
+                  )}
                 </TouchableOpacity>
               </LinearGradient>
             </View>
@@ -270,5 +256,19 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: font.Fonts.josefBold,
     fontSize: 18,
+  },
+  errorView: {
+    flex: 1,
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  errorTextStyle: {
+    color: 'red',
+    textAlign: 'left',
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 16,
   },
 });

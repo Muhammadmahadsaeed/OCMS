@@ -1,4 +1,5 @@
 import React from 'react';
+import { Dimensions} from 'react-native'
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator, TransitionPresets} from 'react-navigation-stack';
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
@@ -15,6 +16,8 @@ import colors from '../../constants/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import HeaderBackButton from '../../common/HeaderBack';
+import {createDrawerNavigator} from 'react-navigation-drawer';
+import CustomDrawer from '../../common/CustomDrawer';
 const Auth = createStackNavigator(
   {
     TabScreen: {
@@ -193,11 +196,28 @@ Camera_StackNavigator.navigationOptions = ({navigation}) => {
     tabBarVisible,
   };
 };
+//Drawer Navigator Which will provide the structure of our App
+const DrawerNavigator = createDrawerNavigator(
+  {
+    //Drawer Optons and indexing
+    HomeScreen: {
+      screen: HomeStack,
+    },
+  },
+  {
+    //For the Custom sidebar menu we have to provide our CustomSidebarMenu
+    contentComponent: CustomDrawer,
+    //Sidebar width
+    drawerWidth: Dimensions.get('window').width,
+    drawerPosition: 'left',
+    // drawerBackgroundColor: "transparent",
+  },
+);
 const RootNavigator = createSwitchNavigator({
-  // SplashScreen: AuthScreens.Splash,
-  // TermAndConditionScreen: AuthScreens.TermAndCondition,
-  // AuthScreen: Auth,
-  HomeScreen: HomeStack,
+  SplashScreen: AuthScreens.Splash,
+  TermAndConditionScreen: AuthScreens.TermAndCondition,
+  AuthScreen: Auth,
+  HomeScreen: DrawerNavigator,
 });
 
 const MainNavigator = createAppContainer(RootNavigator);

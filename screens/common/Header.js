@@ -3,33 +3,42 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import colors from '../constants/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../constants/font';
-const Header = () => (
-  <LinearGradient
-    colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-    start={{x: 0, y: 0.5}}
-    end={{x: 1, y: 1}}
-    style={styles.top}>
-    <View>
-      <TouchableOpacity style={styles.imgContainer}>
-        <Image
-          source={require('../../asessts/images/menu.png')}
-          style={{height: 25, width: 25, resizeMode: 'contain'}}
-        />
-      </TouchableOpacity>
-    </View>
-    <View>
-      <Text style={styles.text}>Community App</Text>
-    </View>
-    <View>
-      <TouchableOpacity style={styles.imgContainer}>
-        <Image
-          source={require('../../asessts/images/settings.png')}
-          style={{height: 25, width: 25, resizeMode: 'contain'}}
-        />
-      </TouchableOpacity>
-    </View>
-  </LinearGradient>
-);
+const Header = (props) => {
+  const toggleDrawer = () => {
+   
+    props.navigationProps.navigation.toggleDrawer()
+  };
+  return (
+    <LinearGradient
+      colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
+      start={{x: 0, y: 0.5}}
+      end={{x: 1, y: 1}}
+      style={styles.top}>
+      <View>
+        <TouchableOpacity
+          style={styles.imgContainer}
+          activeOpacity={0.8}
+          onPress={toggleDrawer}>
+          <Image
+            source={require('../../asessts/images/menu.png')}
+            style={{height: 25, width: 25, resizeMode: 'contain'}}
+          />
+        </TouchableOpacity>
+      </View>
+      <View>
+        <Text style={styles.text}>Community App</Text>
+      </View>
+      <View>
+        <TouchableOpacity style={styles.imgContainer}>
+          <Image
+            source={require('../../asessts/images/settings.png')}
+            style={{height: 25, width: 25, resizeMode: 'contain'}}
+          />
+        </TouchableOpacity>
+      </View>
+    </LinearGradient>
+  );
+};
 
 export default Header;
 
@@ -41,7 +50,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 5,
     paddingVertical: 12,
-    height:65
+    height: 65,
   },
   text: {
     fontSize: 23,

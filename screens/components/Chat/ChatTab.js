@@ -191,6 +191,7 @@ export default class ChatTab extends Component {
           </LinearGradient>
         </View>
       </LinearGradient>
+    
     );
   }
 }

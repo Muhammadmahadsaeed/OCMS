@@ -20,9 +20,15 @@ import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
 import {api} from '../../config/env';
-const LoginWithEmail = (navigation) => {
-  const [userEmail, setUserEmail] = useState('');
+import {connect, useDispatch} from 'react-redux';
 
+const LoginWithEmail = (navigation) => {
+  const dispatch = useDispatch();
+  const mapDispatchToProps = (value) => {
+    dispatch({type: 'SET_USER', payload: value});
+  };
+
+  const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
@@ -72,7 +78,7 @@ const LoginWithEmail = (navigation) => {
             //when email is not verified
             if (Platform.OS === 'android') {
               ToastAndroid.show(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
-              navigation.navigation.navigate('EmailOtp',{email: userEmail});
+              navigation.navigation.navigate('EmailOtp', {email: userEmail});
             } else {
               AlertIOS.alert(msg);
             }
@@ -81,6 +87,7 @@ const LoginWithEmail = (navigation) => {
           else if (responseJson.status == '2') {
             setErrortext('Invalid email and password');
           } else {
+            mapDispatchToProps(responseJson.data)
             navigation.navigation.navigate('HomeScreen');
           }
         })
@@ -111,6 +118,7 @@ const LoginWithEmail = (navigation) => {
   const setPasswordVisibale = () => {
     setHidePassword(!hidePassword);
   };
+ 
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
@@ -296,8 +304,8 @@ const LoginWithEmail = (navigation) => {
       </ScrollView>
     </LinearGradient>
   );
+ 
 };
-export default LoginWithEmail;
 
 const styles = StyleSheet.create({
   linear: {
@@ -470,3 +478,5 @@ const styles = StyleSheet.create({
     // marginLeft: 10,
   },
 });
+
+export default LoginWithEmail;
