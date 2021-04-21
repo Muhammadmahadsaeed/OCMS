@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import {
   SafeAreaView,
   AppRegistry,
@@ -10,14 +10,14 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
-import { RNCamera } from 'react-native-camera';
+import {RNCamera} from 'react-native-camera';
 import Toolbar from './toolbar';
 import styles from './styles';
 import Gallery from './gallery';
-import { dirPicutures } from './dirStorage';
+import {dirPicutures} from './dirStorage';
 const moment = require('moment');
 const RNFS = require('react-native-fs');
-let { height, width } = Dimensions.get('window');
+let {height, width} = Dimensions.get('window');
 let orientation = height > width ? 'Portrait' : 'Landscape';
 
 //move the attachment to app folder
@@ -51,14 +51,14 @@ export default class Camera extends PureComponent {
     flashMode: RNCamera.Constants.FlashMode.off,
   };
 
-  setFlashMode = (flashMode) => this.setState({ flashMode });
-  setCameraType = (cameraType) => this.setState({ cameraType });
+  setFlashMode = (flashMode) => this.setState({flashMode});
+  setCameraType = (cameraType) => this.setState({cameraType});
   handleCaptureIn = () => {
-    this.setState({ capturing: true });
+    this.setState({capturing: true});
   };
 
   handleCaptureOut = () => {
-    console.log("long press stopp========")
+    console.log('long press stopp========');
     if (this.state.capturing) this.camera.stopRecording();
   };
   saveImage = async (filePath) => {
@@ -68,13 +68,13 @@ export default class Camera extends PureComponent {
       const newFilepath = `${dirPicutures}/${newImageName}`;
       // move and save image to new filepath
       const imageMoved = await moveAttachment(filePath, newFilepath);
-      this.setState({ path: 'file:///' + imageMoved });
+      this.setState({path: 'file:///' + imageMoved});
     } catch (error) {
       console.log(error);
     }
   };
   handleShortCapture = async () => {
-    const options = { quality: 0.8, base64: true };
+    const options = {quality: 0.8, base64: true};
     await this.camera
       .takePictureAsync(options)
       .then((photoData) => {
@@ -92,7 +92,7 @@ export default class Camera extends PureComponent {
 
   handleLongCapture = async () => {
     const videoData = await this.camera.recordAsync();
-    console.log("long press========",videoData)
+    console.log('long press========', videoData);
     this.setState({
       capturing: false,
       captures: [videoData, ...this.state.captures],
@@ -101,7 +101,7 @@ export default class Camera extends PureComponent {
 
   async componentDidMount() {
     const hasCameraPermission = await this.requestCameraPermission();
-    if (hasCameraPermission) this.setState({ hasCameraPermission });
+    if (hasCameraPermission) this.setState({hasCameraPermission});
   }
   requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -122,31 +122,45 @@ export default class Camera extends PureComponent {
     } else return true;
   };
   selectImageFromChat = async (uri) => {
-    console.log(uri)
-    this.setState({ path: uri });
+    console.log(uri);
+    this.setState({path: uri});
     //  this.saveImage(uri)
-  }
+  };
   renderImage() {
     return (
       <View style={styles.preview}>
-        <Image source={{ uri: this.state.path }} style={styles.preview} />
-        <Text style={styles.cancel} onPress={() => this.setState({ path: null })}>
-          Cancel
-        </Text>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.headerImageView}
+            onPress={() => this.setState({path: null})}>
+            <Image
+              source={require('../../../asessts/images/left-arrow.png')}
+              style={{height: '100%', width: '100%'}}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.imgView}>
+          <Image source={{uri: this.state.path}} style={{height:'100%',width:'100%'}} />
+        </View>
+        <View style={styles.bottomView}>
+          <Text style={styles.cancel}>Bottom</Text>
+          <Text style={styles.cancel}>Bottom</Text>
+        </View>
+       
       </View>
     );
   }
   renderCamera() {
-    const { flashMode, cameraType, capturing, captures } = this.state;
+    const {flashMode, cameraType, capturing, captures} = this.state;
     return (
-      <View style={styles.preview}>
+      <View style={{flex:1}}>
         <RNCamera
           type={cameraType}
           flashMode={flashMode}
           style={styles.preview}
           ref={(camera) => (this.camera = camera)}
         />
-        <Gallery selectImageFromChat={this.selectImageFromChat}  />
+        <Gallery selectImageFromChat={this.selectImageFromChat} />
 
         <Toolbar
           capturing={capturing}
@@ -163,7 +177,7 @@ export default class Camera extends PureComponent {
     );
   }
   render() {
-    const { hasCameraPermission } = this.state;
+    const {hasCameraPermission} = this.state;
 
     if (hasCameraPermission === null) {
       return <View />;
@@ -171,7 +185,7 @@ export default class Camera extends PureComponent {
       return <Text>Access to camera has been denied.</Text>;
     }
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         {this.state.path ? this.renderImage() : this.renderCamera()}
       </SafeAreaView>
     );

@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, {useState} from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Animated,
+} from 'react-native';
 import Images from 'react-native-chat-images';
 // import Sound from 'react-native-sound';
 import AudioRecorderPlayer, {
@@ -9,13 +16,14 @@ import AudioRecorderPlayer, {
   AudioSet,
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
+import font from '../../constants/font';
 class Conversation extends React.Component {
   constructor(props) {
     super(props);
     this.audioRecorderPlayer = new AudioRecorderPlayer();
     this.audioRecorderPlayer.setSubscriptionDuration(0.09);
+    this.animatedValue = new Animated.Value(0);
     this.state = {
-
       message: '',
       isLoggingIn: false,
       recordSecs: 0,
@@ -28,13 +36,19 @@ class Conversation extends React.Component {
     };
   }
 
+  componentDidMount() {
+    Animated.timing(this.animatedValue, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }
   isMyMessage = () => {
-    const { myId } = this.props;
-    const senderId = '6062cb84ac8ec71b54bfcd2e';
-    return senderId === myId;
+    const {myId, message} = this.props;
+    return message.userId === myId;
   };
 
-  renderAudio = () => { };
+  renderAudio = () => {};
 
   onStartPlay = async (e) => {
     const fileName = e.uri.replace('file:///', '');
@@ -62,40 +76,60 @@ class Conversation extends React.Component {
         });
       });
     } catch (e) {
-      console.log("err======", e)
+      console.log('err======', e);
     }
   };
+  isMessageType = () => {
+    const {message} = this.props;
+    return message.type;
+  };
   render() {
-    const { message } = this.props;
-    console.log(message)
+    const {message} = this.props;
+    console.log(message.message.ext);
     return (
       <View
         style={[
           styles.messageBox,
-          // {
-          //   backgroundColor: this.isMyMessage() ? '#DCF8C5' : 'white',
-          //   marginLeft: this.isMyMessage() ? 50 : 0,
-          //   marginRight: this.isMyMessage() ? 0 : 50,
-          // },
+          {
+            backgroundColor: this.isMyMessage() ? '#DCF8C5' : 'white',
+            marginLeft: this.isMyMessage() ? 50 : 0,
+            marginRight: this.isMyMessage() ? 0 : 50,
+            marginVertical: this.isMyMessage() ? 5 : 5,
+          },
         ]}>
-        {/* {!isMyMessage() && <Text style={styles.name}>{plaintext}</Text>} */}
-        {message.uri ? (
-          <TouchableOpacity
-            onPress={() => this.onStartPlay(message)}
-            style={{ backgroundColor: 'red' }}>
-            <Text>Play</Text>
-            <Text>
-              {this.state.playTime} / {this.state.duration}
-            </Text>
-          </TouchableOpacity>
-        ) : (
-          <Text style={styles.message}> {message.name} </Text>
+        {this.isMessageType() == 'text' && (
+          <View>
+            <Text style={styles.message}>{message.message.text}</Text>
+            <Text style={styles.time}>11:45</Text>
+          </View>
         )}
-        {/* {this.isMyMessage() && (
-          <Text style={styles.message}>{message.messageContent}</Text>
-        )} */}
-
-        <Text style={styles.time}>11:45</Text>
+        {this.isMessageType() == 'image' && (
+          <View style={{flex: 1}}>
+            <Images images={message.message.image} />
+          </View>
+        )}
+        {this.isMessageType() == 'document' && (
+          <View style={{flex: 1}}>
+            <View style={styles.documentView}>
+              <Image
+                source={require('../../../asessts/images/pdf.png')}
+                style={{height: 50, width: 50}}
+              />
+              <Text numberOfLines={1} style={styles.documentText}>
+                {message.message.fileName}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text style={styles.time}>11:45</Text>
+              <Text style={styles.time}>11:45</Text>
+            </View>
+          </View>
+        )}
       </View>
     );
   }
@@ -116,9 +150,39 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
   },
-  message: {},
+  message: {
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 18,
+  },
   time: {
     alignSelf: 'flex-end',
     color: 'grey',
+    fontFamily: font.Fonts.josefReg,
+  },
+  documentView: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginVertical: 5,
+    marginHorizontal: 5,
+  },
+  documentText: {
+    flex: 1,
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 15,
   },
 });
+{
+  /* {message.uri ? (
+          <TouchableOpacity
+            onPress={() => this.onStartPlay(message)}
+            style={{ backgroundColor: 'red' }}>
+            <Text>Play</Text>
+            <Text>
+              {this.state.playTime} / {this.state.duration}
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <Text style={styles.message}> {message.name} </Text>
+        )} */
+}

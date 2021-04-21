@@ -110,14 +110,21 @@ class InputBox extends React.Component {
   //       console.log(e);
   //     }
   //   };
-  getAlert(){
-    console.log("alert=======")
+  getAlert() {
+    console.log('alert=======');
   }
   onSendPress = async () => {
     const {message} = this.state;
     // Encrypt
-    var ciphertext = CryptoJS.AES.encrypt(message, 'secret key 123').toString();
-    this.props.getDataFromInput(ciphertext);
+    // var ciphertext = CryptoJS.AES.encrypt(message, 'secret key 123').toString();
+    let messageObj = {
+      userId: 1,
+      type: 'text',
+      message: {
+        text: message,
+      },
+    };
+    this.props.getDataFromInput(messageObj);
     this.setState({message: ''});
   };
   componentDidMount() {
@@ -282,7 +289,7 @@ class InputBox extends React.Component {
       </View>
     );
   };
-  
+
   render() {
     const {message} = this.state;
     return (

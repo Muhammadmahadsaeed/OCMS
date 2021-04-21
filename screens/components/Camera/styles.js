@@ -9,14 +9,29 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
   preview: {
+    flex: 1,
+    backgroundColor: 'black',
+    flexDirection:'column',
+    justifyContent: 'space-between',
+  },
+  header: {
     flex:1,
-    // height: winHeight,
-    // width: winWidth,
-    // position: 'absolute',
-    // left: 0,
-    // top: 0,
-    // right: 0,
-    // bottom: 0,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  headerImageView: {
+    height: 50,
+    width: 40,
+  },
+
+  imgView: {
+    flex: 1,
+    // height: winHeight - 300,
+    backgroundColor:'red'
+  },
+  bottomView: {
+    flex:1,
+    backgroundColor: 'orange',
   },
   cancel: {
     position: 'absolute',

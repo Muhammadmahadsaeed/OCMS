@@ -68,10 +68,12 @@ export default class contact extends Component {
     this.setState({text: value});
   };
   renderItemComponent(props) {
+    console.log('======', props);
     return (
       <TouchableOpacity
+        activeOpacity={0.8}
         onPress={() =>
-          this.props.navigation.navigate('chatRoom', {singleUser: props.item})
+          this.props.navigation.navigate('chatRoom', {converstion: props.item})
         }>
         <View style={styles.row}>
           <Image

@@ -32,9 +32,10 @@ const Gallery = ({ selectImageFromChat }) => {
         style={[styles.bottomToolbar, styles.galleryContainer]}
         horizontal={true}
         data={data}
+        showsHorizontalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => getImage(item.node.image.uri)}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => getImage(item.node.image.uri)} style={{marginHorizontal:2}}>
             <Image
               style={styles.galleryImage}
               source={{ uri: item.node.image.uri }}
