@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Animated,
+  Linking,
 } from 'react-native';
 import Images from 'react-native-chat-images';
 // import Sound from 'react-native-sound';
@@ -16,6 +17,7 @@ import AudioRecorderPlayer, {
   AudioSet,
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
+import * as RNFS from 'react-native-fs';
 import font from '../../constants/font';
 class Conversation extends React.Component {
   constructor(props) {
@@ -83,9 +85,24 @@ class Conversation extends React.Component {
     const {message} = this.props;
     return message.type;
   };
+  openDocument = async (item) => {
+    const url = 'content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2Fe-statement-tc-6-july-17.pdf'
+    if (url.startsWith('content://')) {
+      const uriComponents = url.split('/')
+      const fileNameAndExtension = urlComponents[uriComponents.length - 1]
+      const destPath = `${RNFS.TemporaryDirectoryPath}/${fileNameAndExtension}`
+      const curi = await RNFS.copyFile(uri, destPath)
+      console.log(curi)
+  }
+    // Linking.openURL()
+    //   .then((supported) => {
+    //     console.log(supported);
+    //   })
+    //   .catch((err) => console.log(err));
+  };
   render() {
     const {message} = this.props;
-    console.log(message.message.ext);
+
     return (
       <View
         style={[
@@ -109,7 +126,10 @@ class Conversation extends React.Component {
           </View>
         )}
         {this.isMessageType() == 'document' && (
-          <View style={{flex: 1}}>
+          <TouchableOpacity
+            style={{flex: 1}}
+            activeOpacity={0.8}
+            onPress={() => this.openDocument(message)}>
             <View style={styles.documentView}>
               <Image
                 source={require('../../../asessts/images/pdf.png')}
@@ -128,7 +148,7 @@ class Conversation extends React.Component {
               <Text style={styles.time}>11:45</Text>
               <Text style={styles.time}>11:45</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       </View>
     );

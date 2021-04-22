@@ -169,7 +169,6 @@ class ChatRoom extends React.Component {
     // });
   }
   getDataFromInput = (msg) => {
-    console.log(msg);
     this.setState({data: [...this.state.data, msg]});
     // socket.emit('input', {
     //   name: 'mahad',
@@ -223,6 +222,7 @@ class ChatRoom extends React.Component {
       const res = await DocumentPicker.pickMultiple({
         type: [DocumentPicker.types.allFiles],
       });
+      console.log(res);
       for (const result of res) {
         const fileName = result.uri.replace('file://', '');
         RNFetchBlob.fs
@@ -234,8 +234,6 @@ class ChatRoom extends React.Component {
               const fileExt = result.type.split('/');
               const param = {
                 base64: base64,
-                width: 300,
-                height: 300,
                 fileName: result.name,
                 size: 1048576, // size, in bytes
                 type: result.type,
@@ -273,23 +271,31 @@ class ChatRoom extends React.Component {
     // this.InputBoxRef.current.getAlert();
     ImagePicker.openPicker({
       multiple: true,
-      // includeBase64: true,
+      includeBase64: true,
       compressImageQuality: 0.8,
       maxFiles: 5,
       mediaType: 'photo',
     })
       .then((images) => {
-        this.RBSheet.close();
         if (images.length > 5) {
           console.log('5 s zaida h bhai');
         } else {
-          console.log(images);
-          // let messageObj = {
-          //   userId: 2,
-          //   type: 'image',
-          //   message: images,
-          // };
-          // this.getDataFromInput(messageObj);
+          let imageArr = images.map((item) => {
+            let imageObj = {
+              url: `data:${item.mime};base64,${item.data}`,
+            };
+            return imageObj;
+          });
+
+          let messageObj = {
+            userId: 2,
+            type: 'image',
+            message: {
+              image: imageArr,
+            },
+          };
+
+          this.getDataFromInput(messageObj);
         }
       })
       .catch((err) => console.log(err));
@@ -299,7 +305,6 @@ class ChatRoom extends React.Component {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.audio],
       });
-      console.log('res===', res);
       const fileName = res.uri.replace('file://', '');
       RNFetchBlob.fs
         .readStream(fileName, 'base64', 1048576)
@@ -394,7 +399,8 @@ class ChatRoom extends React.Component {
               renderItem={({item}) => (
                 <Conversation myId={this.state.userId} message={item} />
               )}
-              inverted={true}
+              inverted={1}
+              // inverted={true}
             />
             <InputBox
               ref={this.InputBoxRef}

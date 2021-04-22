@@ -37,13 +37,14 @@ export default class ChatTab extends Component {
     fetch(`${fetchUser}?_limit=${limit}`)
       .then((response) => response.json())
       .then((json) => {
+        console.log(json)
         this.setState({
           data: this.state.data.concat(json),
           isLoading: false,
           loading: false,
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log("====",err));
     // fetch(`${api}/message/6062cb84ac8ec71b54bfcd2e`)
     //   .then((response) => response.json())
     //   .then((json) => {

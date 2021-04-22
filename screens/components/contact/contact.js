@@ -16,7 +16,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
 var axios = require('axios');
-export default class contact extends Component {
+import {connect} from 'react-redux';
+class contact extends Component {
   constructor() {
     super();
     this.state = {
@@ -26,10 +27,14 @@ export default class contact extends Component {
       isLoading: false,
       loading: true,
       text: '',
+      url: require('../../../asessts/images/admin.png'),
+      loginCompany: '',
     };
   }
   componentDidMount() {
-    this.setState({isLoading: true}, this.getData);
+    let loginCompany = this.props.user.user.user.loginCompany;
+
+    this.setState({isLoading: true, loginCompany: loginCompany}, this.getData);
   }
   getData = async () => {
     const {limit} = this.state;
@@ -45,7 +50,7 @@ export default class contact extends Component {
     //   })
     //   .catch((err) => console.log(err));
     const companyName = {
-      loginCompany: '605444a8e2924b2bec69e360',
+      loginCompany: this.state.loginCompany,
     };
     fetch(`${api}contact/getAllContact/${limit}`, {
       method: 'POST',
@@ -54,7 +59,6 @@ export default class contact extends Component {
     })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json.data);
         this.setState({
           data: this.state.data.concat(json.data),
           isLoading: false,
@@ -68,7 +72,6 @@ export default class contact extends Component {
     this.setState({text: value});
   };
   renderItemComponent(props) {
-    console.log('======', props);
     return (
       <TouchableOpacity
         activeOpacity={0.8}
@@ -77,9 +80,9 @@ export default class contact extends Component {
         }>
         <View style={styles.row}>
           <Image
-            source={{
-              uri: props.item.thumbnailUrl,
-            }}
+            source={
+              props.item.profile ? {uri: props.item.profile} : this.state.url
+            }
             style={styles.pic}
           />
           <View
@@ -89,7 +92,7 @@ export default class contact extends Component {
               paddingVertical: 10,
             }}>
             <View style={styles.nameContainer}>
-              <Text style={styles.nameTxt}>Syed Kashan Tayyab</Text>
+              <Text style={styles.nameTxt}>{props.item.userName}</Text>
             </View>
             <View style={styles.msgContainer}>
               <View style={{flex: 1}}>
@@ -203,3 +206,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps, null)(contact);
+// export default contact

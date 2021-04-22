@@ -9,6 +9,10 @@ import {
   PermissionsAndroid,
   Dimensions,
   Image,
+  TextInput,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import Toolbar from './toolbar';
@@ -19,7 +23,9 @@ const moment = require('moment');
 const RNFS = require('react-native-fs');
 let {height, width} = Dimensions.get('window');
 let orientation = height > width ? 'Portrait' : 'Landscape';
-
+import LinearGradient from 'react-native-linear-gradient';
+import colors from '../../constants/colors';
+import font from '../../constants/font';
 //move the attachment to app folder
 const moveAttachment = async (filePath, newFilepath) => {
   return new Promise((resolve, reject) => {
@@ -128,32 +134,63 @@ export default class Camera extends PureComponent {
   };
   renderImage() {
     return (
-      <View style={styles.preview}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.headerImageView}
-            onPress={() => this.setState({path: null})}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+        }}>
+        <View style={styles.preview}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.headerImageView}
+              onPress={() => this.setState({path: null})}>
+              <Image
+                source={require('../../../asessts/images/left-arrow.png')}
+                style={{height: '100%', width: '100%', resizeMode: 'contain'}}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.imgView}>
             <Image
-              source={require('../../../asessts/images/left-arrow.png')}
+              source={{uri: this.state.path}}
               style={{height: '100%', width: '100%'}}
             />
-          </TouchableOpacity>
+          </View>
+          <View style={styles.bottomView}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+              keyboardVerticalOffset={100}
+              style={{width: '100%'}}>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  multiline
+                  // onChangeText={(text) => setUserName(text)}
+                  underlineColorAndroid="#f000"
+                  placeholder="Enter your username"
+                  // placeholderTextColor={colors.Colors.gray}
+                  blurOnSubmit={false}
+                />
+
+                <TouchableOpacity 
+                  style={[styles.btn, {padding: 20, borderRadius: 50}]}
+                  activeOpacity={0.9}
+                  onPress={() => this.props.navigation.navigate('contact')}>
+                    
+                  <Image
+                    source={require('../../../asessts/images/plus-icon.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+            </KeyboardAvoidingView>
+          </View>
         </View>
-        <View style={styles.imgView}>
-          <Image source={{uri: this.state.path}} style={{height:'100%',width:'100%'}} />
-        </View>
-        <View style={styles.bottomView}>
-          <Text style={styles.cancel}>Bottom</Text>
-          <Text style={styles.cancel}>Bottom</Text>
-        </View>
-       
-      </View>
+      </TouchableWithoutFeedback>
     );
   }
   renderCamera() {
     const {flashMode, cameraType, capturing, captures} = this.state;
     return (
-      <View style={{flex:1}}>
+      <View style={{flex: 1}}>
         <RNCamera
           type={cameraType}
           flashMode={flashMode}

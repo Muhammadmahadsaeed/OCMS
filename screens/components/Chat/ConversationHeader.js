@@ -4,8 +4,9 @@ import Colors from '../../constants/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 const ConversationHeader = (props) => {
+
   const user = props.navigationProps.navigation.getParam('converstion');
- 
+  const url = require('../../../asessts/images/admin.png')
   return (
     <LinearGradient
       style={styles.header}
@@ -23,7 +24,7 @@ const ConversationHeader = (props) => {
                 source={require('../../../asessts/images/left-arrow.png')}
                 style={styles.backIcon}
               />
-              <Image source={{uri: user.profile}} style={styles.chatImage} />
+              <Image source={user.profile ? {uri: user.profile} : url} style={styles.chatImage} />
             </TouchableOpacity>
           </View>
 
