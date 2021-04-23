@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   AppRegistry,
   FlatList,
@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   TextInput,
 } from 'react-native';
-import {fetchUser, api} from '../../config/env';
+// import { fetchUser, api } from '../../config/env';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
@@ -20,7 +20,24 @@ export default class ChatTab extends Component {
   constructor() {
     super();
     this.state = {
-      data: [],
+      data: [
+        {
+          "name": "Lennart Johansson",
+          "city": "Stockholm"
+        },
+        {
+          "name": "Karl Eriksson",
+          "city": "London"
+        },
+        {
+          "name": "Pekka Hartikainen",
+          "city": "Helsinki"
+        },
+        {
+          "name": "Mia Svensson",
+          "city": "Berlin"
+        }
+      ],
       limit: 10,
       page: 1,
       isLoading: false,
@@ -29,10 +46,10 @@ export default class ChatTab extends Component {
   }
 
   componentDidMount() {
-    this.setState({isLoading: true}, this.getData);
+    // this.setState({ isLoading: true }, this.getData);
   }
   getData = async () => {
-    const {limit} = this.state;
+    const { limit } = this.state;
 
     // fetch(`${fetchUser}?_limit=${limit}`)
     //   .then((response) => response.json())
@@ -44,26 +61,26 @@ export default class ChatTab extends Component {
     //       loading: false,
     //     });
     //   })
-    //   .catch((err) => console.log("====",err));
-    fetch(`${api}message/6078263c2baee6251824873f`)
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({
-          data: json.data,
-          // data: this.state.data.concat(json),
-          isLoading: false,
-          loading: false,
-        });
-      })
-      .catch((err) => console.log(err));
-    
+    //   .catch((err) => console.log("====", err));
+    // fetch(`${api}message/6078263c2baee6251824873f`)
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     this.setState({
+    //       data: json.data,
+    //       // data: this.state.data.concat(json),
+    //       isLoading: false,
+    //       loading: false,
+    //     });
+    //   })
+    //   .catch((err) => console.log(err));
+
   };
 
   renderItemComponent(props) {
     return (
       <TouchableOpacity
         onPress={() =>
-          this.props.navigation.navigate('chatRoom', {converstion: props.item})
+          this.props.navigation.navigate('chatRoom', { converstion: props.item })
         }>
         <View style={styles.row}>
           <Image
@@ -86,7 +103,7 @@ export default class ChatTab extends Component {
               </Text>
             </View>
             <View style={styles.msgContainer}>
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 <Text style={styles.msgTxt} numberOfLines={1}>
                   {props.item.messageContent}
                 </Text>
@@ -103,7 +120,7 @@ export default class ChatTab extends Component {
 
   handleLoadMore = () => {
     this.setState(
-      {limit: this.state.limit + 10, isLoading: true},
+      { limit: this.state.limit + 10, isLoading: true },
       this.getData,
     );
   };
@@ -119,8 +136,8 @@ export default class ChatTab extends Component {
       <LinearGradient
         style={styles.container}
         colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-        start={{x: 0, y: 1}}
-        end={{x: 1, y: 1}}>
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 1 }}>
         <View style={styles.innerContainer}>
           <View style={styles.searchView}>
             <View style={styles.touchableButtonLeft}>
@@ -137,8 +154,8 @@ export default class ChatTab extends Component {
               returnKeyType="next"
             />
           </View>
-          <View style={{flex: 1}}>
-            {this.state.loading ? (
+          <View style={{ flex: 1 }}>
+            {/* {this.state.loading ? (
               <View
                 style={{
                   flex: 1,
@@ -147,7 +164,7 @@ export default class ChatTab extends Component {
                 }}>
                 <ActivityIndicator size="large" animating color="black" />
               </View>
-            ) : (
+            ) : ( */}
               <FlatList
                 data={this.state.data}
                 showsVerticalScrollIndicator={false}
@@ -157,15 +174,15 @@ export default class ChatTab extends Component {
                 // onEndReachedThreshold={0}
                 // ListFooterComponent={this.renderFooter}
               />
-            )}
+            {/* )} */}
           </View>
           <LinearGradient
             style={styles.bottomView}
             colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-            start={{x: 0, y: 0.5}}
-            end={{x: 1, y: 1}}>
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 1 }}>
             <TouchableOpacity
-              style={{padding: 20, borderRadius: 50}}
+              style={{ padding: 20, borderRadius: 50 }}
               activeOpacity={0.9}
               onPress={() => this.props.navigation.navigate('contact')}>
               <Image source={require('../../../asessts/images/chat.png')} />

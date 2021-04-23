@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   AppRegistry,
   FlatList,
@@ -11,12 +11,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import ContactSearchBar from '../../common/ContactSearchbar';
-import {fetchUser, api} from '../../config/env';
+import { fetchUser, api } from '../../config/env';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
 var axios = require('axios');
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 class contact extends Component {
   constructor() {
     super();
@@ -32,55 +32,58 @@ class contact extends Component {
     };
   }
   componentDidMount() {
-    let loginCompany = this.props.user.user.user.loginCompany;
-    this.setState({isLoading: true, loginCompany: loginCompany}, this.getData);
+    // let loginCompany = this.props.user.user.user.loginCompany;
+    this.setState({
+      isLoading: true,
+      // loginCompany: loginCompany
+    }, this.getData);
   }
   getData = async () => {
-    const {limit} = this.state;
+    const { limit } = this.state;
 
     // fetch(`${fetchUser}?_limit=${limit}`)
     //   .then((response) => response.json())
     //   .then((json) => {
     //     this.setState({
-    //       data: this.state.data.concat(json),
+    //       data: this.state.data.concat(JSON.stringify(json)),
     //       isLoading: false,
     //       loading: false,
     //     });
     //   })
     //   .catch((err) => console.log(err));
-    const companyName = {
-      loginCompany: this.state.loginCompany,
-    };
-    fetch(`${api}contact/getAllContact/${limit}`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(companyName),
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({
-          data: this.state.data.concat(json.data),
-          isLoading: false,
-          loading: false,
-        });
-      })
-      .catch((err) => console.log('==========', err));
+    // const companyName = {
+    //   loginCompany: this.state.loginCompany,
+    // };
+    // fetch(`${api}contact/getAllContact/${limit}`, {
+    //   method: 'POST',
+    //   headers: {'Content-Type': 'application/json'},
+    //   body: JSON.stringify(companyName),
+    // })
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     this.setState({
+    //       data: this.state.data.concat(json.data),
+    //       isLoading: false,
+    //       loading: false,
+    //     });
+    //   })
+    //   .catch((err) => console.log('==========', err));
   };
   searchUser = (value) => {
     console.log(value);
-    this.setState({text: value});
+    this.setState({ text: value });
   };
   renderItemComponent(props) {
     return (
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={() =>
-          this.props.navigation.navigate('chatRoom', {converstion: props.item})
+          this.props.navigation.navigate('chatRoom', { converstion: props.item })
         }>
         <View style={styles.row}>
           <Image
             source={
-              props.item.profile ? {uri: props.item.profile} : this.state.url
+              props.item.profile ? { uri: props.item.profile } : this.state.url
             }
             style={styles.pic}
           />
@@ -94,7 +97,7 @@ class contact extends Component {
               <Text style={styles.nameTxt}>{props.item.userName}</Text>
             </View>
             <View style={styles.msgContainer}>
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 <Text style={styles.msgTxt}>Hey, I am Syed Kashan Tayyab</Text>
               </View>
             </View>
@@ -106,7 +109,7 @@ class contact extends Component {
 
   handleLoadMore = () => {
     this.setState(
-      {limit: this.state.limit + 10, isLoading: true},
+      { limit: this.state.limit + 10, isLoading: true },
       this.getData,
     );
   };
@@ -127,8 +130,8 @@ class contact extends Component {
         <LinearGradient
           style={styles.container}
           colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-          start={{x: 0, y: 1}}
-          end={{x: 1, y: 1}}>
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 1 }}>
           <View style={styles.innerContainer}>
             {this.state.loading ? (
               <View
@@ -145,9 +148,9 @@ class contact extends Component {
                 showsVerticalScrollIndicator={false}
                 renderItem={(item) => this.renderItemComponent(item)}
                 keyExtractor={(item, index) => index.toString()}
-                onEndReached={this.handleLoadMore}
-                onEndReachedThreshold={0}
-                ListFooterComponent={this.renderFooter}
+                // onEndReached={this.handleLoadMore}
+                // onEndReachedThreshold={0}
+                // ListFooterComponent={this.renderFooter}
               />
             )}
           </View>

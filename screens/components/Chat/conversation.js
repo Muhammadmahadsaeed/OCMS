@@ -69,7 +69,8 @@ class Conversation extends React.Component {
       this.audioRecorderPlayer.addPlayBackListener((e) => {
         if (e.current_position === e.duration) {
           console.log('finished');
-          this.audioRecorderPlayer.stopPlayer();
+          this.audioRecorderPlayer.stopPlayer()
+          .catch(err => console.log(err))
           this.audioRecorderPlayer.removePlayBackListener();
         }
         this.setState({
@@ -117,15 +118,15 @@ class Conversation extends React.Component {
             marginVertical: this.isMyMessage() ? 5 : 5,
           },
         ]}>
-        {this.isMessageType() == 'Text' && (
+        {this.isMessageType() == 'text' && (
           <View>
             <Text style={styles.message}>{message.message.text}</Text>
             <Text style={styles.time}>11:45</Text>
           </View>
         )}
-        {this.isMessageType() == 'Image' && (
+        {this.isMessageType() == 'image' && (
           <View style={{flex: 1}}>
-            <Images images={message.message} />
+            <Images images={message.message.image} />
           </View>
         )}
         {this.isMessageType() == 'document' && (
@@ -158,9 +159,7 @@ class Conversation extends React.Component {
             onPress={() => this.onStartPlay(message)}
             style={{backgroundColor: 'red'}}>
             <Text>Play</Text>
-            <Text>
-              {this.state.playTime} / {this.state.duration}
-            </Text>
+           
           </TouchableOpacity>
         )}
       </View>

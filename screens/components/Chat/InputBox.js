@@ -39,29 +39,12 @@ class InputBox extends React.Component {
       playTime: '00:00:00',
       duration: '00:00:00',
       startAudio: false,
+      currentTime: 0,
     };
+    this.timer = null
     this.audioRecorderPlayer = new AudioRecorderPlayer();
     this.audioRecorderPlayer.setSubscriptionDuration(0.09); // optional. Default is 0.1
   }
-  // state = {
-  //   message: '',
-  //   startAudio: false,
-  //   hasPermission: false,
-  //   audioPath: `${
-  //     AudioUtils.DocumentDirectoryPath
-  //   }/${this.messageIdGenerator()}test.aac`,
-  //   playAudio: false,
-  //   fetchChats: false,
-  //   audioSettings: {
-  //     SampleRate: 22050,
-  //     Channels: 1,
-  //     AudioQuality: 'Low',
-  //     AudioEncoding: 'aac',
-  //     MeteringEnabled: true,
-  //     IncludeBase64: true,
-  //     AudioEncodingBitRate: 32000,
-  //   },
-  // };
   messageIdGenerator() {
     // generates uuid.
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -70,17 +53,6 @@ class InputBox extends React.Component {
       return v.toString(16);
     });
   }
-  // const [message, setMessage] = useState('');
-  // const [myUserId, setMyUserId] = useState(null);
-  // const [startAudio,setAudio] = useState(false)
-  // const [playAudio,setPlayAudio] = useState(false)
-  //   useEffect(() => {
-  //     const fetchUser = async () => {
-  //       const userInfo = await Auth.currentAuthenticatedUser();
-  //       setMyUserId(userInfo.attributes.sub);
-  //     };
-  //     fetchUser();
-  //   }, []);
   captureImage = async (type) => {
     ImagePicker.openCamera({
       mediaType: type,
@@ -96,20 +68,6 @@ class InputBox extends React.Component {
   onMicrophonePress = () => {
     console.warn('Microphone');
   };
-  //   updateChatRoomLastMessage = async (messageId) => {
-  //     try {
-  //       await API.graphql(
-  //         graphqlOperation(updateChatRoom, {
-  //           input: {
-  //             id: chatRoomID,
-  //             lastMessageID: messageId,
-  //           },
-  //         }),
-  //       );
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   };
   getAlert() {
     console.log('alert=======');
   }
@@ -224,12 +182,17 @@ class InputBox extends React.Component {
     };
     const uri = await this.audioRecorderPlayer.startRecorder(path, audioSet);
     this.audioRecorderPlayer.addRecordBackListener((e) => {
-      this.setState({
-        recordSecs: e.current_position,
-        recordTime: this.audioRecorderPlayer.mmssss(
-          Math.floor(e.current_position),
-        ),
-      });
+      this.timer = setInterval(() => {
+        const time = this.state.currentTime + 1
+        this.setState({currentTime: time})
+        console.log(time)
+      }, 1000)
+      // this.setState({
+      //   recordSecs: e.current_position,
+      //   recordTime: this.audioRecorderPlayer.mmssss(
+      //     Math.floor(e.current_position),
+      //   ),
+      // });
       // return;
     });
   };
