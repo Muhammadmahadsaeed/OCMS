@@ -8,11 +8,11 @@ const SplashScreen = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
       setAnimating(false);
-      // if (user) {
-      //   navigation.navigate('HomeScreen');
-      // } else {
+      if (user) {
+        navigation.navigate('HomeScreen');
+      } else {
         navigation.navigate('TermAndConditionScreen');
-      // }
+      }
     }, 3000);
   }, [user]);
 

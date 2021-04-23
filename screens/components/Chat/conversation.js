@@ -7,6 +7,7 @@ import {
   Image,
   Animated,
   Linking,
+  PermissionsAndroid,
 } from 'react-native';
 import Images from 'react-native-chat-images';
 // import Sound from 'react-native-sound';
@@ -18,7 +19,9 @@ import AudioRecorderPlayer, {
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
 import * as RNFS from 'react-native-fs';
+import RNFetchBlob from 'rn-fetch-blob';
 import font from '../../constants/font';
+import FileViewer from 'react-native-file-viewer';
 class Conversation extends React.Component {
   constructor(props) {
     super(props);
@@ -53,7 +56,8 @@ class Conversation extends React.Component {
   renderAudio = () => {};
 
   onStartPlay = async (e) => {
-    const fileName = e.uri.replace('file:///', '');
+    console.log(e);
+    const fileName = e.message.uri.replace('file:///', '');
     const path = Platform.select({
       ios: 'hello.m4a',
       android: fileName,
@@ -65,8 +69,8 @@ class Conversation extends React.Component {
       this.audioRecorderPlayer.addPlayBackListener((e) => {
         if (e.current_position === e.duration) {
           console.log('finished');
-          // this.audioRecorderPlayer.stopPlayer();
-          // this.audioRecorderPlayer.removePlayBackListener();
+          this.audioRecorderPlayer.stopPlayer();
+          this.audioRecorderPlayer.removePlayBackListener();
         }
         this.setState({
           currentPositionSec: e.current_position,
@@ -86,15 +90,14 @@ class Conversation extends React.Component {
     return message.type;
   };
   openDocument = async (item) => {
-    const url = 'content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2Fe-statement-tc-6-july-17.pdf'
-    if (url.startsWith('content://')) {
-      const uriComponents = url.split('/')
-      const fileNameAndExtension = urlComponents[uriComponents.length - 1]
-      const destPath = `${RNFS.TemporaryDirectoryPath}/${fileNameAndExtension}`
-      const curi = await RNFS.copyFile(uri, destPath)
-      console.log(curi)
-  }
-    // Linking.openURL()
+    // const url =
+    //   'content://com.android.providers.downloads.documents/document/418';
+
+    // const destPath = `${RNFS.DownloadDirectoryPath}/OCMS/`;
+    // await RNFS.copyFile(url, destPath);
+
+    // console.log(await RNFS.stat(destPath));
+    // Linking.openURL('file:///data/user/0/com.ocms/cache/1' )
     //   .then((supported) => {
     //     console.log(supported);
     //   })
@@ -102,7 +105,7 @@ class Conversation extends React.Component {
   };
   render() {
     const {message} = this.props;
-
+    console.log(message.message.text)
     return (
       <View
         style={[
@@ -114,15 +117,15 @@ class Conversation extends React.Component {
             marginVertical: this.isMyMessage() ? 5 : 5,
           },
         ]}>
-        {this.isMessageType() == 'text' && (
+        {this.isMessageType() == 'Text' && (
           <View>
             <Text style={styles.message}>{message.message.text}</Text>
             <Text style={styles.time}>11:45</Text>
           </View>
         )}
-        {this.isMessageType() == 'image' && (
+        {this.isMessageType() == 'Image' && (
           <View style={{flex: 1}}>
-            <Images images={message.message.image} />
+            <Images images={message.message} />
           </View>
         )}
         {this.isMessageType() == 'document' && (
@@ -148,6 +151,16 @@ class Conversation extends React.Component {
               <Text style={styles.time}>11:45</Text>
               <Text style={styles.time}>11:45</Text>
             </View>
+          </TouchableOpacity>
+        )}
+        {this.isMessageType() == 'audio' && (
+          <TouchableOpacity
+            onPress={() => this.onStartPlay(message)}
+            style={{backgroundColor: 'red'}}>
+            <Text>Play</Text>
+            <Text>
+              {this.state.playTime} / {this.state.duration}
+            </Text>
           </TouchableOpacity>
         )}
       </View>

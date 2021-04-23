@@ -252,11 +252,20 @@ class InputBox extends React.Component {
           // type: res.type,
           // name: res.name,
         };
-        let audio = {
-          uri: param.base64,
+        let messageObj = {
+          userId: 2,
+          type: 'audio',
+          message: {
+            uri: param.base64,
+          },
         };
-        arr.push(audio);
-        this.props.getDataFromInput(arr);
+
+        this.props.getDataFromInput(messageObj);
+        // let audio = {
+        //   uri: param.base64,
+        // };
+        // arr.push(audio);
+        // this.props.getDataFromInput(arr);
       });
       ifStream.onError((err) => {
         console.log(err);

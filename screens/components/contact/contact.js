@@ -33,7 +33,6 @@ class contact extends Component {
   }
   componentDidMount() {
     let loginCompany = this.props.user.user.user.loginCompany;
-
     this.setState({isLoading: true, loginCompany: loginCompany}, this.getData);
   }
   getData = async () => {
