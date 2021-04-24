@@ -46,35 +46,35 @@ class ChatRoom extends React.Component {
       data: [
         {
           userId: 1,
-          type: 'text',
+          type: 'Text',
           message: {
             text: 'hello',
           },
         },
         {
           userId: 2,
-          type: 'text',
+          type: 'Text',
           message: {
             text: 'hi',
           },
         },
         {
           userId: 1,
-          type: 'text',
+          type: 'Text',
           message: {
             text: 'kaise ho',
           },
         },
         {
           userId: 2,
-          type: 'text',
+          type: 'Text',
           message: {
             text: 'theek',
           },
         },
         {
           userId: 2,
-          type: 'image',
+          type: 'Image',
           message: {
             image: [
               {
@@ -118,14 +118,14 @@ class ChatRoom extends React.Component {
         },
         {
           userId: 1,
-          type: 'text',
+          type: 'Text',
           message: {
             text: 'tm btao',
           },
         },
         {
           userId: 2,
-          type: 'image',
+          type: 'Image',
           message: {
             image: [
               {
@@ -139,7 +139,7 @@ class ChatRoom extends React.Component {
         },
         {
           userId: 1,
-          type: 'image',
+          type: 'Image',
           message: {
             image: [
               {
@@ -159,24 +159,23 @@ class ChatRoom extends React.Component {
   }
   componentDidMount() {
     const converstion = this.props.navigation.getParam('converstion');
-    // this.setState({
-    //   receiverId: converstion._id,
-    //   userId: '6062cb84ac8ec71b54bfcd2e',
-    // });
+    this.setState({
+      receiverId: converstion._id,
+      // userId: '6062cb84ac8ec71b54bfcd2e',
+    });
     // this.getMessages();
     // socket.on('output', (msg) => {
     //   this.getMessages();
     // });
   }
-  // 6078263c2baee6251824873f
   getDataFromInput = (msg) => {
-    
+
     // fetch(`${api}chat/`, {
     //   method: 'POST',
     //   headers: {'Content-Type': 'application/json'},
     //   body: JSON.stringify({
-    //     senderId: '6077da3bdd983b02a0c74b90',
-    //     receiverId: '6078263c2baee6251824873f',
+    //     senderId: '605444a8e2924b2bec69e360',
+    //     receiverId: this.state.receiverId,
     //     messageType: 'Text',
     //     messageContent: msg.message,
     //     sentTime: '2021-04-23 00:12:01',
@@ -184,10 +183,10 @@ class ChatRoom extends React.Component {
     // })
     //   .then((response) => response.json())
     //   .then((json) => {
-    //     // this.setState({data: [...this.state.data, msg]});
-    //   })
-    //   .catch((err) => console.log(err));
-    this.setState({data: [...this.state.data, msg]});
+        this.setState({data: [...this.state.data, msg]});
+      // })
+      // .catch((err) => console.log(err));
+    // this.setState({data: [...this.state.data, msg]});
     // socket.emit('input', {
     //   name: 'mahad',
     //   messageContent: msg,
@@ -196,44 +195,43 @@ class ChatRoom extends React.Component {
     //   sentTime: '2021-03-31 09:37',
     // });
   };
-  // getMessages = () => {
-  //   const converstion = this.props.navigation.getParam('converstion');
-  //   console.log(converstion._id);
-  //   fetch(`${api}chat/conservation`, {
-  //     method: 'POST',
-  //     headers: {'Content-Type': 'application/json'},
-  //     body: JSON.stringify({
-  //       senderId: '6077da3bdd983b02a0c74b90', //login user id
-  //       receiverId: '6078263c2baee6251824873f', //recvr user id
-  //     }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((json) => {
-  //       // let message = json.data.map((item) => {
-  //       //   let bytes = CryptoJS.AES.decrypt(
-  //       //     item.messageContent,
-  //       //     'secret key 123',
-  //       //   );
-  //       //   let encryptedMsg = bytes.toString(CryptoJS.enc.Utf8);
+  getMessages = () => {
+    const converstion = this.props.navigation.getParam('converstion');
+    fetch(`${api}chat/conservation`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        senderId: '605444a8e2924b2bec69e360', //login user id
+        receiverId: converstion._id, //recvr user id
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        // let message = json.data.map((item) => {
+        //   let bytes = CryptoJS.AES.decrypt(
+        //     item.messageContent,
+        //     'secret key 123',
+        //   );
+        //   let encryptedMsg = bytes.toString(CryptoJS.enc.Utf8);
 
-  //       //   return {
-  //       //     _id: item._id,
-  //       //     isRead: item.isRead,
-  //       //     messageContent: encryptedMsg,
-  //       //     messageType: item.messageType,
-  //       //     receivedTime: item.receivedTime,
-  //       //     receiverId: item.receiverId,
-  //       //     senderId: item.senderId,
-  //       //     sentTime: item.sentTime,
-  //       //   };
-  //       // });
-
-  //       // this.setState({chatMessages: [...this.state.chatMessages, ...message]});
-  //       // this.setState({data: [...this.state.data, ...message]});
-  //       this.setState({data: json.data.reverse()});
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
+        //   return {
+        //     _id: item._id,
+        //     isRead: item.isRead,
+        //     messageContent: encryptedMsg,
+        //     messageType: item.messageType,
+        //     receivedTime: item.receivedTime,
+        //     receiverId: item.receiverId,
+        //     senderId: item.senderId,
+        //     sentTime: item.sentTime,
+        //   };
+        // });
+        // this.setState({chatMessages: [...this.state.chatMessages, ...message]});
+        // this.setState({data: [...this.state.data, ...message]});
+        this.setState({data: json.data.reverse()});
+      })
+      .catch((err) => console.log(err));
+  };
+  
   selectDocument = async () => {
     this.RBSheet.close();
     try {
@@ -285,38 +283,38 @@ class ChatRoom extends React.Component {
   };
   selectImage = () => {
     this.RBSheet.close();
-    this.props.navigation.navigate('imageGrid')
+    // this.props.navigation.navigate('imageGrid');
     // this.InputBoxRef.current.getAlert();
-    // ImagePicker.openPicker({
-    //   multiple: true,
-    //   includeBase64: true,
-    //   compressImageQuality: 0.8,
-    //   maxFiles: 5,
-    //   mediaType: 'photo',
-    // })
-    //   .then((images) => {
-    //     if (images.length > 5) {
-    //       console.log('5 s zaida h bhai');
-    //     } else {
-    //       let imageArr = images.map((item) => {
-    //         let imageObj = {
-    //           url: `data:${item.mime};base64,${item.data}`,
-    //         };
-    //         return imageObj;
-    //       });
+    ImagePicker.openPicker({
+      multiple: true,
+      includeBase64: true,
+      compressImageQuality: 0.8,
+      maxFiles: 5,
+      mediaType: 'photo',
+    })
+      .then((images) => {
+        if (images.length > 5) {
+          console.log('5 s zaida h bhai');
+        } else {
+          let imageArr = images.map((item) => {
+            let imageObj = {
+              url: `data:${item.mime};base64,${item.data}`,
+            };
+            return imageObj;
+          });
 
-    //       let messageObj = {
-    //         userId: 2,
-    //         type: 'image',
-    //         message: {
-    //           image: imageArr,
-    //         },
-    //       };
-
-    //       this.getDataFromInput(messageObj);
-    //     }
-    //   })
-    //   .catch((err) => console.log(err));
+          let messageObj = {
+            userId: 2,
+            type: 'Image',
+            message: {
+              image: imageArr,
+            },
+          };
+         console.log(messageObj.message)
+          this.getDataFromInput(messageObj);
+        }
+      })
+      .catch((err) => console.log(err));
   };
   selectAudio = async () => {
     try {

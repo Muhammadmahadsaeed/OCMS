@@ -32,10 +32,10 @@ class contact extends Component {
     };
   }
   componentDidMount() {
-    // let loginCompany = this.props.user.user.user.loginCompany;
+    let loginCompany = this.props.user.user.user.loginCompany;
     this.setState({
       isLoading: true,
-      // loginCompany: loginCompany
+      loginCompany: loginCompany
     }, this.getData);
   }
   getData = async () => {
@@ -51,23 +51,23 @@ class contact extends Component {
     //     });
     //   })
     //   .catch((err) => console.log(err));
-    // const companyName = {
-    //   loginCompany: this.state.loginCompany,
-    // };
-    // fetch(`${api}contact/getAllContact/${limit}`, {
-    //   method: 'POST',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify(companyName),
-    // })
-    //   .then((response) => response.json())
-    //   .then((json) => {
-    //     this.setState({
-    //       data: this.state.data.concat(json.data),
-    //       isLoading: false,
-    //       loading: false,
-    //     });
-    //   })
-    //   .catch((err) => console.log('==========', err));
+    const companyName = {
+      loginCompany: this.state.loginCompany,
+    };
+    fetch(`${api}contact/getAllContact/${limit}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(companyName),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({
+          data: this.state.data.concat(json.data),
+          isLoading: false,
+          loading: false,
+        });
+      })
+      .catch((err) => console.log('==========', err));
   };
   searchUser = (value) => {
     console.log(value);

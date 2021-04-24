@@ -33,7 +33,7 @@ const ConversationHeader = (props) => {
               onPress={() => props.navigationProps.navigation.navigate('profile')}
               activeOpacity={0.8}>
               <Text style={styles.name} numberOfLines={1}>{user.userName}</Text>
-              <Text style={styles.status}>last seen today 11:20 am</Text>
+              <Text style={styles.status} numberOfLines={1}>last seen today 11:20 am</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   status:{
     color: '#fff',
     fontFamily: font.Fonts.josefReg,
-    fontSize: 16,
+    fontSize: 14,
   },
   right: {
     flexDirection: 'row',

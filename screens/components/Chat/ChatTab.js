@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   TextInput,
 } from 'react-native';
-// import { fetchUser, api } from '../../config/env';
+import { fetchUser, api } from '../../config/env';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
@@ -62,7 +62,7 @@ export default class ChatTab extends Component {
     //     });
     //   })
     //   .catch((err) => console.log("====", err));
-    // fetch(`${api}message/6078263c2baee6251824873f`)
+    // fetch(`${api}message/605444a8e2924b2bec69e360`)
     //   .then((response) => response.json())
     //   .then((json) => {
     //     this.setState({
@@ -155,7 +155,7 @@ export default class ChatTab extends Component {
             />
           </View>
           <View style={{ flex: 1 }}>
-            {/* {this.state.loading ? (
+            {this.state.loading ? (
               <View
                 style={{
                   flex: 1,
@@ -164,7 +164,7 @@ export default class ChatTab extends Component {
                 }}>
                 <ActivityIndicator size="large" animating color="black" />
               </View>
-            ) : ( */}
+            ) : (
               <FlatList
                 data={this.state.data}
                 showsVerticalScrollIndicator={false}
@@ -174,7 +174,7 @@ export default class ChatTab extends Component {
                 // onEndReachedThreshold={0}
                 // ListFooterComponent={this.renderFooter}
               />
-            {/* )} */}
+            )} 
           </View>
           <LinearGradient
             style={styles.bottomView}

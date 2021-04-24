@@ -91,14 +91,17 @@ class Conversation extends React.Component {
     return message.type;
   };
   openDocument = async (item) => {
-    // const url =
-    //   'content://com.android.providers.downloads.documents/document/418';
+   
+    const url = 'content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2FMohammed-Touqeer-Ishaque.pdf'
 
-    // const destPath = `${RNFS.DownloadDirectoryPath}/OCMS/`;
+    // const destPath = `${RNFS.DownloadDirectoryPath}/OCMS/mahad.pdf`;
     // await RNFS.copyFile(url, destPath);
 
     // console.log(await RNFS.stat(destPath));
-    // Linking.openURL('file:///data/user/0/com.ocms/cache/1' )
+    FileViewer.open('content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2FMohammed-Touqeer-Ishaque.pdf', { showOpenWithDialog: true })
+    .then((suc)=> console.log(suc))
+    .catch((err) => console.log(err))
+    // Linking.openURL('file:///storage/emulated/0/Download/OCMS/Mohammed-Touqeer-Ishaque.pdf' )
     //   .then((supported) => {
     //     console.log(supported);
     //   })
@@ -106,7 +109,6 @@ class Conversation extends React.Component {
   };
   render() {
     const {message} = this.props;
-    console.log(message.message.text)
     return (
       <View
         style={[
@@ -118,13 +120,13 @@ class Conversation extends React.Component {
             marginVertical: this.isMyMessage() ? 5 : 5,
           },
         ]}>
-        {this.isMessageType() == 'text' && (
+        {this.isMessageType() == 'Text' && (
           <View>
             <Text style={styles.message}>{message.message.text}</Text>
             <Text style={styles.time}>11:45</Text>
           </View>
         )}
-        {this.isMessageType() == 'image' && (
+        {this.isMessageType() == 'Image' && (
           <View style={{flex: 1}}>
             <Images images={message.message.image} />
           </View>

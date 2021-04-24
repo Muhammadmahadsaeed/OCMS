@@ -3,7 +3,7 @@ import {ActivityIndicator, View, StyleSheet, Image} from 'react-native';
 import {connect, useDispatch, useSelector} from 'react-redux';
 const SplashScreen = ({navigation}) => {
   const [animating, setAnimating] = useState(true);
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user);
 
   useEffect(() => {
     setTimeout(() => {

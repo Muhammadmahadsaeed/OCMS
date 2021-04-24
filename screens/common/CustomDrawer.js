@@ -36,8 +36,8 @@ class CustomSidebarMenu extends Component {
           uri: require('../../asessts/images/stars.png'),
         },
         {
-          navOptionName: 'New Boardcast',
-          screenToNavigate: 'addBoard',
+          navOptionName: 'Switch Account',
+          screenToNavigate: 'switch',
           uri: require('../../asessts/images/switch.png'),
         },
         {
@@ -51,11 +51,24 @@ class CustomSidebarMenu extends Component {
   componentDidMount() {
     this.setState({user: this.props.user.user});
   }
+  checkScreenProps = (item) =>{
+    if(item == "switch"){
+      this.props.navigation.navigate('AuthScreen');
+      this.props.removeUser(null);
+    }
+    else{
+      console.log(this.props.navigation)
+      // this.props.navigation.navigate(item);
+    }
+    
+  }
   renderItemComponent = (item) => {
     return (
       <View style={styles.card}>
-        <Image source={item.item.uri} />
-        <Text style={styles.cardText}>{item.item.navOptionName}</Text>
+        <TouchableOpacity onPress={()=> this.checkScreenProps(item.item.screenToNavigate)}>
+          <Image source={item.item.uri} />
+          <Text style={styles.cardText}>{item.item.navOptionName}</Text>
+        </TouchableOpacity>
       </View>
     );
   };

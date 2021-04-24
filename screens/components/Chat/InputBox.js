@@ -182,17 +182,17 @@ class InputBox extends React.Component {
     };
     const uri = await this.audioRecorderPlayer.startRecorder(path, audioSet);
     this.audioRecorderPlayer.addRecordBackListener((e) => {
-      this.timer = setInterval(() => {
-        const time = this.state.currentTime + 1
-        this.setState({currentTime: time})
-        console.log(time)
-      }, 1000)
-      // this.setState({
-      //   recordSecs: e.current_position,
-      //   recordTime: this.audioRecorderPlayer.mmssss(
-      //     Math.floor(e.current_position),
-      //   ),
-      // });
+      // this.timer = setInterval(() => {
+      //   const time = this.state.currentTime + 1
+      //   this.setState({currentTime: time})
+      //   console.log(time)
+      // }, 1000)
+      this.setState({
+        recordSecs: e.current_position,
+        recordTime: this.audioRecorderPlayer.mmssss(
+          Math.floor(e.current_position),
+        ),
+      });
       // return;
     });
   };
