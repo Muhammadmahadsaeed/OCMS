@@ -237,6 +237,7 @@ class ChatRoom extends React.Component {
     try {
       const res = await DocumentPicker.pickMultiple({
         type: [DocumentPicker.types.allFiles],
+        
       });
       console.log(res);
       for (const result of res) {
@@ -250,13 +251,14 @@ class ChatRoom extends React.Component {
               const fileExt = result.type.split('/');
               const param = {
                 base64: base64,
+                height: 300,
+                width:300,
                 fileName: result.name,
                 size: 1048576, // size, in bytes
                 type: result.type,
                 ext: fileExt[1],
-                fileUri: res.uri,
+                fileUri: result.uri,
               };
-
               let messageObj = {
                 userId: 2,
                 type: 'document',
@@ -290,6 +292,8 @@ class ChatRoom extends React.Component {
       includeBase64: true,
       compressImageQuality: 0.8,
       maxFiles: 5,
+      compressImageMaxHeight: 400,
+      compressImageMaxWidth:300,
       mediaType: 'photo',
     })
       .then((images) => {

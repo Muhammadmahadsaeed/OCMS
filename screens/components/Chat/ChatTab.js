@@ -155,7 +155,7 @@ export default class ChatTab extends Component {
             />
           </View>
           <View style={{ flex: 1 }}>
-            {this.state.loading ? (
+            {/* {this.state.loading ? (
               <View
                 style={{
                   flex: 1,
@@ -164,7 +164,7 @@ export default class ChatTab extends Component {
                 }}>
                 <ActivityIndicator size="large" animating color="black" />
               </View>
-            ) : (
+            ) : ( */}
               <FlatList
                 data={this.state.data}
                 showsVerticalScrollIndicator={false}
@@ -174,7 +174,7 @@ export default class ChatTab extends Component {
                 // onEndReachedThreshold={0}
                 // ListFooterComponent={this.renderFooter}
               />
-            )} 
+            {/* )}  */}
           </View>
           <LinearGradient
             style={styles.bottomView}

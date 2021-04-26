@@ -22,6 +22,7 @@ import * as RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
 import font from '../../constants/font';
 import FileViewer from 'react-native-file-viewer';
+import * as AudioManager from './AudioManager';
 class Conversation extends React.Component {
   constructor(props) {
     super(props);
@@ -38,6 +39,8 @@ class Conversation extends React.Component {
       playTime: '00:00:00',
       duration: '00:00:00',
       startAudio: false,
+      IsPlay: false,
+      isPause: false
     };
   }
 
@@ -56,7 +59,7 @@ class Conversation extends React.Component {
   renderAudio = () => {};
 
   onStartPlay = async (e) => {
-    console.log(e);
+    this.setState({play: true});
     const fileName = e.message.uri.replace('file:///', '');
     const path = Platform.select({
       ios: 'hello.m4a',
@@ -64,24 +67,56 @@ class Conversation extends React.Component {
       // android: `sdcard/1a12d76b-30a3-4c8d-ac8c-3da437854e18.mp4`,
     });
     try {
-      const msg = await this.audioRecorderPlayer.startPlayer(path);
-      this.audioRecorderPlayer.setVolume(1.0);
-      this.audioRecorderPlayer.addPlayBackListener((e) => {
-        if (e.current_position === e.duration) {
-          console.log('finished');
-          this.audioRecorderPlayer.stopPlayer()
-          .catch(err => console.log(err))
-          this.audioRecorderPlayer.removePlayBackListener();
+      await AudioManager.startPlayer(path, (res) => {
+        const {status} = res;
+        switch (status) {
+          case AudioManager.AUDIO_STATUS.begin:
+            this.setState({play: true});
+            break;
+          case AudioManager.AUDIO_STATUS.play: {
+            const {current_position, duration} = res.data;
+            console.log('duration:=====', current_position);
+            this.setState({ playDuration: current_position,IsPlay: false })
+            break;
+          }
+          case AudioManager.AUDIO_STATUS.pause: {
+            console.log('PAUSE AUDIO');
+            this.setState({isPause: true});
+            break;
+          }
+          case AudioManager.AUDIO_STATUS.resume: {
+            // console.log(('RESUME AUDIO')
+            this.setState({ isPause: false })
+            break;
+          }
+
+          case AudioManager.AUDIO_STATUS.stop: {
+            console.log('STOP AUDIO');
+            this.setState({IsPlay: false, isPause: false});
+            break;
+          }
         }
-        this.setState({
-          currentPositionSec: e.current_position,
-          currentDurationSec: e.duration,
-          playTime: this.audioRecorderPlayer.mmssss(
-            Math.floor(e.current_position),
-          ),
-          duration: this.audioRecorderPlayer.mmssss(Math.floor(e.duration)),
-        });
       });
+      // const msg = await this.audioRecorderPlayer.startPlayer(path);
+      // this.audioRecorderPlayer.setVolume(1.0);
+      // this.audioRecorderPlayer.addPlayBackListener((e) => {
+      //   if (e.current_position === e.duration) {
+      //     console.log('finished');
+      //     this.setState({play: false});
+      //     this.audioRecorderPlayer
+      //       .stopPlayer()
+      //       .catch((err) => console.log(err));
+      //     this.audioRecorderPlayer.removePlayBackListener();
+      //   }
+      //   this.setState({
+      //     currentPositionSec: e.current_position,
+      //     currentDurationSec: e.duration,
+      //     playTime: this.audioRecorderPlayer.mmssss(
+      //       Math.floor(e.current_position),
+      //     ),
+      //     duration: this.audioRecorderPlayer.mmssss(Math.floor(e.duration)),
+      //   });
+      // });
     } catch (e) {
       console.log('err======', e);
     }
@@ -91,22 +126,21 @@ class Conversation extends React.Component {
     return message.type;
   };
   openDocument = async (item) => {
-   
-    const url = 'content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2FMohammed-Touqeer-Ishaque.pdf'
+    const AppFolder = 'OCMS';
+    const DirectoryPath = RNFS.ExternalStorageDirectoryPath + '/' + AppFolder;
+    RNFS.mkdir(DirectoryPath);
 
-    // const destPath = `${RNFS.DownloadDirectoryPath}/OCMS/mahad.pdf`;
-    // await RNFS.copyFile(url, destPath);
+    const destPath = `${RNFS.ExternalStorageDirectoryPath}/OCMS/Documents/`;
+    await RNFS.copyFile(item.message.fileUri, destPath);
 
-    // console.log(await RNFS.stat(destPath));
-    FileViewer.open('content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2FMohammed-Touqeer-Ishaque.pdf', { showOpenWithDialog: true })
-    .then((suc)=> console.log(suc))
-    .catch((err) => console.log(err))
-    // Linking.openURL('file:///storage/emulated/0/Download/OCMS/Mohammed-Touqeer-Ishaque.pdf' )
-    //   .then((supported) => {
-    //     console.log(supported);
-    //   })
-    //   .catch((err) => console.log(err));
+    const fileURL = await RNFS.stat(destPath);
+    FileViewer.open(fileURL.path, {showOpenWithDialog: true})
+      .then((suc) => console.log(suc))
+      .catch((err) => console.log(err));
   };
+  async pauseAudio() {
+    await AudioManager.pausePlayer();
+  }
   render() {
     const {message} = this.props;
     return (
@@ -157,12 +191,20 @@ class Conversation extends React.Component {
           </TouchableOpacity>
         )}
         {this.isMessageType() == 'audio' && (
-          <TouchableOpacity
-            onPress={() => this.onStartPlay(message)}
-            style={{backgroundColor: 'red'}}>
-            <Text>Play</Text>
-           
-          </TouchableOpacity>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <TouchableOpacity
+              onPress={() => this.onStartPlay(message)}
+              style={{width: 40, height: 40}}>
+              <Image
+                source={
+                  this.state.IsPlay
+                    ? require('../../../asessts/images/pause.png')
+                    : require('../../../asessts/images/play.png')
+                }
+                style={{height: '100%', width: '100%'}}
+              />
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     );

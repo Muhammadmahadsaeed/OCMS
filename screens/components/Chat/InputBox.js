@@ -171,7 +171,7 @@ class InputBox extends React.Component {
       // ios: `${RNFS.DocumentDirectoryPath}/OCMS`,
       // android: `${RNFS.DocumentDirectoryPath}/OCMS/audio/${this.messageIdGenerator()}.mp4`
       ios: 'hello.m4a',
-      android: `sdcard/${this.messageIdGenerator()}.mp4`,
+      android: `${RNFS.ExternalStorageDirectoryPath}/OCMS/${this.messageIdGenerator()}.acc`,
     });
     const audioSet = {
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -197,7 +197,6 @@ class InputBox extends React.Component {
     });
   };
   onStopRecord = async () => {
-    console.log('onstop=======');
     const result = await this.audioRecorderPlayer.stopRecorder();
     this.audioRecorderPlayer.removeRecordBackListener();
     this.setState({
@@ -236,8 +235,6 @@ class InputBox extends React.Component {
     });
   };
   onCancel = async () => {
-    console.log('cancel');
-    console.log('onStopPlay');
     const result = await this.audioRecorderPlayer.stopRecorder();
     this.audioRecorderPlayer.removeRecordBackListener();
     this.setState({
@@ -248,9 +245,6 @@ class InputBox extends React.Component {
   renderAudioRecorder = () => {
     return (
       <View style={styles.audioContainer}>
-        {/* <TouchableOpacity>
-          <Text>Delete</Text>
-        </TouchableOpacity> */}
         <Text style={styles.audioTimerText}>{this.state.recordTime}</Text>
         <TouchableOpacity
           style={{padding: 5}}
@@ -312,11 +306,14 @@ class InputBox extends React.Component {
             <View style={styles.buttonContainer}>
               {!message ? (
                 <Image
-                  source={require('../../../asessts/images/enableMic.png')}
-                  style={styles.icon}
+                  source={require('../../../asessts/images/voice.png')}
+                  style={styles.btnIcon}
                 />
               ) : (
-                <Text>ll</Text>
+                <Image
+                  source={require('../../../asessts/images/send-icon.png')}
+                  style={styles.btnIcon}
+                />
               )}
             </View>
           </TouchableOpacity>
@@ -375,6 +372,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     height: 25,
     width: 25,
+    resizeMode: 'contain',
+  },
+  btnIcon:{
+    marginHorizontal: 5,
+    height: '100%',
+    width: '100%',
     resizeMode: 'contain',
   },
   buttonContainer: {
