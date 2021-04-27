@@ -172,8 +172,7 @@ const HomeStack = createStackNavigator(
       navigationOptions: ({navigation}) => ({
         headerTitle: '',
         headerTransparent: () => true,
-        headerBackTitleVisible: false,
-        headerTintColor: '#fff',
+        headerBackImage: () => <HeaderBackButton />,
       }),
     },
   },
