@@ -23,6 +23,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import font from '../../constants/font';
 import FileViewer from 'react-native-file-viewer';
 import * as AudioManager from './AudioManager';
+
 class Conversation extends React.Component {
   constructor(props) {
     super(props);
@@ -39,8 +40,9 @@ class Conversation extends React.Component {
       playTime: '00:00:00',
       duration: '00:00:00',
       startAudio: false,
-      IsPlay: false,
-      isPause: false
+      isPlay: false,
+      isPause: false,
+      onPressMessage: false,
     };
   }
 
@@ -76,7 +78,7 @@ class Conversation extends React.Component {
           case AudioManager.AUDIO_STATUS.play: {
             const {current_position, duration} = res.data;
             console.log('duration:=====', current_position);
-            this.setState({ playDuration: current_position,IsPlay: false })
+            this.setState({playDuration: current_position, isPlay: false});
             break;
           }
           case AudioManager.AUDIO_STATUS.pause: {
@@ -86,13 +88,13 @@ class Conversation extends React.Component {
           }
           case AudioManager.AUDIO_STATUS.resume: {
             // console.log(('RESUME AUDIO')
-            this.setState({ isPause: false })
+            this.setState({isPause: false});
             break;
           }
 
           case AudioManager.AUDIO_STATUS.stop: {
             console.log('STOP AUDIO');
-            this.setState({IsPlay: false, isPause: false});
+            this.setState({isPlay: false, isPause: false});
             break;
           }
         }
@@ -141,71 +143,87 @@ class Conversation extends React.Component {
   async pauseAudio() {
     await AudioManager.pausePlayer();
   }
+  onSelectMsg = (message) => {
+    console.log(message)
+    this.setState({onPressMessage: true})
+    // this.props.onLongPress();
+  };
   render() {
     const {message} = this.props;
+    
     return (
       <View
-        style={[
-          styles.messageBox,
-          {
-            backgroundColor: this.isMyMessage() ? '#DCF8C5' : 'white',
-            marginLeft: this.isMyMessage() ? 50 : 0,
-            marginRight: this.isMyMessage() ? 0 : 50,
-            marginVertical: this.isMyMessage() ? 5 : 5,
-          },
-        ]}>
-        {this.isMessageType() == 'Text' && (
-          <View>
-            <Text style={styles.message}>{message.message.text}</Text>
-            <Text style={styles.time}>11:45</Text>
-          </View>
-        )}
-        {this.isMessageType() == 'Image' && (
-          <View style={{flex: 1}}>
-            <Images images={message.message.image} />
-          </View>
-        )}
-        {this.isMessageType() == 'document' && (
-          <TouchableOpacity
-            style={{flex: 1}}
-            activeOpacity={0.8}
-            onPress={() => this.openDocument(message)}>
-            <View style={styles.documentView}>
-              <Image
-                source={require('../../../asessts/images/pdf.png')}
-                style={{height: 50, width: 50}}
-              />
-              <Text numberOfLines={1} style={styles.documentText}>
-                {message.message.fileName}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <Text style={styles.time}>11:45</Text>
+        style={
+          this.state.onPressMessage
+            ? {backgroundColor: 'green', margin: 2}
+            : {backgroundColor: 'none', margin: 2}
+        }>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onLongPress={() => this.onSelectMsg(message)}
+          onPress={() => console.log("press=============")}
+          style={[
+            styles.messageBox,
+            {
+              backgroundColor: this.isMyMessage() ? '#DCF8C5' : 'white',
+              marginLeft: this.isMyMessage() ? 50 : 0,
+              marginRight: this.isMyMessage() ? 0 : 50,
+              marginVertical: this.isMyMessage() ? 5 : 5,
+            },
+          ]}>
+          {this.isMessageType() == 'Text' && (
+            <View>
+              <Text style={styles.message}>{message.message.text}</Text>
               <Text style={styles.time}>11:45</Text>
             </View>
-          </TouchableOpacity>
-        )}
-        {this.isMessageType() == 'audio' && (
-          <View style={{flex: 1, flexDirection: 'row'}}>
+          )}
+          {this.isMessageType() == 'Image' && (
+            <View style={{flex: 1}}>
+              <Images images={message.message.image} />
+            </View>
+          )}
+          {this.isMessageType() == 'document' && (
             <TouchableOpacity
-              onPress={() => this.onStartPlay(message)}
-              style={{width: 40, height: 40}}>
-              <Image
-                source={
-                  this.state.IsPlay
-                    ? require('../../../asessts/images/pause.png')
-                    : require('../../../asessts/images/play.png')
-                }
-                style={{height: '100%', width: '100%'}}
-              />
+              style={{flex: 1}}
+              activeOpacity={0.8}
+              onPress={() => this.openDocument(message)}>
+              <View style={styles.documentView}>
+                <Image
+                  source={require('../../../asessts/images/pdf.png')}
+                  style={{height: 50, width: 50}}
+                />
+                <Text numberOfLines={1} style={styles.documentText}>
+                  {message.message.fileName}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.time}>11:45</Text>
+                <Text style={styles.time}>11:45</Text>
+              </View>
             </TouchableOpacity>
-          </View>
-        )}
+          )}
+          {this.isMessageType() == 'audio' && (
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <TouchableOpacity
+                onPress={() => this.onStartPlay(message)}
+                style={{width: 40, height: 40}}>
+                <Image
+                  source={
+                    this.state.isPlay
+                      ? require('../../../asessts/images/pause.png')
+                      : require('../../../asessts/images/play.png')
+                  }
+                  style={{height: '100%', width: '100%'}}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
     );
   }

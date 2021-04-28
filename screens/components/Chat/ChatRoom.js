@@ -153,7 +153,7 @@ class ChatRoom extends React.Component {
         },
       ],
       // data: [],
-     
+
       receiverId: '',
     };
   }
@@ -169,7 +169,6 @@ class ChatRoom extends React.Component {
     // });
   }
   getDataFromInput = (msg) => {
-
     // fetch(`${api}chat/`, {
     //   method: 'POST',
     //   headers: {'Content-Type': 'application/json'},
@@ -183,9 +182,9 @@ class ChatRoom extends React.Component {
     // })
     //   .then((response) => response.json())
     //   .then((json) => {
-        this.setState({data: [...this.state.data, msg]});
-      // })
-      // .catch((err) => console.log(err));
+    this.setState({data: [...this.state.data, msg]});
+    // })
+    // .catch((err) => console.log(err));
     // this.setState({data: [...this.state.data, msg]});
     // socket.emit('input', {
     //   name: 'mahad',
@@ -231,15 +230,13 @@ class ChatRoom extends React.Component {
       })
       .catch((err) => console.log(err));
   };
-  
+
   selectDocument = async () => {
     this.RBSheet.close();
     try {
       const res = await DocumentPicker.pickMultiple({
         type: [DocumentPicker.types.allFiles],
-        
       });
-      console.log(res);
       for (const result of res) {
         const fileName = result.uri.replace('file://', '');
         RNFetchBlob.fs
@@ -252,7 +249,7 @@ class ChatRoom extends React.Component {
               const param = {
                 base64: base64,
                 height: 300,
-                width:300,
+                width: 300,
                 fileName: result.name,
                 size: 1048576, // size, in bytes
                 type: result.type,
@@ -285,79 +282,70 @@ class ChatRoom extends React.Component {
   };
   selectImage = () => {
     this.RBSheet.close();
-    // this.props.navigation.navigate('imageGrid');
+    this.props.navigation.navigate('imageGrid');
     // this.InputBoxRef.current.getAlert();
-    ImagePicker.openPicker({
-      multiple: true,
-      includeBase64: true,
-      compressImageQuality: 0.8,
-      maxFiles: 5,
-      compressImageMaxHeight: 400,
-      compressImageMaxWidth:300,
-      mediaType: 'photo',
-    })
-      .then((images) => {
-        if (images.length > 5) {
-          console.log('5 s zaida h bhai');
-        } else {
-          let imageArr = images.map((item) => {
-            let imageObj = {
-              url: `data:${item.mime};base64,${item.data}`,
-            };
-            return imageObj;
-          });
+    // ImagePicker.openPicker({
+    //   multiple: true,
+    //   // includeBase64: true,
+    //   compressImageQuality: 0.8,
+    //   maxFiles: 5,
+    //   compressImageMaxHeight: 400,
+    //   compressImageMaxWidth: 300,
+    //   mediaType: 'photo',
+    // })
+    //   .then((images) => {
+    //     if (images.length > 5) {
+    //       console.log('5 s zaida h bhai');
+    //     } else {
+    //       // const imageName = images[0].path.split("/").pop()
+    //       // const data = new FormData();
+    //       // data.append('img', {
+    //       //   name: imageName,
+    //       //   type: images[0].mime,
+    //       //   uri:
+    //       //     Platform.OS === 'android'
+    //       //       ? images[0].path
+    //       //       : images[0].path.replace('file://', ''),
+    //       // });
+    //       // fetch('http://192.168.1.30:3000/image/upload', {
+    //       //   method: 'POST',
+    //       //   body: data,
+    //       //   headers: {
+    //       //     'Content-Type': 'multipart/form-data',
+    //       //   },
+    //       // })
+    //       //   .then((response) => response.json())
+    //       //   .then((json) => {
+    //       //     console.log(json);
+    //       //   })
+    //       //   .catch((err) => console.log('err======', err));
+    //       let imageArr = images.map((item) => {
+    //         let imageObj = {
+    //           url: `data:${item.mime};base64,${item.data}`,
+    //         };
+    //         return imageObj;
+    //       });
 
-          let messageObj = {
-            userId: 2,
-            type: 'Image',
-            message: {
-              image: imageArr,
-            },
-          };
-         console.log(messageObj.message)
-          this.getDataFromInput(messageObj);
-        }
+    //       let messageObj = {
+    //         userId: 2,
+    //         type: 'Image',
+    //         message: {
+    //           image: imageArr,
+    //         },
+    //       };
+    //       this.getDataFromInput(messageObj);
+    //     }
+    //   })
+    //   .catch((err) => console.log(err));
+  };
+  selectVideo = async () => {
+    ImagePicker.openPicker({
+      mediaType: 'video',
+    })
+      .then((video) => {
+        console.log(video);
       })
       .catch((err) => console.log(err));
-  };
-  selectAudio = async () => {
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.audio],
-      });
-      const fileName = res.uri.replace('file://', '');
-      RNFetchBlob.fs
-        .readStream(fileName, 'base64', 1048576)
-        .then((ifStream) => {
-          ifStream.open();
-          ifStream.onData((data) => {
-            let base64 = `data:${res.type};base64,${data}`;
-            const param = {
-              base64: base64,
-              width: 300,
-              height: 300,
-              fileName: res.name,
-              size: 1048576, // size, in bytes
-              type: res.type,
-              name: res.name,
-            };
-            console.log('params doc==', param);
-          });
-          ifStream.onError((err) => {
-            console.log(err);
-          });
-        });
-    } catch (err) {
-      //Handling any exception (If any)
-      if (DocumentPicker.isCancel(err)) {
-        //If user canceled the document selection
-        console.log('Canceled from single doc picker');
-      } else {
-        //For Unknown Error
-        console.log('Unknown Error: ' + JSON.stringify(err));
-        throw err;
-      }
-    }
   };
   renderContent = () => (
     <View style={{flex: 1}}>
@@ -386,7 +374,7 @@ class ChatRoom extends React.Component {
         </View>
         <View>
           <TouchableOpacity
-            onPress={() => this.selectAudio()}
+            onPress={() => this.selectVideo()}
             activeOpacity={0.8}>
             <Image
               source={require('../../../asessts/images/gallery-icon.png')}
@@ -399,6 +387,18 @@ class ChatRoom extends React.Component {
   openAttachmentModal = () => {
     this.RBSheet.open();
   };
+  componentWillUnmount() {
+    ImagePicker.clean()
+      .then(() => {
+        console.log('removed all tmp images from tmp directory');
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+  onSelectMessage = () =>{
+    console.log("select========")
+  }
   render() {
     return (
       <View style={{flex: 1}}>
@@ -417,7 +417,7 @@ class ChatRoom extends React.Component {
               data={this.state.data}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({item}) => (
-                <Conversation myId={this.state.userId} message={item} />
+                <Conversation myId={this.state.userId} message={item} onLongPress={this.onSelectMessage}  />
               )}
               inverted={1}
               // inverted={true}

@@ -26,6 +26,12 @@
 
 <!-- drawer end -->
 
+<!-- for api hit start-->
+3. /android/app/src/main/java/com/{your_project}/MainApplication.java
+
+    - initializeFlipper(this, getReactNativeHost().getReactInstanceManager()); <-- coment this line-->
+<!-- for api hit end -->
+
 https://stackoverflow.com/questions/56414770/select-multi-image-from-gallery-for-send-to-server-with-react-native/56422818
 
 https://stackoverflow.com/questions/49361166/handle-multiselect-in-a-gridview

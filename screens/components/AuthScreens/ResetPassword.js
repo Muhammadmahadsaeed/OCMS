@@ -141,7 +141,7 @@ const ResetPassword = (navigation) => {
           colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
           start={{x: 0, y: 0}}
           end={{x: 1, y: 1}}
-          style={[styles.linear, {marginTop: 50}]}>
+          style={[styles.linearButton, {marginTop: 50}]}>
           <TouchableOpacity activeOpacity={0.8}
             style={styles.button}
             onPress={() => navigation.navigation.navigate('Login')}>
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
     fontFamily: font.Fonts.josefReg,
     textAlign: 'center',
   },
-  linear: {
+  linearBtn: {
     width: '90%',
     alignSelf: 'center',
     borderRadius: 50,

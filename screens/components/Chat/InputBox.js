@@ -20,7 +20,6 @@ import AudioRecorderPlayer, {
 } from 'react-native-audio-recorder-player';
 import CryptoJS from 'crypto-js';
 import ImagePicker from 'react-native-image-crop-picker';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
@@ -68,9 +67,6 @@ class InputBox extends React.Component {
   onMicrophonePress = () => {
     console.warn('Microphone');
   };
-  getAlert() {
-    console.log('alert=======');
-  }
   onSendPress = async () => {
     const {message} = this.state;
     // Encrypt
@@ -137,18 +133,6 @@ class InputBox extends React.Component {
         return;
       }
     }
-    // const rationale = {
-    //   title: 'Microphone Permission',
-    //   message:
-    //     'AudioExample needs access to your microphone so you can record audio.',
-    // };
-    // return PermissionsAndroid.request(
-    //   PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-    //   rationale,
-    // ).then((result) => {
-    //   console.log('Permission result:', result);
-    //   return result === true || result === PermissionsAndroid.RESULTS.GRANTED;
-    // });
   }
   onPress = () => {
     if (!this.state.message) {
