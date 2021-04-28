@@ -11,7 +11,6 @@ import {
 import Colors from '../../constants/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
-import ToolbarAndroid from '@react-native-community/toolbar-android';
 import Menu, {MenuItem, MenuDivider} from 'react-native-material-menu';
 const ConversationHeader = (props) => {
   const user = props.navigationProps.navigation.getParam('converstion');

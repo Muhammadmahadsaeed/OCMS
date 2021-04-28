@@ -302,6 +302,7 @@ const LoginWithEmail = (navigation) => {
           </KeyboardAvoidingView>
         </View>
       </ScrollView>
+    
     </LinearGradient>
   );
  
