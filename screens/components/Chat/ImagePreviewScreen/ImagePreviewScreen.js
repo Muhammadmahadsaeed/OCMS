@@ -50,6 +50,10 @@ export default class ToolbarAndroidExample extends Component {
     return (
         <ToolbarAndroid
         style={styles.toolbar}
+        titleColor="white"
+        title="example"
+        navIcon={require('../../../../asessts/images/more.png')}
+        logo={require('../../../../asessts/images/more.png')}
         actions={[
           {
             title: 'Button',
@@ -76,7 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   toolbar: {
-    backgroundColor: '#E9EAED',
+    backgroundColor: 'blue',
     height: 56,
   },
   centerContainer: {

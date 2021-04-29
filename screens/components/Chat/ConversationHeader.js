@@ -1,30 +1,22 @@
-import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  UIManager,
+  findNodeHandle,
+} from 'react-native';
 import Colors from '../../constants/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import ToolbarAndroid from '@react-native-community/toolbar-android';
+import Menu, {MenuItem, MenuDivider} from 'react-native-material-menu';
 const ConversationHeader = (props) => {
   const user = props.navigationProps.navigation.getParam('converstion');
   const url = require('../../../asessts/images/admin.png');
-  const renderMoreItems = () => {
-    return (
-      <ToolbarAndroid
-        style={{
-          height: 56,
-          alignSelf: 'stretch',
-          width: 20,
-        }}
-        contentInsetStart={50}
-        rtl={true}
-        title="ToolbarAndroid Example"
-        actions={[
-          {title: 'Settings', show: 'never'},
-          {title: 'Settings 2', show: 'never'},
-        ]}
-      />
-    );
-  };
+  let _menu = null;
   return (
     <LinearGradient
       style={styles.header}
@@ -83,31 +75,26 @@ const ConversationHeader = (props) => {
             </TouchableOpacity>
           </View>
           <View style={styles.rightIcon}>
-            <ToolbarAndroid
-              style={[styles.toolbar, styles.rightIcon]}
-              actions={[
-                {
-                  title: 'Button',
-                  show: 'never',
-                },
-                {
-                  title: 'Button',
-                  show: 'never',
-                },
-              ]}
-              onIconClicked={() => this.setState({message: 'Menu is clicked'})}
-              onActionSelected={(position) =>
-                this.setState({message: `action ${position} is clicked`})
-              }
-            />
-            {/* <TouchableOpacity
-              style={styles.rightImg}
-              onPress={() => renderMoreItems()}>
-              <Image
-                source={require('../../../asessts/images/more.png')}
-                style={styles.icon}
-              />
-            </TouchableOpacity> */}
+            <Menu
+              ref={(ref) => (_menu = ref)}
+              button={
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  style={styles.rightImg}
+                  onPress={() => _menu.show()}>
+                  <Image
+                    source={require('../../../asessts/images/more.png')}
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+              }>
+              <MenuItem
+                textStyle={styles.MenuItemStyle}
+                style={styles.menuContainer}>
+                View Contact
+              </MenuItem>
+              <MenuItem textStyle={styles.MenuItemStyle}>Clear Chat</MenuItem>
+            </Menu>
           </View>
         </View>
       </View>
@@ -175,7 +162,7 @@ const styles = StyleSheet.create({
   rightIcon: {
     marginRight: 10,
     height: 30,
-    width: 25,
+    width: 28,
   },
   rightImg: {
     padding: 5,
@@ -183,12 +170,15 @@ const styles = StyleSheet.create({
 
   icon: {
     height: '100%',
-    width: 25,
+    width: '100%',
     resizeMode: 'contain',
   },
-  toolbar: {
-    padding: 5,
-    backgroundColor: '#E9EAED',
-    height: 56,
+  menuContainer: {
+    flex: 1,
+    // backgroundColor:'red'
+  },
+  MenuItemStyle: {
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 14,
   },
 });

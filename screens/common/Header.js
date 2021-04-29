@@ -3,11 +3,12 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import colors from '../constants/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import font from '../constants/font';
+import Menu, {MenuItem, MenuDivider} from 'react-native-material-menu';
 const Header = (props) => {
   const toggleDrawer = () => {
-   
-    props.navigationProps.navigation.toggleDrawer()
+    props.navigationProps.navigation.toggleDrawer();
   };
+  let _menu = null;
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
@@ -29,12 +30,26 @@ const Header = (props) => {
         <Text style={styles.text}>Community App</Text>
       </View>
       <View>
-        <TouchableOpacity style={styles.imgContainer}>
-          <Image
-            source={require('../../asessts/images/settings.png')}
-            style={{height: 25, width: 25, resizeMode: 'contain'}}
-          />
-        </TouchableOpacity>
+        <Menu
+          ref={(ref) => (_menu = ref)}
+          button={
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.imgContainer}
+              onPress={() => _menu.show()}>
+              <Image
+                source={require('../../asessts/images/settings.png')}
+                style={{height: 25, width: 25, resizeMode: 'contain'}}
+              />
+            </TouchableOpacity>
+          }>
+          <MenuItem
+            textStyle={styles.MenuItemStyle}
+            style={styles.menuContainer}>
+            View Contact
+          </MenuItem>
+          <MenuItem textStyle={styles.MenuItemStyle}>Clear Chat</MenuItem>
+        </Menu>
       </View>
     </LinearGradient>
   );
@@ -63,5 +78,13 @@ const styles = StyleSheet.create({
     width: 35,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  menuContainer: {
+    flex: 1,
+    // backgroundColor:'red'
+  },
+  MenuItemStyle: {
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 14,
   },
 });

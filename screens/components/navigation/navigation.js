@@ -10,7 +10,7 @@ import * as camera from '../Camera/index';
 import * as contact from '../contact/index';
 import * as AuthScreens from '../AuthScreens/index';
 import LoginSignupSegment from './LoginSignupSegment';
-import {Profile} from '../profile/index';
+import * as Profile from '../profile/index';
 import ContactSearchBar from '../../common/ContactSearchbar';
 import colors from '../../constants/colors';
 import LinearGradient from 'react-native-linear-gradient';
@@ -168,7 +168,15 @@ const HomeStack = createStackNavigator(
       }),
     },
     profile: {
-      screen: Profile,
+      screen: Profile.Profile,
+      navigationOptions: ({navigation}) => ({
+        headerTitle: '',
+        headerTransparent: () => true,
+        headerBackImage: () => <HeaderBackButton />,
+      }),
+    },
+    userProfile: {
+      screen: Profile.UserProfile,
       navigationOptions: ({navigation}) => ({
         headerTitle: '',
         headerTransparent: () => true,

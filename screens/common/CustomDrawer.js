@@ -6,6 +6,8 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {connect} from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
@@ -51,21 +53,20 @@ class CustomSidebarMenu extends Component {
   componentDidMount() {
     this.setState({user: this.props.user.user});
   }
-  checkScreenProps = (item) =>{
-    if(item == "switch"){
+  checkScreenProps = (item) => {
+    if (item == 'switch') {
       this.props.navigation.navigate('AuthScreen');
       this.props.removeUser(null);
-    }
-    else{
-      console.log(this.props.navigation)
+    } else {
+      console.log(this.props.navigation);
       // this.props.navigation.navigate(item);
     }
-    
-  }
+  };
   renderItemComponent = (item) => {
     return (
       <View style={styles.card}>
-        <TouchableOpacity onPress={()=> this.checkScreenProps(item.item.screenToNavigate)}>
+        <TouchableOpacity
+          onPress={() => this.checkScreenProps(item.item.screenToNavigate)}>
           <Image source={item.item.uri} />
           <Text style={styles.cardText}>{item.item.navOptionName}</Text>
         </TouchableOpacity>
@@ -89,22 +90,26 @@ class CustomSidebarMenu extends Component {
               <Image source={require('../../asessts/images/cross.png')} />
             </TouchableOpacity>
           </View>
-          <View style={styles.imageView}>
-            <View style={styles.img}>
-              <Image
-                source={require('../../asessts/images/admin.png')}
-                style={{
-                  height: '100%',
-                  width: '100%',
-                  borderRadius: 100,
-                  resizeMode: 'contain',
-                }}
-              />
+          <TouchableWithoutFeedback 
+            style={[styles.imageView]}
+            onPress={() => this.props.navigation.navigate('userProfile')}>
+            <View style={styles.imageView}>
+              <View style={styles.img}>
+                <Image
+                  source={require('../../asessts/images/admin.png')}
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                    borderRadius: 100,
+                    resizeMode: 'contain',
+                  }}
+                />
+              </View>
+              <View style={styles.profileTextView}>
+                <Text style={styles.profileText}>profile</Text>
+              </View>
             </View>
-            <View style={styles.profileTextView}>
-              <Text style={styles.profileText}>profile</Text>
-            </View>
-          </View>
+          </TouchableWithoutFeedback>
         </View>
         <View style={styles.innerContainer}>
           <FlatList

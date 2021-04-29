@@ -145,12 +145,18 @@ class Conversation extends React.Component {
   }
   onSelectMsg = (message) => {
     console.log(message)
-    this.setState({onPressMessage: true})
+    this.setState({onPressMessage: true});
     // this.props.onLongPress();
+  };
+  removeSelectMsg = (message) => {
+    if (this.state.onPressMessage) {
+      console.log('press==');
+      this.setState({onPressMessage: false});
+    }
   };
   render() {
     const {message} = this.props;
-    
+
     return (
       <View
         style={
@@ -161,7 +167,7 @@ class Conversation extends React.Component {
         <TouchableOpacity
           activeOpacity={0.9}
           onLongPress={() => this.onSelectMsg(message)}
-          onPress={() => console.log("press=============")}
+          onPress={() => this.removeSelectMsg(message)}
           style={[
             styles.messageBox,
             {
