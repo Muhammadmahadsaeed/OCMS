@@ -18,6 +18,7 @@ import AudioRecorderPlayer, {
   AudioSet,
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
+import Slider from '@react-native-community/slider';
 import * as RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
 import font from '../../constants/font';
@@ -32,17 +33,15 @@ class Conversation extends React.Component {
     this.animatedValue = new Animated.Value(0);
     this.state = {
       message: '',
-      isLoggingIn: false,
-      recordSecs: 0,
       recordTime: '00:00:00',
       currentPositionSec: 0,
-      currentDurationSec: 0,
-      playTime: '00:00:00',
+      currentDurationSec: 0.1,
       duration: '00:00:00',
       startAudio: false,
       isPlay: false,
       isPause: false,
       onPressMessage: false,
+      playDuration: '',
     };
   }
 
@@ -58,7 +57,22 @@ class Conversation extends React.Component {
     return message.userId === myId;
   };
 
-  renderAudio = () => {};
+  // onStartPlay = async (e) => {
+  //   // Set up the player
+  //   await TrackPlayer.setupPlayer();
+  //   const fileName = e.message.uri.replace('file:///', '');
+  //   // Add a track to the queue
+  //   await TrackPlayer.add({
+  //     id: 'trackId',
+  //     url: fileName,
+  //     // title: 'Track Title',
+  //     // artist: 'Track Artist',
+  //     // artwork: require('track.png'),
+  //   });
+
+  //   // Start playing it
+  //   await TrackPlayer.play();
+  // };
 
   onStartPlay = async (e) => {
     this.setState({play: true});
@@ -66,7 +80,6 @@ class Conversation extends React.Component {
     const path = Platform.select({
       ios: 'hello.m4a',
       android: fileName,
-      // android: `sdcard/1a12d76b-30a3-4c8d-ac8c-3da437854e18.mp4`,
     });
     try {
       await AudioManager.startPlayer(path, (res) => {
@@ -77,8 +90,13 @@ class Conversation extends React.Component {
             break;
           case AudioManager.AUDIO_STATUS.play: {
             const {current_position, duration} = res.data;
-            console.log('duration:=====', current_position);
-            this.setState({playDuration: current_position, isPlay: false});
+            this.millisToMinutesAndSeconds(current_position);
+            // console.log("====",Math.(current_position / duration))
+            this.setState({
+              isPlay: false,
+              currentPositionSec: current_position,
+              currentDurationSec: duration,
+            });
             break;
           }
           case AudioManager.AUDIO_STATUS.pause: {
@@ -123,6 +141,12 @@ class Conversation extends React.Component {
       console.log('err======', e);
     }
   };
+  millisToMinutesAndSeconds(millis) {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    let time = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+    this.setState({playDuration: time});
+  }
   isMessageType = () => {
     const {message} = this.props;
     return message.type;
@@ -144,7 +168,7 @@ class Conversation extends React.Component {
     await AudioManager.pausePlayer();
   }
   onSelectMsg = (message) => {
-    console.log(message)
+    console.log(message);
     this.setState({onPressMessage: true});
     // this.props.onLongPress();
   };
@@ -156,11 +180,11 @@ class Conversation extends React.Component {
   };
   render() {
     const {message} = this.props;
-
+    const {playDuration, onPressMessage} = this.state;
     return (
       <View
         style={
-          this.state.onPressMessage
+          onPressMessage
             ? {backgroundColor: 'green', margin: 2}
             : {backgroundColor: 'none', margin: 2}
         }>
@@ -214,19 +238,45 @@ class Conversation extends React.Component {
             </TouchableOpacity>
           )}
           {this.isMessageType() == 'audio' && (
-            <View style={{flex: 1, flexDirection: 'row'}}>
-              <TouchableOpacity
-                onPress={() => this.onStartPlay(message)}
-                style={{width: 40, height: 40}}>
-                <Image
-                  source={
-                    this.state.isPlay
-                      ? require('../../../asessts/images/pause.png')
-                      : require('../../../asessts/images/play.png')
-                  }
-                  style={{height: '100%', width: '100%'}}
-                />
-              </TouchableOpacity>
+            <View>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity
+                  onPress={() => this.onStartPlay(message)}
+                  style={{width: 35, height: 35}}>
+                  <Image
+                    source={
+                      this.state.isPlay
+                        ? require('../../../asessts/images/pause.png')
+                        : require('../../../asessts/images/play.png')
+                    }
+                    style={{height: '100%', width: '100%'}}
+                  />
+                </TouchableOpacity>
+                <View style={{marginLeft: 15, flex: 1}}>
+                  <Slider
+                    // we want to add some param here
+                    minimumTrackTintColor="#e75480"
+                    maximumTrackTintColor="#d3d3d3"
+                    thumbTintColor="white" // now the slider and the time will work
+                    // value={
+                    //   this.state.currentPositionSec /
+                    //   this.state.currentDurationSec
+                    // } // slier input is 0 - 1 only so we want to convert sec to 0 - 1
+                    // onValueChange={this.onslide}
+                  />
+                  <View>
+                    <Text style={styles.duration}>
+                      {playDuration ? playDuration : message.message.recordTime}
+                    </Text>
+                  </View>
+                </View>
+              </View>
             </View>
           )}
         </TouchableOpacity>
@@ -259,6 +309,10 @@ const styles = StyleSheet.create({
     color: 'grey',
     fontFamily: font.Fonts.josefReg,
   },
+  duration: {
+    color: 'grey',
+    fontFamily: font.Fonts.josefReg,
+  },
   documentView: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -271,18 +325,11 @@ const styles = StyleSheet.create({
     fontFamily: font.Fonts.josefReg,
     fontSize: 15,
   },
+  progress: {
+    height: 1,
+    width: '90%',
+    marginTop: 10,
+    flexDirection: 'row',
+    backgroundColor: 'gray',
+  },
 });
-{
-  /* {message.uri ? (
-          <TouchableOpacity
-            onPress={() => this.onStartPlay(message)}
-            style={{ backgroundColor: 'red' }}>
-            <Text>Play</Text>
-            <Text>
-              {this.state.playTime} / {this.state.duration}
-            </Text>
-          </TouchableOpacity>
-        ) : (
-          <Text style={styles.message}> {message.name} </Text>
-        )} */
-}

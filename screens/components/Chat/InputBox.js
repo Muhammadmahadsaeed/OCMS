@@ -24,6 +24,7 @@ import RNFS from 'react-native-fs';
 import colors from '../../constants/colors';
 import font from '../../constants/font';
 import RNFetchBlob from 'rn-fetch-blob';
+
 class InputBox extends React.Component {
   constructor(props) {
     super(props);
@@ -32,7 +33,7 @@ class InputBox extends React.Component {
       message: '',
       isLoggingIn: false,
       recordSecs: 0,
-      recordTime: '00:00:00',
+      recordTime: '0:00',
       currentPositionSec: 0,
       currentDurationSec: 0,
       playTime: '00:00:00',
@@ -40,7 +41,7 @@ class InputBox extends React.Component {
       startAudio: false,
       currentTime: 0,
     };
-    this.timer = null
+    this.timer = null;
     this.audioRecorderPlayer = new AudioRecorderPlayer();
     this.audioRecorderPlayer.setSubscriptionDuration(0.09); // optional. Default is 0.1
   }
@@ -152,10 +153,10 @@ class InputBox extends React.Component {
   };
   onStartRecording = async () => {
     const path = Platform.select({
-      // ios: `${RNFS.DocumentDirectoryPath}/OCMS`,
-      // android: `${RNFS.DocumentDirectoryPath}/OCMS/audio/${this.messageIdGenerator()}.mp4`
       ios: 'hello.m4a',
-      android: `${RNFS.ExternalStorageDirectoryPath}/OCMS/${this.messageIdGenerator()}.acc`,
+      android: `${
+        RNFS.ExternalStorageDirectoryPath
+      }/OCMS/${this.messageIdGenerator()}.acc`,
     });
     const audioSet = {
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -166,26 +167,18 @@ class InputBox extends React.Component {
     };
     const uri = await this.audioRecorderPlayer.startRecorder(path, audioSet);
     this.audioRecorderPlayer.addRecordBackListener((e) => {
-      // this.timer = setInterval(() => {
-      //   const time = this.state.currentTime + 1
-      //   this.setState({currentTime: time})
-      //   console.log(time)
-      // }, 1000)
-      this.setState({
-        recordSecs: e.current_position,
-        recordTime: this.audioRecorderPlayer.mmssss(
-          Math.floor(e.current_position),
-        ),
-      });
-      // return;
+      this.millisToMinutesAndSeconds(e.current_position);
     });
   };
+  millisToMinutesAndSeconds(millis) {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    let time = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+    this.setState({recordTime: time});
+  }
   onStopRecord = async () => {
     const result = await this.audioRecorderPlayer.stopRecorder();
     this.audioRecorderPlayer.removeRecordBackListener();
-    this.setState({
-      recordSecs: 0,
-    });
     let arr = [];
     const fileName = result.replace('file:///', '');
     RNFetchBlob.fs.readStream(fileName, 'base64', 1048576).then((ifStream) => {
@@ -203,15 +196,14 @@ class InputBox extends React.Component {
           type: 'audio',
           message: {
             uri: param.base64,
+            recordTime: this.state.recordTime,
           },
         };
-
         this.props.getDataFromInput(messageObj);
-        // let audio = {
-        //   uri: param.base64,
-        // };
-        // arr.push(audio);
-        // this.props.getDataFromInput(arr);
+        this.setState({
+          recordSecs: 0,
+          recordTime: '0:00',
+        });
       });
       ifStream.onError((err) => {
         console.log(err);
@@ -224,6 +216,7 @@ class InputBox extends React.Component {
     this.setState({
       recordSecs: 0,
       startAudio: false,
+      recordTime: '0:00',
     });
   };
   renderAudioRecorder = () => {
@@ -358,7 +351,7 @@ const styles = StyleSheet.create({
     width: 25,
     resizeMode: 'contain',
   },
-  btnIcon:{
+  btnIcon: {
     marginHorizontal: 5,
     height: '100%',
     width: '100%',
