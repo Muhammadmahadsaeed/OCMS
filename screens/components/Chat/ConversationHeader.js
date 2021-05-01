@@ -22,81 +22,103 @@ const ConversationHeader = (props) => {
       colors={[Colors.Colors.blueLight, Colors.Colors.blueDark]}
       start={{x: 0, y: 1}}
       end={{x: 1, y: 1}}>
-      <View style={styles.headerContent}>
-        <View style={styles.left}>
-          <View style={styles.headerBack}>
-            <TouchableOpacity
-              style={styles.headerBack}
-              activeOpacity={0.8}
-              onPress={() => props.navigationProps.navigation.pop()}>
-              <Image
-                source={require('../../../asessts/images/left-arrow.png')}
-                style={styles.backIcon}
-              />
-              <Image
-                source={user.profile ? {uri: user.profile} : url}
-                style={styles.chatImage}
-              />
-            </TouchableOpacity>
+      {!props.isMessageSelected ? (
+        <View style={styles.headerContent}>
+          <View style={styles.left}>
+            <View style={styles.headerBack}>
+              <TouchableOpacity
+                style={styles.headerBack}
+                activeOpacity={0.8}
+                onPress={() => props.navigationProps.navigation.pop()}>
+                <Image
+                  source={require('../../../asessts/images/left-arrow.png')}
+                  style={styles.backIcon}
+                />
+                <Image
+                  source={user.profile ? {uri: user.profile} : url}
+                  style={styles.chatImage}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.chatTitle}>
+              <TouchableOpacity
+                onPress={() =>
+                  props.navigationProps.navigation.navigate('profile')
+                }
+                activeOpacity={0.8}>
+                <Text style={styles.name} numberOfLines={1}>
+                  {user.userName}
+                </Text>
+                <Text style={styles.status} numberOfLines={1}>
+                  last seen today 11:20 am
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
-          <View style={styles.chatTitle}>
-            <TouchableOpacity
-              onPress={() =>
-                props.navigationProps.navigation.navigate('profile')
-              }
-              activeOpacity={0.8}>
-              <Text style={styles.name} numberOfLines={1}>
-                {user.userName}
-              </Text>
-              <Text style={styles.status} numberOfLines={1}>
-                last seen today 11:20 am
-              </Text>
-            </TouchableOpacity>
+          <View style={styles.right}>
+            <View style={styles.rightIcon}>
+              <TouchableOpacity style={styles.rightImg}>
+                <Image
+                  source={require('../../../asessts/images/video-call.png')}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.rightIcon}>
+              <TouchableOpacity style={styles.rightImg}>
+                <Image
+                  source={require('../../../asessts/images/voice-call.png')}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.rightIcon}>
+              <Menu
+                ref={(ref) => (_menu = ref)}
+                button={
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={styles.rightImg}
+                    onPress={() => _menu.show()}>
+                    <Image
+                      source={require('../../../asessts/images/more.png')}
+                      style={styles.icon}
+                    />
+                  </TouchableOpacity>
+                }>
+                <MenuItem
+                  textStyle={styles.MenuItemStyle}
+                  style={styles.menuContainer}>
+                  View Contact
+                </MenuItem>
+                <MenuItem textStyle={styles.MenuItemStyle}>Clear Chat</MenuItem>
+              </Menu>
+            </View>
           </View>
         </View>
-
-        <View style={styles.right}>
-          <View style={styles.rightIcon}>
-            <TouchableOpacity style={styles.rightImg}>
-              <Image
-                source={require('../../../asessts/images/video-call.png')}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.rightIcon}>
-            <TouchableOpacity style={styles.rightImg}>
-              <Image
-                source={require('../../../asessts/images/voice-call.png')}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.rightIcon}>
-            <Menu
-              ref={(ref) => (_menu = ref)}
-              button={
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  style={styles.rightImg}
-                  onPress={() => _menu.show()}>
-                  <Image
-                    source={require('../../../asessts/images/more.png')}
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-              }>
-              <MenuItem
-                textStyle={styles.MenuItemStyle}
-                style={styles.menuContainer}>
-                View Contact
-              </MenuItem>
-              <MenuItem textStyle={styles.MenuItemStyle}>Clear Chat</MenuItem>
-            </Menu>
+      ) : (
+        <View style={styles.headerContent}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              marginLeft: 5,
+            }}>
+            <View style={styles.rightIcon}>
+              <TouchableOpacity style={styles.rightImg}>
+                <Image
+                  source={require('../../../asessts/images/video-call.png')}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+      )}
     </LinearGradient>
   );
 };

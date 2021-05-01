@@ -22,3 +22,4 @@ export default class ImageGrid extends PureComponent {
         );
     }
 }
+

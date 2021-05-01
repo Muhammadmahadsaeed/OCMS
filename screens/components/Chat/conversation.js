@@ -24,7 +24,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import font from '../../constants/font';
 import FileViewer from 'react-native-file-viewer';
 import * as AudioManager from './AudioManager';
-
+import TrackPlayer from 'react-native-track-player';
 class Conversation extends React.Component {
   constructor(props) {
     super(props);
@@ -56,91 +56,75 @@ class Conversation extends React.Component {
     const {myId, message} = this.props;
     return message.userId === myId;
   };
-
-  // onStartPlay = async (e) => {
-  //   // Set up the player
-  //   await TrackPlayer.setupPlayer();
-  //   const fileName = e.message.uri.replace('file:///', '');
-  //   // Add a track to the queue
-  //   await TrackPlayer.add({
-  //     id: 'trackId',
-  //     url: fileName,
-  //     // title: 'Track Title',
-  //     // artist: 'Track Artist',
-  //     // artwork: require('track.png'),
-  //   });
-
-  //   // Start playing it
-  //   await TrackPlayer.play();
-  // };
-
   onStartPlay = async (e) => {
-    this.setState({play: true});
+    const currentTrack = await TrackPlayer.getCurrentTrack();
+    console.log(currentTrack);
     const fileName = e.message.uri.replace('file:///', '');
-    const path = Platform.select({
-      ios: 'hello.m4a',
-      android: fileName,
+    await TrackPlayer.setupPlayer();
+    await TrackPlayer.add({
+      id: 'trackId',
+      url: fileName,
+      title: 'Track Title',
+      artist: 'Track Artist',
+      // artwork: require('track.png'),
+      duration: e.message.recordTime,
     });
-    try {
-      await AudioManager.startPlayer(path, (res) => {
-        const {status} = res;
-        switch (status) {
-          case AudioManager.AUDIO_STATUS.begin:
-            this.setState({play: true});
-            break;
-          case AudioManager.AUDIO_STATUS.play: {
-            const {current_position, duration} = res.data;
-            this.millisToMinutesAndSeconds(current_position);
-            // console.log("====",Math.(current_position / duration))
-            this.setState({
-              isPlay: false,
-              currentPositionSec: current_position,
-              currentDurationSec: duration,
-            });
-            break;
-          }
-          case AudioManager.AUDIO_STATUS.pause: {
-            console.log('PAUSE AUDIO');
-            this.setState({isPause: true});
-            break;
-          }
-          case AudioManager.AUDIO_STATUS.resume: {
-            // console.log(('RESUME AUDIO')
-            this.setState({isPause: false});
-            break;
-          }
-
-          case AudioManager.AUDIO_STATUS.stop: {
-            console.log('STOP AUDIO');
-            this.setState({isPlay: false, isPause: false});
-            break;
-          }
-        }
-      });
-      // const msg = await this.audioRecorderPlayer.startPlayer(path);
-      // this.audioRecorderPlayer.setVolume(1.0);
-      // this.audioRecorderPlayer.addPlayBackListener((e) => {
-      //   if (e.current_position === e.duration) {
-      //     console.log('finished');
-      //     this.setState({play: false});
-      //     this.audioRecorderPlayer
-      //       .stopPlayer()
-      //       .catch((err) => console.log(err));
-      //     this.audioRecorderPlayer.removePlayBackListener();
-      //   }
-      //   this.setState({
-      //     currentPositionSec: e.current_position,
-      //     currentDurationSec: e.duration,
-      //     playTime: this.audioRecorderPlayer.mmssss(
-      //       Math.floor(e.current_position),
-      //     ),
-      //     duration: this.audioRecorderPlayer.mmssss(Math.floor(e.duration)),
-      //   });
-      // });
-    } catch (e) {
-      console.log('err======', e);
-    }
+    this.setState({isPlay: true});
+    await TrackPlayer.play();
   };
+  // onStartPlay = async (e) => {
+  //   const fileName = e.message.uri.replace('file:///', '');
+  //   const path = Platform.select({
+  //     ios: 'hello.m4a',
+  //     android: fileName,
+  //   });
+  //   try {
+  //     await AudioManager.startPlayer(path, (res) => {
+  //       const {status} = res;
+  //       switch (status) {
+  //         case AudioManager.AUDIO_STATUS.begin:
+  //           this.setState({isPlay: true});
+  //           break;
+  //         case AudioManager.AUDIO_STATUS.play: {
+  //           const {current_position, duration} = res.data;
+  //           this.millisToMinutesAndSeconds(current_position);
+  //           this.setState({
+  //             isPlay: true,
+  //             currentPositionSec: current_position,
+  //             currentDurationSec: duration,
+  //           });
+  //           break;
+  //         }
+  //         case AudioManager.AUDIO_STATUS.pause: {
+  //           console.log('PAUSE AUDIO');
+  //           // this.setState({isPlay: false});
+  //           // this.pauseAudio()
+  //           // this.setState({isPause: true});
+  //           break;
+  //         }
+  //         case AudioManager.AUDIO_STATUS.resume: {
+  //           console.log('RESUME AUDIO');
+  //           AudioManager.pausePlayer()
+  //           // this.setState({isPlay: false});
+  //           // this.pauseAudio()
+  //           break;
+  //         }
+
+  //         case AudioManager.AUDIO_STATUS.stop: {
+  //           console.log('STOP AUDIO');
+  //           this.setState({isPlay: false, isPause: false});
+  //           break;
+  //         }
+  //       }
+  //     });
+  //   } catch (e) {
+  //     console.log('err======', e);
+  //   }
+  // };
+  // onPause = async () =>{
+  //   console.log("========")
+  //   await TrackPlayer.pause()
+  // }
   millisToMinutesAndSeconds(millis) {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -168,16 +152,23 @@ class Conversation extends React.Component {
     await AudioManager.pausePlayer();
   }
   onSelectMsg = (message) => {
-    console.log(message);
-    this.setState({onPressMessage: true});
-    // this.props.onLongPress();
-  };
-  removeSelectMsg = (message) => {
-    if (this.state.onPressMessage) {
-      console.log('press==');
-      this.setState({onPressMessage: false});
+    if (this.state.onPressMessage === false) {
+      this.toggleSelect();
     }
+    this.props.getSelectedMessage(message);
   };
+  toggleSelect = () => {
+    this.setState({onPressMessage: !this.state.onPressMessage});
+  };
+  removeSelectMsg = () => {
+    if (this.state.onPressMessage) {
+      this.toggleSelect();
+    }
+    this.props.getSelectedMessage(null);
+  };
+  componentWillUnmount() {
+    console.log('stop==========');
+  }
   render() {
     const {message} = this.props;
     const {playDuration, onPressMessage} = this.state;
@@ -186,7 +177,7 @@ class Conversation extends React.Component {
         style={
           onPressMessage
             ? {backgroundColor: 'green', margin: 2}
-            : {backgroundColor: 'none', margin: 2}
+            : {backgroundColor: 'transparent', margin: 2}
         }>
         <TouchableOpacity
           activeOpacity={0.9}
@@ -246,21 +237,28 @@ class Conversation extends React.Component {
                   justifyContent: 'flex-start',
                   alignItems: 'center',
                 }}>
-                <TouchableOpacity
-                  onPress={() => this.onStartPlay(message)}
-                  style={{width: 35, height: 35}}>
-                  <Image
-                    source={
-                      this.state.isPlay
-                        ? require('../../../asessts/images/pause.png')
-                        : require('../../../asessts/images/play.png')
-                    }
-                    style={{height: '100%', width: '100%'}}
-                  />
-                </TouchableOpacity>
+                {!this.state.isPlay && (
+                  <TouchableOpacity
+                    onPress={() => this.onStartPlay(message)}
+                    style={{width: 35, height: 35}}>
+                    <Image
+                      source={require('../../../asessts/images/play.png')}
+                      style={{height: '100%', width: '100%'}}
+                    />
+                  </TouchableOpacity>
+                )}
+                {this.state.isPlay && (
+                  <TouchableOpacity
+                    // onPress={() => this.onPause(message)}
+                    style={{width: 35, height: 35}}>
+                    <Image
+                      source={require('../../../asessts/images/pause.png')}
+                      style={{height: '100%', width: '100%'}}
+                    />
+                  </TouchableOpacity>
+                )}
                 <View style={{marginLeft: 15, flex: 1}}>
                   <Slider
-                    // we want to add some param here
                     minimumTrackTintColor="#e75480"
                     maximumTrackTintColor="#d3d3d3"
                     thumbTintColor="white" // now the slider and the time will work

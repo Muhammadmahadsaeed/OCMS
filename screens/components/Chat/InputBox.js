@@ -181,34 +181,35 @@ class InputBox extends React.Component {
     this.audioRecorderPlayer.removeRecordBackListener();
     let arr = [];
     const fileName = result.replace('file:///', '');
-    RNFetchBlob.fs.readStream(fileName, 'base64', 1048576).then((ifStream) => {
-      ifStream.open();
-      ifStream.onData((data) => {
-        let base64 = `data:audio/mpeg;base64,${data}`;
-        const param = {
-          base64: base64,
-          size: 1048576, // size, in bytes
-          // type: res.type,
-          // name: res.name,
-        };
-        let messageObj = {
-          userId: 2,
-          type: 'audio',
-          message: {
-            uri: param.base64,
-            recordTime: this.state.recordTime,
-          },
-        };
-        this.props.getDataFromInput(messageObj);
-        this.setState({
-          recordSecs: 0,
-          recordTime: '0:00',
-        });
-      });
-      ifStream.onError((err) => {
-        console.log(err);
-      });
-    });
+    console.log(result)
+    // RNFetchBlob.fs.readStream(fileName, 'base64', 1048576).then((ifStream) => {
+    //   ifStream.open();
+    //   ifStream.onData((data) => {
+    //     let base64 = `data:audio/mpeg;base64,${data}`;
+    //     const param = {
+    //       base64: base64,
+    //       size: 1048576, // size, in bytes
+    //       // type: res.type,
+    //       // name: res.name,
+    //     };
+    //     let messageObj = {
+    //       userId: 2,
+    //       type: 'audio',
+    //       message: {
+    //         uri: param.base64,
+    //         recordTime: this.state.recordTime,
+    //       },
+    //     };
+    //     this.props.getDataFromInput(messageObj);
+    //     this.setState({
+    //       recordSecs: 0,
+    //       recordTime: '0:00',
+    //     });
+    //   });
+    //   ifStream.onError((err) => {
+    //     console.log(err);
+    //   });
+    // });
   };
   onCancel = async () => {
     const result = await this.audioRecorderPlayer.stopRecorder();

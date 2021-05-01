@@ -152,13 +152,13 @@ const HomeStack = createStackNavigator(
         headerShown: false,
       }),
     },
-    imageGrid: {
-      screen: chat.ImagePreview,
-      // navigationOptions: ({navigation}) => ({
-      //   safeAreaInsets: {top: 0},
-      //   headerShown: false,
-      // }),
-    },
+    // imageGrid: {
+    //   screen: chat.ImagePreview,
+    //   // navigationOptions: ({navigation}) => ({
+    //   //   safeAreaInsets: {top: 0},
+    //   //   headerShown: false,
+    //   // }),
+    // },
     contact: {
       screen: contact.contact,
       navigationOptions: ({navigation}) => ({
