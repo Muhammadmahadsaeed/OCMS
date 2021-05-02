@@ -24,6 +24,8 @@ import RNFetchBlob from 'rn-fetch-blob';
 import font from '../../constants/font';
 import FileViewer from 'react-native-file-viewer';
 import * as AudioManager from './AudioManager';
+import TrackPlayer from 'react-native-track-player';
+TrackPlayer.setupPlayer();
 class Conversation extends React.Component {
   constructor(props) {
     super(props);
@@ -37,7 +39,7 @@ class Conversation extends React.Component {
       currentDurationSec: 0.1,
       duration: '00:00:00',
       startAudio: false,
-      isPlay: false,
+      AudioStatus: true,
       isPause: false,
       onPressMessage: false,
       playDuration: '',
@@ -57,56 +59,71 @@ class Conversation extends React.Component {
   };
   onStartPlay = async (e) => {
     const fileName = e.message.uri.replace('file:///', '');
-    const path = Platform.select({
-      ios: 'hello.m4a',
-      android: fileName,
+    await TrackPlayer.add({
+      id: 'trackId',
+      url: fileName,
+      title: 'Track Title',
+      artist: 'Track Artist',
     });
-    try {
-      await AudioManager.startPlayer(path, (res) => {
-        const {status} = res;
-        switch (status) {
-          case AudioManager.AUDIO_STATUS.begin:
-            this.setState({isPlay: true});
-            break;
-          case AudioManager.AUDIO_STATUS.play: {
-            const {current_position, duration} = res.data;
-            this.millisToMinutesAndSeconds(current_position);
-            this.setState({
-              isPlay: true,
-              currentPositionSec: current_position,
-              currentDurationSec: duration,
-            });
-            break;
-          }
-          case AudioManager.AUDIO_STATUS.pause: {
-            console.log('PAUSE AUDIO');
-            // this.setState({isPlay: false});
-            // this.pauseAudio()
-            // this.setState({isPause: true});
-            break;
-          }
-          case AudioManager.AUDIO_STATUS.resume: {
-            console.log('RESUME AUDIO');
-            // AudioManager.pausePlayer()
-            // this.setState({isPlay: false});
-            // this.pauseAudio()
-            break;
-          }
-
-          case AudioManager.AUDIO_STATUS.stop: {
-            console.log('STOP AUDIO');
-            this.setState({isPlay: false});
-            break;
-          }
-        }
-      });
-    } catch (e) {
-      console.log('err======', e);
-    }
+    TrackPlayer.play();
   };
-  async pauseAudio() {
-    await AudioManager.pausePlayer()
+
+  onPause = () => {
+    this.setState({ isPlay: false })
+    TrackPlayer.pause();
   }
+  // onStartPlay = async (e) => {
+  //   const fileName = e.message.uri.replace('file:///', '');
+  //   const path = Platform.select({
+  //     ios: 'hello.m4a',
+  //     android: fileName,
+  //   });
+  //   try {
+  //     await AudioManager.startPlayer(path, (res) => {
+  //       const {status} = res;
+  //       switch (status) {
+  //         case AudioManager.AUDIO_STATUS.begin:
+  //           this.setState({isPlay: true});
+  //           break;
+  //         case AudioManager.AUDIO_STATUS.play: {
+  //           const {current_position, duration} = res.data;
+  //           this.millisToMinutesAndSeconds(current_position);
+  //           this.setState({
+  //             isPlay: true,
+  //             currentPositionSec: current_position,
+  //             currentDurationSec: duration,
+  //           });
+  //           break;
+  //         }
+  //         case AudioManager.AUDIO_STATUS.pause: {
+  //           console.log('PAUSE AUDIO');
+  //           // this.setState({isPlay: false});
+  //           // this.pauseAudio()
+  //           // this.setState({isPause: true});
+  //           break;
+  //         }
+  //         case AudioManager.AUDIO_STATUS.resume: {
+  //           console.log('RESUME AUDIO');
+  //           // AudioManager.pausePlayer()
+  //           // this.setState({isPlay: false});
+  //           // this.pauseAudio()
+  //           break;
+  //         }
+
+  //         case AudioManager.AUDIO_STATUS.stop: {
+  //           console.log('STOP AUDIO');
+  //           this.setState({isPlay: false});
+  //           break;
+  //         }
+  //       }
+  //     });
+  //   } catch (e) {
+  //     console.log('err======', e);
+  //   }
+  // };
+  // async pauseAudio() {
+  //   await AudioManager.pausePlayer()
+  // }
 
   millisToMinutesAndSeconds(millis) {
     var minutes = Math.floor(millis / 60000);
@@ -220,26 +237,17 @@ class Conversation extends React.Component {
                   justifyContent: 'flex-start',
                   alignItems: 'center',
                 }}>
-                {!this.state.isPlay && (
-                  <TouchableOpacity
-                    onPress={() => this.onStartPlay(message)}
-                    style={{ width: 35, height: 35 }}>
-                    <Image
-                      source={require('../../../asessts/images/play.png')}
-                      style={{ height: '100%', width: '100%' }}
-                    />
-                  </TouchableOpacity>
-                )}
-                {this.state.isPlay && (
-                  <TouchableOpacity
-                    // onPress={() => this.onPause(message)}
-                    style={{ width: 35, height: 35 }}>
-                    <Image
-                      source={require('../../../asessts/images/pause.png')}
-                      style={{ height: '100%', width: '100%' }}
-                    />
-                  </TouchableOpacity>
-                )}
+
+                <TouchableOpacity
+                  onPress={() => this.onStartPlay(message)}
+                  style={{ width: 35, height: 35 }}>
+                  <Image
+                    source={this.state.AudioStatus ? require('../../../asessts/images/play.png') : require('../../../asessts/images/pause.png')}
+                    style={{ height: '100%', width: '100%' }}
+                  />
+                </TouchableOpacity>
+
+
                 <View style={{ marginLeft: 15, flex: 1 }}>
                   <Slider
                     minimumTrackTintColor="#e75480"
