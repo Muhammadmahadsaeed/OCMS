@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
@@ -24,23 +24,13 @@ import RNFetchBlob from 'rn-fetch-blob';
 import font from '../../constants/font';
 import FileViewer from 'react-native-file-viewer';
 import * as AudioManager from './AudioManager';
-import TrackPlayer, {useTrackPlayerProgress} from 'react-native-track-player';
-const Progress = () => {
-  const {position, bufferedPosition, duration} = useTrackPlayerProgress();
-  console.log(position);
-  return (
-    <View>
-      <Slider minimumValue={0} maximumValue={duration} value={position} />
+import TrackPlayer, { useTrackPlayerProgress,usePlaybackState } from 'react-native-track-player';
 
-      <View>
-        <Text>{position}</Text>
-      </View>
-    </View>
-  );
-};
 const Conversation = (props) => {
   const [onPressMessage, setOnPressMessage] = useState(false);
   const [playDuration, setPlayDuration] = useState('');
+  const [AudioStatus, setAudioStatus] = useState(true)
+  const playbackState = usePlaybackState();
   // constructor(props) {
   //   super(props);
   //   this.audioRecorderPlayer = new AudioRecorderPlayer();
@@ -68,24 +58,32 @@ const Conversation = (props) => {
   //   }).start();
   // }
   const isMyMessage = () => {
-    const {myId, message} = props;
+    const { myId, message } = props;
     return message.userId === myId;
   };
   const onStartPlay = async (e) => {
     const fileName = e.message.uri.replace('file:///', '');
     TrackPlayer.setupPlayer();
-    const state = await TrackPlayer.getState();
-    await TrackPlayer.add({
-      id: 'trackId',
-      url: fileName,
-      title: 'Track Title',
-      artist: 'Track Artist',
-    });
-    TrackPlayer.play();
-
-    const position = await TrackPlayer.getPosition();
-    const duration = await TrackPlayer.getDuration();
-    console.log('======', state);
+    const currentTrack = await TrackPlayer.getCurrentTrack();
+    if (currentTrack == null) {
+      await TrackPlayer.reset();
+      await TrackPlayer.add({
+        id: 'trackId',
+        url: fileName,
+        title: 'Track Title',
+        artist: 'Track Artist',
+      });
+      await TrackPlayer.play();
+     console.log(playbackState,TrackPlayer.STATE_PAUSED)
+    } else {
+      if (playbackState === TrackPlayer.STATE_PAUSED) {
+        console.log("play")
+        await TrackPlayer.play();
+      } else {
+        console.log("pause=======")
+        await TrackPlayer.pause();
+      }
+    }
   };
 
   // onPause = () => {
@@ -152,7 +150,7 @@ const Conversation = (props) => {
   //   this.setState({playDuration: time});
   // }
   const isMessageType = () => {
-    const {message} = props;
+    const { message } = props;
     return message.type;
   };
   const openDocument = async (item) => {
@@ -164,7 +162,7 @@ const Conversation = (props) => {
     await RNFS.copyFile(item.message.fileUri, destPath);
 
     const fileURL = await RNFS.stat(destPath);
-    FileViewer.open(fileURL.path, {showOpenWithDialog: true})
+    FileViewer.open(fileURL.path, { showOpenWithDialog: true })
       .then((suc) => console.log(suc))
       .catch((err) => console.log(err));
   };
@@ -179,7 +177,7 @@ const Conversation = (props) => {
   };
   const removeSelectMsg = () => {
     if (onPressMessage) {
-      this.toggleSelect();
+      toggleSelect();
     }
     props.getSelectedMessage(null);
   };
@@ -187,14 +185,14 @@ const Conversation = (props) => {
   //   TrackPlayer.destroy();
   // }
   // render() {
-  const {message} = props;
+  const { message } = props;
   //   const {playDuration, onPressMessage} = this.state;
   return (
     <View
       style={
         onPressMessage
-          ? {backgroundColor: 'green', margin: 2}
-          : {backgroundColor: 'transparent', margin: 2}
+          ? { backgroundColor: 'green', margin: 2 }
+          : { backgroundColor: 'transparent', margin: 2 }
       }>
       <TouchableOpacity
         activeOpacity={0.9}
@@ -216,19 +214,19 @@ const Conversation = (props) => {
           </View>
         )}
         {isMessageType() == 'Image' && (
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <Images images={message.message.image} />
           </View>
         )}
         {isMessageType() == 'document' && (
           <TouchableOpacity
-            style={{flex: 1}}
+            style={{ flex: 1 }}
             activeOpacity={0.8}
             onPress={() => openDocument(message)}>
             <View style={styles.documentView}>
               <Image
                 source={require('../../../asessts/images/pdf.png')}
-                style={{height: 50, width: 50}}
+                style={{ height: 50, width: 50 }}
               />
               <Text numberOfLines={1} style={styles.documentText}>
                 {message.message.fileName}
@@ -256,27 +254,27 @@ const Conversation = (props) => {
               }}>
               <TouchableOpacity
                 onPress={() => onStartPlay(message)}
-                style={{width: 35, height: 35}}>
+                style={{ width: 35, height: 35 }}>
                 <Image
                   source={
-                    this.state.AudioStatus
+                    AudioStatus
                       ? require('../../../asessts/images/play.png')
                       : require('../../../asessts/images/pause.png')
                   }
-                  style={{height: '100%', width: '100%'}}
+                  style={{ height: '100%', width: '100%' }}
                 />
               </TouchableOpacity>
 
-              <View style={{marginLeft: 15, flex: 1}}>
+              <View style={{ marginLeft: 15, flex: 1 }}>
                 <Slider
                   minimumTrackTintColor="#e75480"
                   maximumTrackTintColor="#d3d3d3"
                   thumbTintColor="white" // now the slider and the time will work
-                  // value={
-                  //   this.state.currentPositionSec /
-                  //   this.state.currentDurationSec
-                  // } // slier input is 0 - 1 only so we want to convert sec to 0 - 1
-                  // onValueChange={this.onslide}
+                // value={
+                //   this.state.currentPositionSec /
+                //   this.state.currentDurationSec
+                // } // slier input is 0 - 1 only so we want to convert sec to 0 - 1
+                // onValueChange={this.onslide}
                 />
                 <View>
                   <Text style={styles.duration}>
