@@ -56,6 +56,15 @@ class ChatRoom extends React.Component {
         },
         {
           msgId: 2,
+          userId: 1,
+          type: 'Video',
+          message: {
+            text: 'video',
+          },
+          selected: false,
+        },
+        {
+          msgId: 2,
           userId: 2,
           type: 'Text',
           message: {
