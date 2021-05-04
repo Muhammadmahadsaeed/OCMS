@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -24,41 +24,57 @@ import RNFetchBlob from 'rn-fetch-blob';
 import font from '../../constants/font';
 import FileViewer from 'react-native-file-viewer';
 import * as AudioManager from './AudioManager';
-import TrackPlayer from 'react-native-track-player';
-TrackPlayer.setupPlayer();
-class Conversation extends React.Component {
-  constructor(props) {
-    super(props);
-    this.audioRecorderPlayer = new AudioRecorderPlayer();
-    this.audioRecorderPlayer.setSubscriptionDuration(0.09);
-    this.animatedValue = new Animated.Value(0);
-    this.state = {
-      message: '',
-      recordTime: '00:00:00',
-      currentPositionSec: 0,
-      currentDurationSec: 0.1,
-      duration: '00:00:00',
-      startAudio: false,
-      AudioStatus: true,
-      isPause: false,
-      onPressMessage: false,
-      playDuration: '',
-    };
-  }
+import TrackPlayer, {useTrackPlayerProgress} from 'react-native-track-player';
+const Progress = () => {
+  const {position, bufferedPosition, duration} = useTrackPlayerProgress();
+  console.log(position);
+  return (
+    <View>
+      <Slider minimumValue={0} maximumValue={duration} value={position} />
 
-  componentDidMount() {
-    Animated.timing(this.animatedValue, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-  }
-  isMyMessage = () => {
-    const { myId, message } = this.props;
+      <View>
+        <Text>{position}</Text>
+      </View>
+    </View>
+  );
+};
+const Conversation = (props) => {
+  const [onPressMessage, setOnPressMessage] = useState(false);
+  const [playDuration, setPlayDuration] = useState('');
+  // constructor(props) {
+  //   super(props);
+  //   this.audioRecorderPlayer = new AudioRecorderPlayer();
+  //   this.audioRecorderPlayer.setSubscriptionDuration(0.09);
+  //   this.animatedValue = new Animated.Value(0);
+  //   this.state = {
+  //     message: '',
+  //     recordTime: '00:00:00',
+  //     currentPositionSec: 0,
+  //     currentDurationSec: 0.1,
+  //     duration: '00:00:00',
+  //     startAudio: false,
+  //     AudioStatus: true,
+  //     isPause: false,
+  //     onPressMessage: false,
+  //     playDuration: '',
+  //   };
+  // }
+
+  // componentDidMount() {
+  //   Animated.timing(this.animatedValue, {
+  //     toValue: 1,
+  //     duration: 1000,
+  //     useNativeDriver: true,
+  //   }).start();
+  // }
+  const isMyMessage = () => {
+    const {myId, message} = props;
     return message.userId === myId;
   };
-  onStartPlay = async (e) => {
+  const onStartPlay = async (e) => {
     const fileName = e.message.uri.replace('file:///', '');
+    TrackPlayer.setupPlayer();
+    const state = await TrackPlayer.getState();
     await TrackPlayer.add({
       id: 'trackId',
       url: fileName,
@@ -66,12 +82,16 @@ class Conversation extends React.Component {
       artist: 'Track Artist',
     });
     TrackPlayer.play();
+
+    const position = await TrackPlayer.getPosition();
+    const duration = await TrackPlayer.getDuration();
+    console.log('======', state);
   };
 
-  onPause = () => {
-    this.setState({ isPlay: false })
-    TrackPlayer.pause();
-  }
+  // onPause = () => {
+  //   this.setState({isPlay: false});
+  //   TrackPlayer.pause();
+  // };
   // onStartPlay = async (e) => {
   //   const fileName = e.message.uri.replace('file:///', '');
   //   const path = Platform.select({
@@ -125,17 +145,17 @@ class Conversation extends React.Component {
   //   await AudioManager.pausePlayer()
   // }
 
-  millisToMinutesAndSeconds(millis) {
-    var minutes = Math.floor(millis / 60000);
-    var seconds = ((millis % 60000) / 1000).toFixed(0);
-    let time = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-    this.setState({ playDuration: time });
-  }
-  isMessageType = () => {
-    const { message } = this.props;
+  // millisToMinutesAndSeconds(millis) {
+  //   var minutes = Math.floor(millis / 60000);
+  //   var seconds = ((millis % 60000) / 1000).toFixed(0);
+  //   let time = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+  //   this.setState({playDuration: time});
+  // }
+  const isMessageType = () => {
+    const {message} = props;
     return message.type;
   };
-  openDocument = async (item) => {
+  const openDocument = async (item) => {
     const AppFolder = 'OCMS';
     const DirectoryPath = RNFS.ExternalStorageDirectoryPath + '/' + AppFolder;
     RNFS.mkdir(DirectoryPath);
@@ -144,135 +164,134 @@ class Conversation extends React.Component {
     await RNFS.copyFile(item.message.fileUri, destPath);
 
     const fileURL = await RNFS.stat(destPath);
-    FileViewer.open(fileURL.path, { showOpenWithDialog: true })
+    FileViewer.open(fileURL.path, {showOpenWithDialog: true})
       .then((suc) => console.log(suc))
       .catch((err) => console.log(err));
   };
-  async pauseAudio() {
-    await AudioManager.pausePlayer();
-  }
-  onSelectMsg = (message) => {
-    if (this.state.onPressMessage === false) {
+  const onSelectMsg = (message) => {
+    if (onPressMessage === false) {
+      toggleSelect();
+    }
+    props.getSelectedMessage(message);
+  };
+  const toggleSelect = () => {
+    setOnPressMessage(!onPressMessage);
+  };
+  const removeSelectMsg = () => {
+    if (onPressMessage) {
       this.toggleSelect();
     }
-    this.props.getSelectedMessage(message);
+    props.getSelectedMessage(null);
   };
-  toggleSelect = () => {
-    this.setState({ onPressMessage: !this.state.onPressMessage });
-  };
-  removeSelectMsg = () => {
-    if (this.state.onPressMessage) {
-      this.toggleSelect();
-    }
-    this.props.getSelectedMessage(null);
-  };
-  componentWillUnmount() {
-    console.log('stop==========');
-  }
-  render() {
-    const { message } = this.props;
-    const { playDuration, onPressMessage } = this.state;
-    return (
-      <View
-        style={
-          onPressMessage
-            ? { backgroundColor: 'green', margin: 2 }
-            : { backgroundColor: 'transparent', margin: 2 }
-        }>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onLongPress={() => this.onSelectMsg(message)}
-          onPress={() => this.removeSelectMsg(message)}
-          style={[
-            styles.messageBox,
-            {
-              backgroundColor: this.isMyMessage() ? '#DCF8C5' : 'white',
-              marginLeft: this.isMyMessage() ? 50 : 0,
-              marginRight: this.isMyMessage() ? 0 : 50,
-              marginVertical: this.isMyMessage() ? 5 : 5,
-            },
-          ]}>
-          {this.isMessageType() == 'Text' && (
-            <View>
-              <Text style={styles.message}>{message.message.text}</Text>
+  // componentWillUnmount() {
+  //   TrackPlayer.destroy();
+  // }
+  // render() {
+  const {message} = props;
+  //   const {playDuration, onPressMessage} = this.state;
+  return (
+    <View
+      style={
+        onPressMessage
+          ? {backgroundColor: 'green', margin: 2}
+          : {backgroundColor: 'transparent', margin: 2}
+      }>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onLongPress={() => onSelectMsg(message)}
+        onPress={() => removeSelectMsg(message)}
+        style={[
+          styles.messageBox,
+          {
+            backgroundColor: isMyMessage() ? '#DCF8C5' : 'white',
+            marginLeft: isMyMessage() ? 50 : 0,
+            marginRight: isMyMessage() ? 0 : 50,
+            marginVertical: isMyMessage() ? 5 : 5,
+          },
+        ]}>
+        {isMessageType() == 'Text' && (
+          <View>
+            <Text style={styles.message}>{message.message.text}</Text>
+            <Text style={styles.time}>11:45</Text>
+          </View>
+        )}
+        {isMessageType() == 'Image' && (
+          <View style={{flex: 1}}>
+            <Images images={message.message.image} />
+          </View>
+        )}
+        {isMessageType() == 'document' && (
+          <TouchableOpacity
+            style={{flex: 1}}
+            activeOpacity={0.8}
+            onPress={() => openDocument(message)}>
+            <View style={styles.documentView}>
+              <Image
+                source={require('../../../asessts/images/pdf.png')}
+                style={{height: 50, width: 50}}
+              />
+              <Text numberOfLines={1} style={styles.documentText}>
+                {message.message.fileName}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text style={styles.time}>11:45</Text>
               <Text style={styles.time}>11:45</Text>
             </View>
-          )}
-          {this.isMessageType() == 'Image' && (
-            <View style={{ flex: 1 }}>
-              <Images images={message.message.image} />
-            </View>
-          )}
-          {this.isMessageType() == 'document' && (
-            <TouchableOpacity
-              style={{ flex: 1 }}
-              activeOpacity={0.8}
-              onPress={() => this.openDocument(message)}>
-              <View style={styles.documentView}>
+          </TouchableOpacity>
+        )}
+        {isMessageType() == 'audio' && (
+          <View>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity
+                onPress={() => onStartPlay(message)}
+                style={{width: 35, height: 35}}>
                 <Image
-                  source={require('../../../asessts/images/pdf.png')}
-                  style={{ height: 50, width: 50 }}
+                  source={
+                    this.state.AudioStatus
+                      ? require('../../../asessts/images/play.png')
+                      : require('../../../asessts/images/pause.png')
+                  }
+                  style={{height: '100%', width: '100%'}}
                 />
-                <Text numberOfLines={1} style={styles.documentText}>
-                  {message.message.fileName}
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <Text style={styles.time}>11:45</Text>
-                <Text style={styles.time}>11:45</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          {this.isMessageType() == 'audio' && (
-            <View>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                }}>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  onPress={() => this.onStartPlay(message)}
-                  style={{ width: 35, height: 35 }}>
-                  <Image
-                    source={this.state.AudioStatus ? require('../../../asessts/images/play.png') : require('../../../asessts/images/pause.png')}
-                    style={{ height: '100%', width: '100%' }}
-                  />
-                </TouchableOpacity>
-
-
-                <View style={{ marginLeft: 15, flex: 1 }}>
-                  <Slider
-                    minimumTrackTintColor="#e75480"
-                    maximumTrackTintColor="#d3d3d3"
-                    thumbTintColor="white" // now the slider and the time will work
+              <View style={{marginLeft: 15, flex: 1}}>
+                <Slider
+                  minimumTrackTintColor="#e75480"
+                  maximumTrackTintColor="#d3d3d3"
+                  thumbTintColor="white" // now the slider and the time will work
                   // value={
                   //   this.state.currentPositionSec /
                   //   this.state.currentDurationSec
                   // } // slier input is 0 - 1 only so we want to convert sec to 0 - 1
                   // onValueChange={this.onslide}
-                  />
-                  <View>
-                    <Text style={styles.duration}>
-                      {playDuration ? playDuration : message.message.recordTime}
-                    </Text>
-                  </View>
+                />
+                <View>
+                  <Text style={styles.duration}>
+                    {playDuration ? playDuration : message.message.recordTime}
+                  </Text>
                 </View>
               </View>
             </View>
-          )}
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
+          </View>
+        )}
+      </TouchableOpacity>
+    </View>
+  );
+  // }
+};
 
 export default Conversation;
 
