@@ -11,6 +11,7 @@ module.exports = async function() {
   });
 
   TrackPlayer.addEventListener('remote-next', () => {
+    console.log("skip======")
     TrackPlayer.skipToNext()
   });
 
