@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   ImageBackground,
   FlatList,
+  BackHandler,
 } from 'react-native';
 import InputBox from './InputBox';
 import Conversation from './conversation';
@@ -28,81 +29,82 @@ import RNFS from 'react-native-fs';
 import axios from 'axios';
 import {api} from '../../config/env';
 import ImagePicker from 'react-native-image-crop-picker';
-const socket = socketIO('http://192.168.1.62:4000', {
-  transports: ['websocket'],
-  jsonp: false,
-});
-socket.connect();
+import {connect} from 'react-redux';
+// const socket = socketIO('http://192.168.1.52:4000', {
+//   transports: ['websocket'],
+//   jsonp: false,
+// });
+// socket.connect();
 
-socket.on('connect', () => {
-  console.log('connected to socket server');
-});
+// socket.on('connect', () => {
+//   console.log('connected to socket server');
+// });
 class ChatRoom extends React.Component {
   constructor(props) {
     super(props);
     this.InputBoxRef = React.createRef();
     this.state = {
       userId: 2,
+      senderId: '',
+      url: require('../../../asessts/images/admin.png'),
       isMessageSelected: false,
-      data: [
-        {
-          msgId: 1,
-          userId: 1,
-          type: 'Text',
-          message: {
-            text: 'hello',
-          },
-          selected: false,
-        },
-        {
-          msgId: 2,
-          userId: 1,
-          type: 'Video',
-          message: {
-            text: 'video',
-          },
-          selected: false,
-        },
-        {
-          msgId: 2,
-          userId: 2,
-          type: 'Text',
-          message: {
-            text: 'hi',
-          },
-          selected: false,
-        },
-        {
-          msgId: 3,
-          userId: 1,
-          type: 'Text',
-          message: {
-            text: 'kaise ho',
-          },
-          selected: false,
-        },
-        {
-          msgId: 4,
-          userId: 2,
-          type: 'Text',
-          message: {
-            text: 'theek',
-          },
-          selected: false,
-        },
-
-        {
-          msgId: 5,
-          userId: 1,
-          type: 'Text',
-          message: {
-            text: 'tm btao',
-          },
-          selected: false,
-        },
-      ],
-      // data: [],
-
+      // data: [
+      //   {
+      //     msgId: 1,
+      //     userId: 1,
+      //     type: 'Text',
+      //     message: {
+      //       text: 'hello',
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 2,
+      //     userId: 1,
+      //     type: 'Video',
+      //     message: {
+      //       text: 'video',
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 2,
+      //     userId: 2,
+      //     type: 'Text',
+      //     message: {
+      //       text: 'hi',
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 3,
+      //     userId: 1,
+      //     type: 'Text',
+      //     message: {
+      //       text: 'kaise ho',
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 4,
+      //     userId: 2,
+      //     type: 'Text',
+      //     message: {
+      //       text: 'theek',
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 5,
+      //     userId: 1,
+      //     type: 'Text',
+      //     message: {
+      //       text: 'tm btao',
+      //     },
+      //     selected: false,
+      //   },
+      // ],
+      data: [],
       receiverId: '',
     };
   }
@@ -110,30 +112,48 @@ class ChatRoom extends React.Component {
     const converstion = this.props.navigation.getParam('converstion');
     this.setState({
       receiverId: converstion._id,
-      // userId: '6062cb84ac8ec71b54bfcd2e',
+      senderId: this.props.user.user.user._id,
     });
-    // this.getMessages();
-    // socket.on('output', (msg) => {
-    //   this.getMessages();
-    // });
+    // get previous messages
+    this.getMessages();
+    this.socket = socketIO('http://192.168.1.52:3005', {
+      transports: ['websocket'],
+      jsonp: false,
+    });
+    this.socket.connect();
+    this.socket.on('connect', () => {
+      console.log('connected to socket server');
+    });
+    this.socket.on('output', () => {
+      console.log('socket=======');
+      this.getMessages();
+    });
   }
   getDataFromInput = (msg) => {
-    // fetch(`${api}chat/`, {
-    //   method: 'POST',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify({
-    //     senderId: '605444a8e2924b2bec69e360',
-    //     receiverId: this.state.receiverId,
-    //     messageType: 'Text',
-    //     messageContent: msg.message,
-    //     sentTime: '2021-04-23 00:12:01',
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((json) => {
     this.setState({data: [...this.state.data, msg]});
-    // })
-    // .catch((err) => console.log(err));
+    //notify new message
+    this.socket.emit('input', 'sent');
+    const {senderId, receiverId} = this.state;
+    let formdata = new FormData();
+    formdata.append('senderId', senderId);
+    formdata.append('receiverId', receiverId);
+    formdata.append('messageType', msg.type);
+    formdata.append('messageContent', msg.message.text);
+    formdata.append('sentTime', '2021-04-23 00:12:01');
+    fetch(`http://192.168.1.52:3000/chat/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formdata,
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        this.socket.emit('input', 'sent');
+      })
+      .catch((err) => console.log(err));
+
+    // another socket config
     // this.setState({data: [...this.state.data, msg]});
     // socket.emit('input', {
     //   name: 'mahad',
@@ -144,12 +164,13 @@ class ChatRoom extends React.Component {
     // });
   };
   getMessages = () => {
+    const senderId = this.props.user.user.user._id;
     const converstion = this.props.navigation.getParam('converstion');
     fetch(`${api}chat/conservation`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        senderId: '605444a8e2924b2bec69e360', //login user id
+        senderId: senderId, //login user id
         receiverId: converstion._id, //recvr user id
       }),
     })
@@ -175,6 +196,7 @@ class ChatRoom extends React.Component {
         // });
         // this.setState({chatMessages: [...this.state.chatMessages, ...message]});
         // this.setState({data: [...this.state.data, ...message]});
+
         this.setState({data: json.data.reverse()});
       })
       .catch((err) => console.log(err));
@@ -375,7 +397,7 @@ class ChatRoom extends React.Component {
               keyExtractor={(item, index) => index.toString()}
               renderItem={({item}) => (
                 <Conversation
-                  myId={this.state.userId}
+                  myId={this.state.senderId}
                   message={item}
                   getSelectedMessage={this.getSelectedMessage}
                 />
@@ -418,7 +440,13 @@ class ChatRoom extends React.Component {
   }
 }
 
-export default ChatRoom;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps, null)(ChatRoom);
 
 const styles = StyleSheet.create({
   container: {

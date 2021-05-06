@@ -70,7 +70,7 @@ class contact extends Component {
       .catch((err) => console.log('==========', err));
   };
   searchUser = (value) => {
-    console.log(value);
+
     this.setState({ text: value });
   };
   renderItemComponent(props) {
@@ -148,9 +148,9 @@ class contact extends Component {
                 showsVerticalScrollIndicator={false}
                 renderItem={(item) => this.renderItemComponent(item)}
                 keyExtractor={(item, index) => index.toString()}
-                // onEndReached={this.handleLoadMore}
-                // onEndReachedThreshold={0}
-                // ListFooterComponent={this.renderFooter}
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0}
+                ListFooterComponent={this.renderFooter}
               />
             )}
           </View>
@@ -216,4 +216,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, null)(contact);
-// export default contact

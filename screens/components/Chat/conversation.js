@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -7,7 +7,9 @@ import {
   Image,
   Animated,
   Linking,
-  PermissionsAndroid, Pressable, Modal
+  PermissionsAndroid,
+  Pressable,
+  Modal,
 } from 'react-native';
 import Images from 'react-native-chat-images';
 // import Sound from 'react-native-sound';
@@ -36,7 +38,7 @@ const Conversation = (props) => {
   const playbackState = usePlaybackState();
   const [sliderValue, setSliderValue] = useState(0);
   const [isSeeking, setIsSeeking] = useState(false);
-  const { position, duration } = useTrackPlayerProgress(250);
+  const {position, duration} = useTrackPlayerProgress(250);
   const [modalVisible, setModalVisible] = useState(false);
   // constructor(props) {
   //   super(props);
@@ -65,7 +67,7 @@ const Conversation = (props) => {
   //   }).start();
   // }
   const isMyMessage = () => {
-    const { myId, message } = props;
+    const {myId, message} = props;
     return message.userId === myId;
   };
   const onStartPlay = async (e) => {
@@ -151,7 +153,7 @@ const Conversation = (props) => {
   //   this.setState({playDuration: time});
   // }
   const isMessageType = () => {
-    const { message } = props;
+    const {message} = props;
     return message.type;
   };
   const openDocument = async (item) => {
@@ -163,7 +165,7 @@ const Conversation = (props) => {
     await RNFS.copyFile(item.message.fileUri, destPath);
 
     const fileURL = await RNFS.stat(destPath);
-    FileViewer.open(fileURL.path, { showOpenWithDialog: true })
+    FileViewer.open(fileURL.path, {showOpenWithDialog: true})
       .then((suc) => console.log(suc))
       .catch((err) => console.log(err));
   };
@@ -195,136 +197,135 @@ const Conversation = (props) => {
     setSliderValue(value);
     setIsSeeking(false);
   };
-  const { message } = props;
+  const {message} = props;
   return (
-    <View
-      style={
-        onPressMessage
-          ? { backgroundColor: 'green', margin: 2 }
-          : { backgroundColor: 'transparent', margin: 2 }
-      }>
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onLongPress={() => onSelectMsg(message)}
-        onPress={() => removeSelectMsg(message)}
-        style={[
-          styles.messageBox,
-          {
-            backgroundColor: isMyMessage() ? '#DCF8C5' : 'white',
-            marginLeft: isMyMessage() ? 50 : 0,
-            marginRight: isMyMessage() ? 0 : 50,
-            marginVertical: isMyMessage() ? 5 : 5,
-          },
-        ]}>
-        {isMessageType() == 'Text' && (
-          <View>
-            <Text style={styles.message}>{message.message.text}</Text>
-            <Text style={styles.time}>11:45</Text>
-          </View>
-        )}
-        {isMessageType() == 'Image' && (
-          <View style={{ flex: 1 }}>
-            <Images images={message.message.image} />
-          </View>
-        )}
-        {isMessageType() == 'document' && (
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            activeOpacity={0.8}
-            onPress={() => openDocument(message)}>
-            <View style={styles.documentView}>
-              <Image
-                source={require('../../../asessts/images/pdf.png')}
-                style={{ height: 50, width: 50 }}
-              />
-              <Text numberOfLines={1} style={styles.documentText}>
-                {message.message.fileName}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <Text style={styles.time}>11:45</Text>
+    <View>
+      <View
+        style={
+          onPressMessage
+            ? {backgroundColor: 'green', margin: 2}
+            : {backgroundColor: 'transparent', margin: 2}
+        }>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onLongPress={() => onSelectMsg(message)}
+          onPress={() => removeSelectMsg(message)}
+          style={[
+            styles.messageBox,
+            {
+              backgroundColor: isMyMessage() ? '#DCF8C5' : 'white',
+              marginLeft: isMyMessage() ? 50 : 0,
+              marginRight: isMyMessage() ? 0 : 50,
+              marginVertical: isMyMessage() ? 5 : 5,
+            },
+          ]}>
+          {isMessageType() == 'text' && (
+            <View>
+              <Text style={styles.message}>{message.message.text}</Text>
               <Text style={styles.time}>11:45</Text>
             </View>
-          </TouchableOpacity>
-        )}
-        {isMessageType() == 'audio' && (
-          <View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-              }}>
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => onStartPlay(message)}
-                style={{ width: 35, height: 35 }}>
+          )}
+          {isMessageType() == 'image' && (
+            <View style={{flex: 1}}>
+              <Images images={message.message.image} />
+            </View>
+          )}
+          {isMessageType() == 'document' && (
+            <TouchableOpacity
+              style={{flex: 1}}
+              activeOpacity={0.8}
+              onPress={() => openDocument(message)}>
+              <View style={styles.documentView}>
                 <Image
-                  source={
-                    isPlaying
-                      ? require('../../../asessts/images/pause.png')
-                      : require('../../../asessts/images/play.png')
-                  }
-                  style={{ height: '100%', width: '100%' }}
+                  source={require('../../../asessts/images/pdf.png')}
+                  style={{height: 50, width: 50}}
                 />
-              </TouchableOpacity>
+                <Text numberOfLines={1} style={styles.documentText}>
+                  {message.message.fileName}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.time}>11:45</Text>
+                <Text style={styles.time}>11:45</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          {isMessageType() == 'audio' && (
+            <View>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => onStartPlay(message)}
+                  style={{width: 35, height: 35}}>
+                  <Image
+                    source={
+                      isPlaying
+                        ? require('../../../asessts/images/pause.png')
+                        : require('../../../asessts/images/play.png')
+                    }
+                    style={{height: '100%', width: '100%'}}
+                  />
+                </TouchableOpacity>
 
-              <View style={{ marginLeft: 15, flex: 1 }}>
-                <Slider
-                  // style={{width: 400, height: 40}}
-                  minimumValue={0}
-                  maximumValue={1}
-                  value={sliderValue}
-                  minimumTrackTintColor="#111000"
-                  maximumTrackTintColor="#000000"
-                  onSlidingStart={slidingStarted}
-                  onSlidingComplete={slidingCompleted}
-                />
-                <View>
-                  <Text style={styles.duration}>
-                    {playDuration ? playDuration : message.message.recordTime}
-                  </Text>
+                <View style={{marginLeft: 15, flex: 1}}>
+                  <Slider
+                    // style={{width: 400, height: 40}}
+                    minimumValue={0}
+                    maximumValue={1}
+                    value={sliderValue}
+                    minimumTrackTintColor="#111000"
+                    maximumTrackTintColor="#000000"
+                    onSlidingStart={slidingStarted}
+                    onSlidingComplete={slidingCompleted}
+                  />
+                  <View>
+                    <Text style={styles.duration}>
+                      {playDuration ? playDuration : message.message.recordTime}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        )}
-        {isMessageType() == 'Video' && (
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Text> Video </Text>
-          </TouchableOpacity>
-        )}
-      </TouchableOpacity>
+          )}
+          {isMessageType() == 'video' && (
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Text> Video </Text>
+            </TouchableOpacity>
+          )}
+        </TouchableOpacity>
+      </View>
       <Modal
         animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={{flex:1,backgroundColor:'black'}}>
+        }}>
+        <View style={{flex: 1, backgroundColor: 'black'}}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Hello World!</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={{color:'white'}}>Hide Modal</Text>
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={{color: 'white'}}>Hide Modal</Text>
             </Pressable>
           </View>
         </View>
       </Modal>
     </View>
   );
-  // }
 };
 
 export default Conversation;
