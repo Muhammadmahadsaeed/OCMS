@@ -38,8 +38,10 @@ const Conversation = (props) => {
   const playbackState = usePlaybackState();
   const [sliderValue, setSliderValue] = useState(0);
   const [isSeeking, setIsSeeking] = useState(false);
-  const {position, duration} = useTrackPlayerProgress(250);
+  const {position, duration} = useTrackPlayerProgress();
   const [modalVisible, setModalVisible] = useState(false);
+  const audioRecorderPlayer = new AudioRecorderPlayer();
+  audioRecorderPlayer.setSubscriptionDuration(0.09);
   // constructor(props) {
   //   super(props);
   //   this.audioRecorderPlayer = new AudioRecorderPlayer();
@@ -70,6 +72,7 @@ const Conversation = (props) => {
     const {myId, message} = props;
     return message.userId === myId;
   };
+
   const onStartPlay = async (e) => {
     if (!isPlaying) {
       setIsPlaying(true);
@@ -83,6 +86,7 @@ const Conversation = (props) => {
         artist: 'Track Artist',
       });
       await TrackPlayer.play();
+      console.log(position, duration);
     } else {
       TrackPlayer.pause();
       setIsPlaying(false);
@@ -93,7 +97,8 @@ const Conversation = (props) => {
   //   this.setState({isPlay: false});
   //   TrackPlayer.pause();
   // };
-  // onStartPlay = async (e) => {
+
+  // const onStartPlay = async (e) => {
   //   const fileName = e.message.uri.replace('file:///', '');
   //   const path = Platform.select({
   //     ios: 'hello.m4a',
@@ -104,16 +109,15 @@ const Conversation = (props) => {
   //       const {status} = res;
   //       switch (status) {
   //         case AudioManager.AUDIO_STATUS.begin:
-  //           this.setState({isPlay: true});
   //           break;
   //         case AudioManager.AUDIO_STATUS.play: {
   //           const {current_position, duration} = res.data;
-  //           this.millisToMinutesAndSeconds(current_position);
-  //           this.setState({
-  //             isPlay: true,
-  //             currentPositionSec: current_position,
-  //             currentDurationSec: duration,
-  //           });
+  //           millisToMinutesAndSeconds(current_position);
+  //           // this.setState({
+  //           //   isPlay: true,
+  //           //   currentPositionSec: current_position,
+  //           //   currentDurationSec: duration,
+  //           // });
   //           break;
   //         }
   //         case AudioManager.AUDIO_STATUS.pause: {
@@ -133,7 +137,7 @@ const Conversation = (props) => {
 
   //         case AudioManager.AUDIO_STATUS.stop: {
   //           console.log('STOP AUDIO');
-  //           this.setState({isPlay: false});
+  //           // this.setState({isPlay: false});
   //           break;
   //         }
   //       }
@@ -142,16 +146,17 @@ const Conversation = (props) => {
   //     console.log('err======', e);
   //   }
   // };
+
   // async pauseAudio() {
   //   await AudioManager.pausePlayer()
   // }
 
-  // millisToMinutesAndSeconds(millis) {
+  // const millisToMinutesAndSeconds = (millis) => {
   //   var minutes = Math.floor(millis / 60000);
   //   var seconds = ((millis % 60000) / 1000).toFixed(0);
   //   let time = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-  //   this.setState({playDuration: time});
-  // }
+  //   setPlayDuration(time)
+  // };
   const isMessageType = () => {
     const {message} = props;
     return message.type;
@@ -198,6 +203,7 @@ const Conversation = (props) => {
     setIsSeeking(false);
   };
   const {message} = props;
+
   return (
     <View>
       <View
@@ -225,11 +231,11 @@ const Conversation = (props) => {
               <Text style={styles.time}>11:45</Text>
             </View>
           )}
-          {isMessageType() == 'image' && (
+          {/* {isMessageType() == 'image' && (
             <View style={{flex: 1}}>
-              <Images images={message.message.image} />
+              <Images images={msg} />
             </View>
-          )}
+          )} */}
           {isMessageType() == 'document' && (
             <TouchableOpacity
               style={{flex: 1}}

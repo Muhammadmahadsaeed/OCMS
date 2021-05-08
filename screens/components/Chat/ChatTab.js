@@ -51,17 +51,7 @@ class ChatTab extends Component {
   }
   getData = async () => {
     const {limit} = this.state;
-    // fetch(`${fetchUser}?_limit=${limit}`)
-    //   .then((response) => response.json())
-    //   .then((json) => {
-    //     console.log(json)
-    //     this.setState({
-    //       data: this.state.data.concat(json),
-    //       isLoading: false,
-    //       loading: false,
-    //     });
-    //   })
-    //   .catch((err) => console.log("====", err));
+
     fetch(`${api}message/${this.props.user.user.user._id}`)
       .then((response) => response.json())
       .then((json) => {

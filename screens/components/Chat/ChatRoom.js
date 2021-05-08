@@ -30,6 +30,7 @@ import axios from 'axios';
 import {api} from '../../config/env';
 import ImagePicker from 'react-native-image-crop-picker';
 import {connect} from 'react-redux';
+import {serialize} from 'object-to-formdata';
 // const socket = socketIO('http://192.168.1.52:4000', {
 //   transports: ['websocket'],
 //   jsonp: false,
@@ -48,110 +49,124 @@ class ChatRoom extends React.Component {
       senderId: '',
       url: require('../../../asessts/images/admin.png'),
       isMessageSelected: false,
-      // data: [
-      //   {
-      //     msgId: 1,
-      //     userId: 1,
-      //     type: 'Text',
-      //     message: {
-      //       text: 'hello',
-      //     },
-      //     selected: false,
-      //   },
-      //   {
-      //     msgId: 2,
-      //     userId: 1,
-      //     type: 'Video',
-      //     message: {
-      //       text: 'video',
-      //     },
-      //     selected: false,
-      //   },
-      //   {
-      //     msgId: 2,
-      //     userId: 2,
-      //     type: 'Text',
-      //     message: {
-      //       text: 'hi',
-      //     },
-      //     selected: false,
-      //   },
-      //   {
-      //     msgId: 3,
-      //     userId: 1,
-      //     type: 'Text',
-      //     message: {
-      //       text: 'kaise ho',
-      //     },
-      //     selected: false,
-      //   },
-      //   {
-      //     msgId: 4,
-      //     userId: 2,
-      //     type: 'Text',
-      //     message: {
-      //       text: 'theek',
-      //     },
-      //     selected: false,
-      //   },
-      //   {
-      //     msgId: 5,
-      //     userId: 1,
-      //     type: 'Text',
-      //     message: {
-      //       text: 'tm btao',
-      //     },
-      //     selected: false,
-      //   },
-      // ],
-      data: [],
+      data: [
+        {
+          msgId: 1,
+          userId: 1,
+          type: 'text',
+          message: {
+            text: 'hello',
+          },
+          selected: false,
+        },
+        {
+          msgId: 2,
+          userId: 1,
+          type: 'Video',
+          message: {
+            text: 'video',
+          },
+          selected: false,
+        },
+        {
+          msgId: 2,
+          userId: 2,
+          type: 'text',
+          message: {
+            text: 'hi',
+          },
+          selected: false,
+        },
+        {
+          msgId: 3,
+          userId: 1,
+          type: 'text',
+          message: {
+            text: 'kaise ho',
+          },
+          selected: false,
+        },
+        {
+          msgId: 4,
+          userId: 2,
+          type: 'text',
+          message: {
+            text: 'theek',
+          },
+          selected: false,
+        },
+        {
+          msgId: 5,
+          userId: 1,
+          type: 'text',
+          message: {
+            text: 'tm btao',
+          },
+          selected: false,
+        },
+      ],
+
+      // data: [],
       receiverId: '',
     };
   }
-  componentDidMount() {
-    const converstion = this.props.navigation.getParam('converstion');
-    this.setState({
-      receiverId: converstion._id,
-      senderId: this.props.user.user.user._id,
-    });
-    // get previous messages
-    this.getMessages();
-    this.socket = socketIO('http://192.168.1.52:3005', {
-      transports: ['websocket'],
-      jsonp: false,
-    });
-    this.socket.connect();
-    this.socket.on('connect', () => {
-      console.log('connected to socket server');
-    });
-    this.socket.on('output', () => {
-      console.log('socket=======');
-      this.getMessages();
-    });
-  }
+  // componentDidMount() {
+  //   const converstion = this.props.navigation.getParam('converstion');
+  //   this.setState({
+  //     receiverId: converstion._id,
+  //     senderId: this.props.user.user.user._id,
+  //   });
+  //   // get previous messages
+  //   this.getMessages();
+  //   this.socket = socketIO('http://192.168.1.42:4000', {
+  //     transports: ['websocket'],
+  //     jsonp: false,
+  //   });
+  //   this.socket.connect();
+  //   this.socket.on('connect', () => {
+  //     console.log('connected to socket server');
+  //   });
+  //   this.socket.on('output', () => {
+  //     console.log('socket=======');
+  //     this.getMessages();
+  //   });
+  // }
   getDataFromInput = (msg) => {
     this.setState({data: [...this.state.data, msg]});
     //notify new message
-    this.socket.emit('input', 'sent');
-    const {senderId, receiverId} = this.state;
-    let formdata = new FormData();
-    formdata.append('senderId', senderId);
-    formdata.append('receiverId', receiverId);
-    formdata.append('messageType', msg.type);
-    formdata.append('messageContent', msg.message.text);
-    formdata.append('sentTime', '2021-04-23 00:12:01');
-    fetch(`http://192.168.1.52:3000/chat/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      body: formdata,
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        this.socket.emit('input', 'sent');
-      })
-      .catch((err) => console.log(err));
+    // this.socket.emit('input', 'sent');
+    // const {senderId, receiverId} = this.state;
+    // let formdata = new FormData();
+
+    // const userMsg = {
+    //   senderId: senderId,
+    //   receiverId: receiverId,
+    //   messageType: msg.type,
+    //   messageContent: msg.message,
+    //   sentTime: '2021-04-23 00:12:01',
+    // };
+    // console.log(userMsg)
+    // Object.keys(userMsg).forEach((key) => {
+    //   const text = userMsg[key];
+    //   formdata.append(key, text);
+    // });
+    // formdata.append('senderId',senderId)
+    // formdata.append('receiverId',receiverId)
+    // formdata.append('messageType', msg.type)
+    // formdata.append('senderId',senderId)
+    // formdata.append('sentTime','2021-04-23 00:12:01')
+    // fetch(`http://192.168.1.42:3000/chat/`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    //   body: formdata,
+    // })
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     this.socket.emit('input', 'sent');
+    //   })
+    //   .catch((err) => console.log(err));
 
     // another socket config
     // this.setState({data: [...this.state.data, msg]});
@@ -182,7 +197,6 @@ class ChatRoom extends React.Component {
         //     'secret key 123',
         //   );
         //   let encryptedMsg = bytes.toString(CryptoJS.enc.Utf8);
-
         //   return {
         //     _id: item._id,
         //     isRead: item.isRead,
@@ -196,7 +210,6 @@ class ChatRoom extends React.Component {
         // });
         // this.setState({chatMessages: [...this.state.chatMessages, ...message]});
         // this.setState({data: [...this.state.data, ...message]});
-
         this.setState({data: json.data.reverse()});
       })
       .catch((err) => console.log(err));
@@ -253,61 +266,87 @@ class ChatRoom extends React.Component {
   };
   selectImage = () => {
     this.RBSheet.close();
-    this.props.navigation.navigate('imageGrid');
+    // this.props.navigation.navigate('imageGrid');
     // this.InputBoxRef.current.getAlert();
-    // ImagePicker.openPicker({
-    //   multiple: true,
-    //   // includeBase64: true,
-    //   compressImageQuality: 0.8,
-    //   maxFiles: 5,
-    //   compressImageMaxHeight: 400,
-    //   compressImageMaxWidth: 300,
-    //   mediaType: 'photo',
-    // })
-    //   .then((images) => {
-    //     if (images.length > 5) {
-    //       console.log('5 s zaida h bhai');
-    //     } else {
-    //       // const imageName = images[0].path.split("/").pop()
-    //       // const data = new FormData();
-    //       // data.append('img', {
-    //       //   name: imageName,
-    //       //   type: images[0].mime,
-    //       //   uri:
-    //       //     Platform.OS === 'android'
-    //       //       ? images[0].path
-    //       //       : images[0].path.replace('file://', ''),
-    //       // });
-    //       // fetch('http://192.168.1.30:3000/image/upload', {
-    //       //   method: 'POST',
-    //       //   body: data,
-    //       //   headers: {
-    //       //     'Content-Type': 'multipart/form-data',
-    //       //   },
-    //       // })
-    //       //   .then((response) => response.json())
-    //       //   .then((json) => {
-    //       //     console.log(json);
-    //       //   })
-    //       //   .catch((err) => console.log('err======', err));
-    //       let imageArr = images.map((item) => {
-    //         let imageObj = {
-    //           url: `data:${item.mime};base64,${item.data}`,
-    //         };
-    //         return imageObj;
-    //       });
+    ImagePicker.openPicker({
+      multiple: true,
+      // includeBase64: true,
+      compressImageQuality: 0.8,
+      maxFiles: 5,
+      compressImageMaxHeight: 400,
+      compressImageMaxWidth: 300,
+      mediaType: 'photo',
+    })
+      .then((images) => {
+        if (images.length > 5) {
+          console.log('5 s zaida h bhai');
+        } else {
+          let imageArr = images.map((item) => {
+            const imageName = item.path.split('/').pop();
+            let img = {
+              name: imageName,
+              type: item.mime,
+              url:
+                Platform.OS === 'android'
+                  ? item.path
+                  : item.path.replace('file://', ''),
+            };
 
-    //       let messageObj = {
-    //         userId: 2,
-    //         type: 'Image',
-    //         message: {
-    //           image: imageArr,
-    //         },
-    //       };
-    //       this.getDataFromInput(messageObj);
-    //     }
-    //   })
-    //   .catch((err) => console.log(err));
+            return img;
+          });
+
+          // const imageName = images[0].path.split('/').pop();
+          // const data = new FormData();
+          // let img = {
+          //   name: imageName,
+          //   type: images[0].mime,
+          //   uri:
+          //     Platform.OS === 'android'
+          //       ? images[0].path
+          //       : images[0].path.replace('file://', ''),
+          // };
+
+          // data.append('img', img);
+          // fetch('http://192.168.1.36:3000/image/upload', {
+          //   method: 'POST',
+          //   body: data,
+          //   headers: {
+          //     'Content-Type': 'multipart/form-data',
+          //   },
+          // })
+          //   .then((response) => response.json())
+          //   .then((json) => {
+          //     console.log(json);
+          //   })
+          //   .catch((err) => console.log('err======', err));
+
+          // let img = {
+          //   name: imageName,
+          //   type: images[0].mime,
+          //   uri:
+          //     Platform.OS === 'android'
+          //       ? images[0].path
+          //       : images[0].path.replace('file://', ''),
+          // };
+
+          let messageObj = {
+            userId: 2,
+            type: 'image',
+            message: {
+              text: imageArr,
+            },
+          };
+          // let messageObj = {
+          //   userId: 2,
+          //   type: 'Image',
+          //   message: {
+          //     image: imageArr,
+          //   },
+          // };
+          this.getDataFromInput(messageObj);
+        }
+      })
+      .catch((err) => console.log(err));
   };
   selectVideo = async () => {
     ImagePicker.openPicker({
@@ -397,7 +436,8 @@ class ChatRoom extends React.Component {
               keyExtractor={(item, index) => index.toString()}
               renderItem={({item}) => (
                 <Conversation
-                  myId={this.state.senderId}
+                  myId={this.state.userId}
+                  // myId={this.state.senderId}
                   message={item}
                   getSelectedMessage={this.getSelectedMessage}
                 />
