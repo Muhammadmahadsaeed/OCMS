@@ -22,22 +22,22 @@ class ChatTab extends Component {
     super();
     this.state = {
       data: [
-        // {
-        //   "name": "Lennart Johansson",
-        //   "city": "Stockholm"
-        // },
-        // {
-        //   "name": "Karl Eriksson",
-        //   "city": "London"
-        // },
-        // {
-        //   "name": "Pekka Hartikainen",
-        //   "city": "Helsinki"
-        // },
-        // {
-        //   "name": "Mia Svensson",
-        //   "city": "Berlin"
-        // }
+        {
+          "name": "Lennart Johansson",
+          "city": "Stockholm"
+        },
+        {
+          "name": "Karl Eriksson",
+          "city": "London"
+        },
+        {
+          "name": "Pekka Hartikainen",
+          "city": "Helsinki"
+        },
+        {
+          "name": "Mia Svensson",
+          "city": "Berlin"
+        }
       ],
       limit: 10,
       page: 1,
@@ -46,9 +46,9 @@ class ChatTab extends Component {
     };
   }
 
-  componentDidMount() {
-    this.setState({isLoading: true}, this.getData);
-  }
+  // componentDidMount() {
+  //   this.setState({isLoading: true}, this.getData);
+  // }
   getData = async () => {
     const {limit} = this.state;
 

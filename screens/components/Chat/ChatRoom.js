@@ -30,16 +30,6 @@ import axios from 'axios';
 import {api} from '../../config/env';
 import ImagePicker from 'react-native-image-crop-picker';
 import {connect} from 'react-redux';
-import {serialize} from 'object-to-formdata';
-// const socket = socketIO('http://192.168.1.52:4000', {
-//   transports: ['websocket'],
-//   jsonp: false,
-// });
-// socket.connect();
-
-// socket.on('connect', () => {
-//   console.log('connected to socket server');
-// });
 class ChatRoom extends React.Component {
   constructor(props) {
     super(props);
@@ -104,6 +94,34 @@ class ChatRoom extends React.Component {
           },
           selected: false,
         },
+        {
+          msgId: 6,
+          userId: 2,
+          type: 'audio',
+          message: {
+            recordTime: '0:07',
+            uri:
+              'file:////storage/emulated/0/OCMS/703a370a-9352-4fe6-955c-0ab21f1d85b0.acc',
+            isPlay: false,
+            isPause: false,
+            progress: 0,
+          },
+          selected: false,
+        },
+        {
+          msgId: 7,
+          userId: 2,
+          type: 'audio',
+          message: {
+            recordTime: '0:40',
+            uri:
+              'file:////storage/emulated/0/OCMS/b6b36aac-6a6f-4c53-8716-ef1b790d9366.acc',
+            isPlay: false,
+            isPause: false,
+            progress: 0,
+          },
+          selected: false,
+        },
       ],
 
       // data: [],
@@ -118,7 +136,7 @@ class ChatRoom extends React.Component {
   //   });
   //   // get previous messages
   //   this.getMessages();
-  //   this.socket = socketIO('http://192.168.1.42:4000', {
+  //   this.socket = socketIO('http://192.168.18.86:4000', {
   //     transports: ['websocket'],
   //     jsonp: false,
   //   });
@@ -132,30 +150,97 @@ class ChatRoom extends React.Component {
   //   });
   // }
   getDataFromInput = (msg) => {
+    console.log(msg);
     this.setState({data: [...this.state.data, msg]});
     //notify new message
     // this.socket.emit('input', 'sent');
-    // const {senderId, receiverId} = this.state;
+    const {senderId, receiverId} = this.state;
+    // console.log(senderId,receiverId)
     // let formdata = new FormData();
 
     // const userMsg = {
     //   senderId: senderId,
     //   receiverId: receiverId,
     //   messageType: msg.type,
-    //   messageContent: msg.message,
+    //   // messageContent: msg.message,
     //   sentTime: '2021-04-23 00:12:01',
+    //   media: msg.message.text,
+    //   messageText: msg.message.text,
     // };
+
+    // console.log("message=========",msg.message)
+    // console.log("message obje===========",userMsg)
     // console.log(userMsg)
     // Object.keys(userMsg).forEach((key) => {
     //   const text = userMsg[key];
     //   formdata.append(key, text);
     // });
-    // formdata.append('senderId',senderId)
-    // formdata.append('receiverId',receiverId)
-    // formdata.append('messageType', msg.type)
-    // formdata.append('senderId',senderId)
-    // formdata.append('sentTime','2021-04-23 00:12:01')
-    // fetch(`http://192.168.1.42:3000/chat/`, {
+    // msg.message.messageContent.forEach(element => {
+    //   formdata.append("messageContent",element)
+    // });
+    // formdata.append('senderId', userMsg.senderId);
+    // formdata.append('receiverId', userMsg.receiverId);
+    // formdata.append('messageType', userMsg.messageType);
+    // // formdata.append('media', userMsg.media);
+    // // formdata.append('messageText', userMsg.messageText);
+    // if (typeof userMsg.messageText === 'object') {
+    //   userMsg.messageText.forEach((element) => {
+    //     formdata.append('media[]', element);
+    //   });
+    // } else {
+    //   formdata.append('messageText', userMsg.messageText);
+    // }
+    // Object.keys(userMsg).forEach((key, index) => {
+    //   const item = userMsg[key];
+
+    //   if (typeof item === 'string') {
+    //     formdata.append(key, userMsg[key]);
+    //   } else if (typeof item === 'object') {
+    //     formdata.append(key, {});
+    //     Object.keys(item).forEach((key2, index2) => {
+    //       const item2 = item[key2];
+    //       if (typeof item2 === 'string') {
+    //         formdata.append(`${key}[${key2}]`, item[key2]);
+    //       } else if (typeof item2 === 'object') {
+    //         item2.forEach((image, index)=>{
+    //           formdata.append(`${item}.${item2}[]`, image);
+    //         })
+    //       }
+
+    //     });
+    //   }
+    // });
+
+    // function obj2FormData(obj, formData = new FormData()) {
+    //   this.formData = formData;
+
+    //   this.createFormData = function (obj, subKeyStr = '') {
+    //     for (let i in obj) {
+    //       let value = obj[i];
+    //       let subKeyStrTrans = subKeyStr ? subKeyStr + '[' + i + ']' : i;
+
+    //       if (typeof value === 'string' || typeof value === 'number') {
+    //         this.formData.append(subKeyStrTrans, value);
+    //       } else if (typeof value === 'object') {
+    //         this.createFormData(value, subKeyStrTrans);
+    //       }
+    //     }
+    //   };
+
+    //   this.createFormData(obj);
+
+    //   return this.formData;
+    // }
+
+    // console.log(obj2FormData(userMsg));
+    // if (typeof msg.message.text === 'object') {
+    //   msg.message.text.forEach((item, index) =>
+    //     formData.append(`text[${index}]`, item),
+    //   );
+    // }
+    // formdata.append('senderId', senderId);
+    // formdata.append('sentTime', '2021-04-23 00:12:01');
+    // fetch(`http://192.168.18.86:3000/chat/`, {
     //   method: 'POST',
     //   headers: {
     //     'Content-Type': 'multipart/form-data',
@@ -434,11 +519,12 @@ class ChatRoom extends React.Component {
               showsVerticalScrollIndicator={false}
               data={this.state.data}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
+              renderItem={({item,index}) => (
                 <Conversation
                   myId={this.state.userId}
                   // myId={this.state.senderId}
                   message={item}
+                  index={index.toString()}
                   getSelectedMessage={this.getSelectedMessage}
                 />
               )}

@@ -9,7 +9,7 @@ import {
   Linking,
   PermissionsAndroid,
   Pressable,
-  Modal,
+  Modal,Dimensions
 } from 'react-native';
 import Images from 'react-native-chat-images';
 // import Sound from 'react-native-sound';
@@ -30,7 +30,7 @@ import TrackPlayer, {
   useTrackPlayerProgress,
   usePlaybackState,
 } from 'react-native-track-player';
-
+const screenWidth = Dimensions.get('screen').width;
 const Conversation = (props) => {
   const [onPressMessage, setOnPressMessage] = useState(false);
   const [playDuration, setPlayDuration] = useState('');
@@ -38,6 +38,8 @@ const Conversation = (props) => {
   const playbackState = usePlaybackState();
   const [sliderValue, setSliderValue] = useState(0);
   const [isSeeking, setIsSeeking] = useState(false);
+  const [currentTrackPosition, setCurrentTrackPosition] = useState(0);
+  const [currentTrackDuration, setCurrentTrackDuration] = useState(0);
   const {position, duration} = useTrackPlayerProgress();
   const [modalVisible, setModalVisible] = useState(false);
   const audioRecorderPlayer = new AudioRecorderPlayer();
@@ -73,90 +75,79 @@ const Conversation = (props) => {
     return message.userId === myId;
   };
 
-  const onStartPlay = async (e) => {
-    if (!isPlaying) {
-      setIsPlaying(true);
-      const fileName = e.message.uri.replace('file:///', '');
-      TrackPlayer.setupPlayer();
-      await TrackPlayer.reset();
-      await TrackPlayer.add({
-        id: 'trackId',
-        url: fileName,
-        title: 'Track Title',
-        artist: 'Track Artist',
+  // const onStartPlay = async (e,index) => {
+  //   console.log(e,index)
+  // if (!isPlaying) {
+  //   setIsPlaying(true);
+  //   const fileName = e.message.uri.replace('file:///', '');
+  //   TrackPlayer.setupPlayer();
+  //   await TrackPlayer.reset();
+  //   await TrackPlayer.add({
+  //     id: 'trackId',
+  //     url: fileName,
+  //     title: 'Track Title',
+  //     artist: 'Track Artist',
+  //   });
+  //   await TrackPlayer.play();
+  //   console.log(position, duration);
+  // } else {
+  //   TrackPlayer.pause();
+  //   setIsPlaying(false);
+  // }
+  // };
+
+  const onStartPlay = async (e, index) => {
+    const fileName = e.message.uri.replace('file:///', '');
+    const path = Platform.select({
+      ios: 'hello.m4a',
+      android: fileName,
+    });
+    try {
+      await AudioManager.startPlayer(path, (res) => {
+        const {status} = res;
+        switch (status) {
+          case AudioManager.AUDIO_STATUS.begin:
+            break;
+          case AudioManager.AUDIO_STATUS.play: {
+            const {current_position, duration} = res.data;
+            // console.log(audioRecorderPlayer.mmssss(Math.floor(current_position)))
+            millisToMinutesAndSeconds(current_position);
+            setIsPlaying(true);
+            // setCurrentTrackPosition(current_position)
+            // setCurrentTrackDuration(duration)
+            break;
+          }
+          case AudioManager.AUDIO_STATUS.pause: {
+            console.log('PAUSE AUDIO');
+            // setIsPlaying(false)
+            // AudioManager.pausePlayer()
+            break;
+          }
+          case AudioManager.AUDIO_STATUS: {
+            console.log('RESUME AUDIO');
+            // setIsPlaying(false)
+            // AudioManager.pausePlayer()
+            break;
+          }
+
+          case AudioManager.AUDIO_STATUS.stop: {
+            console.log('STOP AUDIO');
+            // setIsPlaying(false)
+            break;
+          }
+        }
       });
-      await TrackPlayer.play();
-      console.log(position, duration);
-    } else {
-      TrackPlayer.pause();
-      setIsPlaying(false);
+    } catch (e) {
+      console.log('err======', e);
     }
   };
 
-  // onPause = () => {
-  //   this.setState({isPlay: false});
-  //   TrackPlayer.pause();
-  // };
-
-  // const onStartPlay = async (e) => {
-  //   const fileName = e.message.uri.replace('file:///', '');
-  //   const path = Platform.select({
-  //     ios: 'hello.m4a',
-  //     android: fileName,
-  //   });
-  //   try {
-  //     await AudioManager.startPlayer(path, (res) => {
-  //       const {status} = res;
-  //       switch (status) {
-  //         case AudioManager.AUDIO_STATUS.begin:
-  //           break;
-  //         case AudioManager.AUDIO_STATUS.play: {
-  //           const {current_position, duration} = res.data;
-  //           millisToMinutesAndSeconds(current_position);
-  //           // this.setState({
-  //           //   isPlay: true,
-  //           //   currentPositionSec: current_position,
-  //           //   currentDurationSec: duration,
-  //           // });
-  //           break;
-  //         }
-  //         case AudioManager.AUDIO_STATUS.pause: {
-  //           console.log('PAUSE AUDIO');
-  //           // this.setState({isPlay: false});
-  //           // this.pauseAudio()
-  //           // this.setState({isPause: true});
-  //           break;
-  //         }
-  //         case AudioManager.AUDIO_STATUS.resume: {
-  //           console.log('RESUME AUDIO');
-  //           // AudioManager.pausePlayer()
-  //           // this.setState({isPlay: false});
-  //           // this.pauseAudio()
-  //           break;
-  //         }
-
-  //         case AudioManager.AUDIO_STATUS.stop: {
-  //           console.log('STOP AUDIO');
-  //           // this.setState({isPlay: false});
-  //           break;
-  //         }
-  //       }
-  //     });
-  //   } catch (e) {
-  //     console.log('err======', e);
-  //   }
-  // };
-
-  // async pauseAudio() {
-  //   await AudioManager.pausePlayer()
-  // }
-
-  // const millisToMinutesAndSeconds = (millis) => {
-  //   var minutes = Math.floor(millis / 60000);
-  //   var seconds = ((millis % 60000) / 1000).toFixed(0);
-  //   let time = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-  //   setPlayDuration(time)
-  // };
+  const millisToMinutesAndSeconds = (millis) => {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    let time = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+    setPlayDuration(time);
+  };
   const isMessageType = () => {
     const {message} = props;
     return message.type;
@@ -202,8 +193,12 @@ const Conversation = (props) => {
     setSliderValue(value);
     setIsSeeking(false);
   };
-  const {message} = props;
+  const {message, index} = props;
+  // let playWidth = (currentTrackPosition / currentTrackDuration) * (screenWidth - 56);
 
+  // if (!playWidth) {
+  //   playWidth = 0;
+  // }
   return (
     <View>
       <View
@@ -272,7 +267,7 @@ const Conversation = (props) => {
                 }}>
                 <TouchableOpacity
                   activeOpacity={0.9}
-                  onPress={() => onStartPlay(message)}
+                  onPress={() => onStartPlay(message, index)}
                   style={{width: 35, height: 35}}>
                   <Image
                     source={
