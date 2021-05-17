@@ -17,6 +17,7 @@ import colors from '../../constants/colors';
 import font from '../../constants/font';
 var axios = require('axios');
 import { connect } from 'react-redux';
+import Contacts from 'react-native-contacts';
 class contact extends Component {
   constructor() {
     super();

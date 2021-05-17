@@ -10,6 +10,7 @@ import {
   Image,
   ActivityIndicator,
   TextInput,
+  PermissionsAndroid,Platform
 } from 'react-native';
 import {fetchUser, api} from '../../config/env';
 import LinearGradient from 'react-native-linear-gradient';
@@ -23,21 +24,21 @@ class ChatTab extends Component {
     this.state = {
       data: [
         {
-          "name": "Lennart Johansson",
-          "city": "Stockholm"
+          name: 'Lennart Johansson',
+          city: 'Stockholm',
         },
         {
-          "name": "Karl Eriksson",
-          "city": "London"
+          name: 'Karl Eriksson',
+          city: 'London',
         },
         {
-          "name": "Pekka Hartikainen",
-          "city": "Helsinki"
+          name: 'Pekka Hartikainen',
+          city: 'Helsinki',
         },
         {
-          "name": "Mia Svensson",
-          "city": "Berlin"
-        }
+          name: 'Mia Svensson',
+          city: 'Berlin',
+        },
       ],
       limit: 10,
       page: 1,
@@ -46,9 +47,9 @@ class ChatTab extends Component {
     };
   }
 
-  // componentDidMount() {
-  //   this.setState({isLoading: true}, this.getData);
-  // }
+  componentDidMount() {
+    // this.setState({isLoading: true}, this.getData);
+  }
   getData = async () => {
     const {limit} = this.state;
 
@@ -124,6 +125,32 @@ class ChatTab extends Component {
       </View>
     ) : null;
   };
+  goToContact = async () => {
+    if (Platform.OS !== 'android') {
+      return Promise.resolve(true);
+    }
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+          {
+            title: "Contacts",
+            message: "This app would like to view your contacts."
+          }
+        )
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('You can use the storage');
+        } else {
+          console.log('permission denied');
+          return;
+        }
+      } catch (err) {
+        console.warn(err);
+        return;
+      }
+    }
+    // this.props.navigation.navigate('contact')
+  };
   render() {
     return (
       <LinearGradient
@@ -177,7 +204,7 @@ class ChatTab extends Component {
             <TouchableOpacity
               style={{padding: 20, borderRadius: 50}}
               activeOpacity={0.9}
-              onPress={() => this.props.navigation.navigate('contact')}>
+              onPress={() => this.goToContact()}>
               <Image source={require('../../../asessts/images/chat.png')} />
             </TouchableOpacity>
           </LinearGradient>
