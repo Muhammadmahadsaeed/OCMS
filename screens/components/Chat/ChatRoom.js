@@ -40,92 +40,92 @@ class ChatRoom extends React.Component {
       senderId: '',
       url: require('../../../asessts/images/admin.png'),
       isMessageSelected: false,
-      data: [
-        {
-          msgId: 1,
-          userId: 1,
-          type: 'text',
-          message: {
-            text: 'hello',
-          },
-          selected: false,
-        },
-        {
-          msgId: 2,
-          userId: 1,
-          type: 'Video',
-          message: {
-            text: 'video',
-          },
-          selected: false,
-        },
-        {
-          msgId: 2,
-          userId: 2,
-          type: 'text',
-          message: {
-            text: 'hi',
-          },
-          selected: false,
-        },
-        {
-          msgId: 3,
-          userId: 1,
-          type: 'text',
-          message: {
-            text: 'kaise ho',
-          },
-          selected: false,
-        },
-        {
-          msgId: 4,
-          userId: 2,
-          type: 'text',
-          message: {
-            text: 'theek',
-          },
-          selected: false,
-        },
-        {
-          msgId: 5,
-          userId: 1,
-          type: 'text',
-          message: {
-            text: 'tm btao',
-          },
-          selected: false,
-        },
-        {
-          msgId: 6,
-          userId: 2,
-          type: 'audio',
-          message: {
-            recordTime: '0:07',
-            uri:
-              'file:////storage/emulated/0/OCMS/703a370a-9352-4fe6-955c-0ab21f1d85b0.acc',
-            isPlay: false,
-            isPause: false,
-            progress: 0,
-          },
-          selected: false,
-        },
-        {
-          msgId: 7,
-          userId: 2,
-          type: 'audio',
-          message: {
-            recordTime: '0:40',
-            uri:
-              'file:////storage/emulated/0/OCMS/b6b36aac-6a6f-4c53-8716-ef1b790d9366.acc',
-            isPlay: false,
-            isPause: false,
-            progress: 0,
-          },
-          selected: false,
-        },
-      ],
+      // data: [
+      //   {
+      //     msgId: 1,
+      //     userId: 1,
+      //     type: 'text',
+      //     message: {
+      //       text: 'hello',
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 2,
+      //     userId: 1,
+      //     type: 'Video',
+      //     message: {
+      //       text: 'video',
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 2,
+      //     userId: 2,
+      //     type: 'text',
+      //     message: {
+      //       text: 'hi',
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 3,
+      //     userId: 1,
+      //     type: 'text',
+      //     message: {
+      //       text: 'kaise ho',
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 4,
+      //     userId: 2,
+      //     type: 'text',
+      //     message: {
+      //       text: 'theek',
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 5,
+      //     userId: 1,
+      //     type: 'text',
+      //     message: {
+      //       text: 'tm btao',
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 6,
+      //     userId: 2,
+      //     type: 'audio',
+      //     message: {
+      //       recordTime: '0:07',
+      //       uri:
+      //         'file:////storage/emulated/0/OCMS/703a370a-9352-4fe6-955c-0ab21f1d85b0.acc',
+      //       isPlay: false,
+      //       isPause: false,
+      //       progress: 0,
+      //     },
+      //     selected: false,
+      //   },
+      //   {
+      //     msgId: 7,
+      //     userId: 2,
+      //     type: 'audio',
+      //     message: {
+      //       recordTime: '0:40',
+      //       uri:
+      //         'file:////storage/emulated/0/OCMS/b6b36aac-6a6f-4c53-8716-ef1b790d9366.acc',
+      //       isPlay: false,
+      //       isPause: false,
+      //       progress: 0,
+      //     },
+      //     selected: false,
+      //   },
+      // ],
 
-      // data: [],
+      data: [],
       receiverId: '',
     };
   }
@@ -137,7 +137,7 @@ class ChatRoom extends React.Component {
     });
     // get previous messages
     this.getMessages();
-    this.socket = socketIO('http://192.168.1.78:4000', {
+    this.socket = socketIO('http://192.168.1.77:4000', {
       transports: ['websocket'],
       jsonp: false,
     });
@@ -151,7 +151,7 @@ class ChatRoom extends React.Component {
     });
   }
   getDataFromInput = async (msg) => {
-    this.setState({data: [...this.state.data, msg]});
+   
     //notify new message
     // this.socket.emit('input', 'sent');
     const {senderId, receiverId} = this.state;
@@ -165,6 +165,8 @@ class ChatRoom extends React.Component {
     };
     try {
       const res = await chatApis.sendMessage(userMsg);
+      console.log("res from chat======",res)
+      // this.setState({data: [...this.state.data, msg]});
     } catch (err) {
       console.log(err);
     }
@@ -235,6 +237,7 @@ class ChatRoom extends React.Component {
         // });
         // this.setState({chatMessages: [...this.state.chatMessages, ...message]});
         // this.setState({data: [...this.state.data, ...message]});
+        
         this.setState({data: json.data.reverse()});
       })
       .catch((err) => console.log(err));
@@ -399,7 +402,7 @@ class ChatRoom extends React.Component {
   };
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1}} >
         <ConversationHeader
           navigationProps={this.props}
           getSelectedMessage={this.getSelectedMessage}
@@ -420,8 +423,8 @@ class ChatRoom extends React.Component {
               keyExtractor={(item, index) => index.toString()}
               renderItem={({item, index}) => (
                 <Conversation
-                  myId={this.state.userId}
-                  // myId={this.state.senderId}
+                  // myId={this.state.userId}
+                  myId={this.state.senderId}
                   message={item}
                   index={index.toString()}
                   getSelectedMessage={this.getSelectedMessage}

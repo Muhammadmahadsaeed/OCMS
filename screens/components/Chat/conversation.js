@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   View,
@@ -9,7 +9,7 @@ import {
   Linking,
   PermissionsAndroid,
   Pressable,
-  Modal,Dimensions
+  Modal, Dimensions,ScrollView
 } from 'react-native';
 import Images from 'react-native-chat-images';
 // import Sound from 'react-native-sound';
@@ -40,7 +40,7 @@ const Conversation = (props) => {
   const [isSeeking, setIsSeeking] = useState(false);
   const [currentTrackPosition, setCurrentTrackPosition] = useState(0);
   const [currentTrackDuration, setCurrentTrackDuration] = useState(0);
-  const {position, duration} = useTrackPlayerProgress();
+  const { position, duration } = useTrackPlayerProgress();
   const [modalVisible, setModalVisible] = useState(false);
   const audioRecorderPlayer = new AudioRecorderPlayer();
   audioRecorderPlayer.setSubscriptionDuration(0.09);
@@ -71,7 +71,7 @@ const Conversation = (props) => {
   //   }).start();
   // }
   const isMyMessage = () => {
-    const {myId, message} = props;
+    const { myId, message } = props;
     return message.userId === myId;
   };
 
@@ -104,12 +104,12 @@ const Conversation = (props) => {
     });
     try {
       await AudioManager.startPlayer(path, (res) => {
-        const {status} = res;
+        const { status } = res;
         switch (status) {
           case AudioManager.AUDIO_STATUS.begin:
             break;
           case AudioManager.AUDIO_STATUS.play: {
-            const {current_position, duration} = res.data;
+            const { current_position, duration } = res.data;
             // console.log(audioRecorderPlayer.mmssss(Math.floor(current_position)))
             millisToMinutesAndSeconds(current_position);
             setIsPlaying(true);
@@ -149,7 +149,7 @@ const Conversation = (props) => {
     setPlayDuration(time);
   };
   const isMessageType = () => {
-    const {message} = props;
+    const { message } = props;
     return message.type;
   };
   const openDocument = async (item) => {
@@ -161,7 +161,7 @@ const Conversation = (props) => {
     await RNFS.copyFile(item.message.fileUri, destPath);
 
     const fileURL = await RNFS.stat(destPath);
-    FileViewer.open(fileURL.path, {showOpenWithDialog: true})
+    FileViewer.open(fileURL.path, { showOpenWithDialog: true })
       .then((suc) => console.log(suc))
       .catch((err) => console.log(err));
   };
@@ -193,19 +193,20 @@ const Conversation = (props) => {
     setSliderValue(value);
     setIsSeeking(false);
   };
-  const {message, index} = props;
+  const { message, index } = props;
   // let playWidth = (currentTrackPosition / currentTrackDuration) * (screenWidth - 56);
 
   // if (!playWidth) {
   //   playWidth = 0;
   // }
+  console.log(message)
   return (
-    <View>
-      <View
+    <View >
+      <View 
         style={
           onPressMessage
-            ? {backgroundColor: 'green', margin: 2}
-            : {backgroundColor: 'transparent', margin: 2}
+            ? { backgroundColor: 'green', margin: 2 }
+            : { backgroundColor: 'transparent', margin: 2 }
         }>
         <TouchableOpacity
           activeOpacity={0.9}
@@ -222,16 +223,17 @@ const Conversation = (props) => {
           ]}>
           {isMessageType() == 'text' && (
             <View>
-              <Text style={styles.message}>{message.message.text}</Text>
+              <Text style={styles.message}>{message.messageText}</Text>
               <Text style={styles.time}>11:45</Text>
             </View>
           )}
-          {/* {isMessageType() == 'image' && (
-            <View style={{flex: 1}}>
-              <Images images={msg} />
+          {isMessageType() == 'image' && (
+            <View style={{ flex: 1 }} >
+              <Images images={message.message} />
+             
             </View>
-          )} */}
-          {isMessageType() == 'document' && (
+          )}
+          {/* {isMessageType() == 'document' && (
             <TouchableOpacity
               style={{flex: 1}}
               activeOpacity={0.8}
@@ -303,7 +305,7 @@ const Conversation = (props) => {
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Text> Video </Text>
             </TouchableOpacity>
-          )}
+          )} */}
         </TouchableOpacity>
       </View>
       <Modal
@@ -314,13 +316,13 @@ const Conversation = (props) => {
           Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}>
-        <View style={{flex: 1, backgroundColor: 'black'}}>
+        <View style={{ flex: 1, backgroundColor: 'black' }}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Hello World!</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={{color: 'white'}}>Hide Modal</Text>
+              <Text style={{ color: 'white' }}>Hide Modal</Text>
             </Pressable>
           </View>
         </View>

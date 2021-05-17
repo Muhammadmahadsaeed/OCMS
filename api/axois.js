@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {api} from '../screens/config/env';
 
-const baseURL = `http://192.168.1.78:3000`;
+const baseURL = `${api}`;
 
 const service = axios.create({
   baseURL,

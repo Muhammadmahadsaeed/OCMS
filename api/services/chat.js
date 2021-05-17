@@ -11,7 +11,7 @@ const sendMessage = (data) => {
         formdata.append('messageMedia', image);
     })
 
-  return Post('/chat', formdata, {
+  return Post('chat', formdata, {
     'content-type': 'multipart/form-data',
   });
 };

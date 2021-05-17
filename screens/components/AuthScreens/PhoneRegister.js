@@ -1,5 +1,5 @@
 // Import React and Component
-import React, {useState, createRef} from 'react';
+import React, { useState, createRef } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -20,7 +20,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
 import ImagePicker from 'react-native-image-crop-picker';
-import {api} from '../../config/env';
+import { api } from '../../config/env';
 
 const PhoneRegister = (navigation) => {
   const [userName, setUserName] = useState('');
@@ -35,7 +35,7 @@ const PhoneRegister = (navigation) => {
   const [nameEmptyErorr, setNameEmptyErorr] = useState(false)
 
   const handleSubmitButton = () => {
-    if (!userName ) {
+    if (!userName) {
       setNameEmptyErorr(true);
     } else {
       const msg = 'Please check your email';
@@ -43,7 +43,7 @@ const PhoneRegister = (navigation) => {
       setSuccess(true)
     }
   };
- 
+
   const setTermAndCondition = () => {
     setAgree(!agree);
   };
@@ -73,7 +73,7 @@ const PhoneRegister = (navigation) => {
   };
   const renderFileUri = () => {
     if (fileUri) {
-      return <Image source={{uri: fileUri}} style={styles.imageIconStyle} />;
+      return <Image source={{ uri: fileUri }} style={styles.imageIconStyle} />;
     } else {
       return (
         <Image
@@ -83,7 +83,7 @@ const PhoneRegister = (navigation) => {
       );
     }
   };
-  const askForPermissions = () =>{
+  const askForPermissions = () => {
     console.log("=====")
   }
   if (isSuccess) {
@@ -105,9 +105,9 @@ const PhoneRegister = (navigation) => {
         </View>
         <LinearGradient
           colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 1}}
-          style={[styles.linearBtn, {marginTop: 50}]}>
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.linearBtn, { marginTop: 50 }]}>
           <TouchableOpacity activeOpacity={0.8}
             style={styles.button}
             onPress={() => askForPermissions()}>
@@ -120,8 +120,8 @@ const PhoneRegister = (navigation) => {
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 1}}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={styles.linear}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -162,7 +162,7 @@ const PhoneRegister = (navigation) => {
         </View>
         <View style={styles.form}>
           <KeyboardAvoidingView enabled>
-            <View style={[styles.SectionStyle, {marginTop: 40}]}>
+            <View style={[styles.SectionStyle, { marginTop: 40 }]}>
               <View style={styles.iconLeft}>
                 <Image
                   source={require('../../../asessts/images/user-icon.png')}
@@ -192,14 +192,14 @@ const PhoneRegister = (navigation) => {
                 </View>
               )}
             </View>
-           
+
             <View style={styles.textView}>
               <TouchableOpacity
                 activeOpacity={0.8}
-                style={{padding: 10}}
+                style={{ padding: 10 }}
                 onPress={() => setTermAndCondition()}>
                 <Image
-                  style={{height: 20, width: 20}}
+                  style={{ height: 20, width: 20 }}
                   source={
                     agree
                       ? require('../../../asessts/images/Icon-check-circle.png')
@@ -266,7 +266,6 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     marginTop: 50,
   },
-
   headingView: {
     paddingVertical: 20,
     marginLeft: 20,
@@ -351,7 +350,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignSelf: 'center',
   },
-
   buttonTextStyle: {
     color: '#81b840',
     paddingVertical: 10,
@@ -365,7 +363,6 @@ const styles = StyleSheet.create({
     fontFamily: font.Fonts.josefReg,
     fontSize: 20,
   },
-
   errorTextStyle: {
     color: 'red',
     textAlign: 'left',
@@ -420,10 +417,6 @@ const styles = StyleSheet.create({
     color: '#707070',
     marginLeft: 10,
   },
- 
-
-
-
   successContainer: {
     flex: 1,
     justifyContent: 'center',

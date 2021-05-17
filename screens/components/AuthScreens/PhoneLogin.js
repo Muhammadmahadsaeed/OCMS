@@ -1,5 +1,5 @@
 // Import React and Component
-import React, {useState, createRef} from 'react';
+import React, { useState, createRef, useRef } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -13,18 +13,27 @@ import {
   Dimensions,
   ToastAndroid,
   Platform,
-  AlertIOS,ActivityIndicator
+  AlertIOS, ActivityIndicator
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import PhoneInput from "react-native-phone-number-input";
 import font from '../../constants/font';
 import colors from '../../constants/colors';
-import {api} from '../../config/env';
-const PhoneLogin = ({navigation}) => {
+import { api } from '../../config/env';
+const PhoneLogin = ({ navigation }) => {
   const [userPhone, setUserPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
   const [phoneEmptyErorr, setphoneEmptyErorr] = useState(false);
+  const [formattedValue, setFormattedValue] = useState("");
+  const [isValid, setIsValid] = useState(false);
+  const phoneInput = useRef("");
 
+  const check = (text) => {
+    setUserPhone(text)
+    const checkValid = phoneInput.current?.isValidNumber(text);
+    setIsValid(checkValid ? checkValid : false);
+  }
   const handleSubmitPress = () => {
     if (userPhone === '') {
       setphoneEmptyErorr(true);
@@ -34,7 +43,7 @@ const PhoneLogin = ({navigation}) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({mobileNo: userPhone}),
+        body: JSON.stringify({ mobileNo: userPhone }),
       })
         .then((response) => response.json())
         .then((responseJson) => {
@@ -57,8 +66,8 @@ const PhoneLogin = ({navigation}) => {
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 1}}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={styles.mainBody}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -68,7 +77,7 @@ const PhoneLogin = ({navigation}) => {
           flexDirection: 'column',
           justifyContent: 'space-between',
         }}>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <View style={styles.headerImage}>
             <Text style={styles.headerText}>Community App</Text>
           </View>
@@ -76,11 +85,12 @@ const PhoneLogin = ({navigation}) => {
 
         <View style={styles.footer}>
           <KeyboardAvoidingView enabled>
-            <View style={[styles.heading, {marginTop: 40}]}>
+            <View style={[styles.heading, { marginTop: 40 }]}>
               <Text style={styles.headingText}>
                 Enter your phone number to continue
               </Text>
             </View>
+
             <View style={styles.SectionStyle}>
               <View style={styles.iconLeft}>
                 <Image
@@ -88,21 +98,26 @@ const PhoneLogin = ({navigation}) => {
                   style={styles.iconLeftImage}
                 />
               </View>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(text) => setUserPhone(text)}
-                underlineColorAndroid="#f000"
-                placeholder="Enter your phone number"
-                placeholderTextColor={colors.Colors.gray}
-                keyboardType="number-pad"
-                returnKeyType="next"
-                onSubmitEditing={Keyboard.dismiss}
-                blurOnSubmit={false}
-                onFocus={() => setphoneEmptyErorr(false)}
+              <PhoneInput
+                ref={phoneInput}
+                containerStyle={styles.phonecontainer}
+                textInputStyle={styles.phonetext}
+                codeTextStyle={styles.phonecodetext}
+                textContainerStyle={styles.phonetextcontainer}
+                defaultValue={userPhone}
+                defaultCode="PK"
+                layout="second"
+                onChangeText={(text) => {
+                  check(text)
+                }}
+                onChangeFormattedText={(text) => {
+                  setFormattedValue(text);
+                }}
               />
 
+
               <View style={styles.iconRight}>
-                {phoneEmptyErorr && (
+                {!isValid && (
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
@@ -110,6 +125,11 @@ const PhoneLogin = ({navigation}) => {
                 )}
               </View>
             </View>
+
+
+
+
+
             {errortext != '' ? (
               <View style={styles.errorView}>
                 <Text style={styles.errorTextStyle}>{errortext}</Text>
@@ -187,13 +207,12 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginLeft: 35,
     marginRight: 35,
-    margin: 10,
     width: '90%',
     alignSelf: 'center',
     borderWidth: 1,
     borderRadius: 30,
     borderColor: '#d8d8d8',
-    backgroundColor: '#F3F1F1',
+    backgroundColor: '#F3F1F1'
   },
   iconLeft: {
     left: 3,
@@ -271,4 +290,27 @@ const styles = StyleSheet.create({
     fontFamily: font.Fonts.josefReg,
     fontSize: 16,
   },
+  phonecontainer: {
+    backgroundColor: '#F3F1F1',
+    height: 47,
+    width: '80%',
+    marginTop:1
+  },
+  phonetext: {
+    backgroundColor: '#F3F1F1',
+    height: 47,
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 20,
+    color: colors.Colors.gray
+  },
+  phonecodetext: {
+    fontFamily: font.Fonts.josefReg,
+    fontSize: 20,
+    color: colors.Colors.gray
+  },
+  phonetextcontainer: {
+    backgroundColor: '#F3F1F1',
+    height: 47,
+    marginRight: 20
+  }
 });
