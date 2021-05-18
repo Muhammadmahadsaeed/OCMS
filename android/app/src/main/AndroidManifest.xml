@@ -12,8 +12,8 @@
     <!-- camera permission end -->
 
     <!-- contact permission start -->
-    <!-- <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_CONTACTS" /> -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <!-- contact permission end -->
     <application
       android:name=".MainApplication"
