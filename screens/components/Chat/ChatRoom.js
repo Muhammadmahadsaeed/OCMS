@@ -165,6 +165,7 @@ class ChatRoom extends React.Component {
     };
     try {
       const res = await chatApis.sendMessage(userMsg);
+      console.log("=====",res)
     } catch (err) {
       console.log(err);
     }
