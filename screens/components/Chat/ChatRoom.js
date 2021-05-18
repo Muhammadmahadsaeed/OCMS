@@ -30,6 +30,7 @@ import axios from 'axios';
 import {api} from '../../config/env';
 import ImagePicker from 'react-native-image-crop-picker';
 import {connect} from 'react-redux';
+import chatApis from '../../../api/services/chat';
 class ChatRoom extends React.Component {
   constructor(props) {
     super(props);
@@ -128,130 +129,69 @@ class ChatRoom extends React.Component {
       receiverId: '',
     };
   }
-  // componentDidMount() {
-  //   const converstion = this.props.navigation.getParam('converstion');
-  //   this.setState({
-  //     receiverId: converstion._id,
-  //     senderId: this.props.user.user.user._id,
-  //   });
-  //   // get previous messages
-  //   this.getMessages();
-  //   this.socket = socketIO('http://192.168.18.86:4000', {
-  //     transports: ['websocket'],
-  //     jsonp: false,
-  //   });
-  //   this.socket.connect();
-  //   this.socket.on('connect', () => {
-  //     console.log('connected to socket server');
-  //   });
-  //   this.socket.on('output', () => {
-  //     console.log('socket=======');
-  //     this.getMessages();
-  //   });
-  // }
-  getDataFromInput = (msg) => {
-    console.log(msg);
+  componentDidMount() {
+    const converstion = this.props.navigation.getParam('converstion');
+    this.setState({
+      receiverId: converstion._id,
+      senderId: this.props.user.user.user._id,
+    });
+    // get previous messages
+    this.getMessages();
+    this.socket = socketIO('http://192.168.1.78:4000', {
+      transports: ['websocket'],
+      jsonp: false,
+    });
+    this.socket.connect();
+    this.socket.on('connect', () => {
+      console.log('connected to socket server');
+    });
+    this.socket.on('output', () => {
+      console.log('socket=======');
+      this.getMessages();
+    });
+  }
+  getDataFromInput = async (msg) => {
     this.setState({data: [...this.state.data, msg]});
     //notify new message
     // this.socket.emit('input', 'sent');
     const {senderId, receiverId} = this.state;
-    // console.log(senderId,receiverId)
-    // let formdata = new FormData();
+    const userMsg = {
+      senderId: senderId,
+      receiverId: receiverId,
+      messageText: msg.message.text,
+      messageType: msg.type,
+      sentTime: '2021-04-23 00:12:01',
+      messageMedia: msg.message.image,
+    };
+    try {
+      const res = await chatApis.sendMessage(userMsg);
+    } catch (err) {
+      console.log(err);
+    }
 
-    // const userMsg = {
-    //   senderId: senderId,
-    //   receiverId: receiverId,
-    //   messageType: msg.type,
-    //   // messageContent: msg.message,
-    //   sentTime: '2021-04-23 00:12:01',
-    //   media: msg.message.text,
-    //   messageText: msg.message.text,
-    // };
+  //   let formdata = new FormData();
+  //   formdata.append('messageText', 'hello');
+  //   formdata.append('senderId', senderId);
+  //   formdata.append('receiverId', receiverId);
+  //   formdata.append('messageType', msg.type);
+  //   formdata.append('sentTime', '2021-04-23 00:12:01');
+  //   msg.message.image?.forEach((image)=>{
+  //     formdata.append('messageMedia', image);
+  // })
 
-    // console.log("message=========",msg.message)
-    // console.log("message obje===========",userMsg)
-    // console.log(userMsg)
-    // Object.keys(userMsg).forEach((key) => {
-    //   const text = userMsg[key];
-    //   formdata.append(key, text);
-    // });
-    // msg.message.messageContent.forEach(element => {
-    //   formdata.append("messageContent",element)
-    // });
-    // formdata.append('senderId', userMsg.senderId);
-    // formdata.append('receiverId', userMsg.receiverId);
-    // formdata.append('messageType', userMsg.messageType);
-    // // formdata.append('media', userMsg.media);
-    // // formdata.append('messageText', userMsg.messageText);
-    // if (typeof userMsg.messageText === 'object') {
-    //   userMsg.messageText.forEach((element) => {
-    //     formdata.append('media[]', element);
-    //   });
-    // } else {
-    //   formdata.append('messageText', userMsg.messageText);
-    // }
-    // Object.keys(userMsg).forEach((key, index) => {
-    //   const item = userMsg[key];
-
-    //   if (typeof item === 'string') {
-    //     formdata.append(key, userMsg[key]);
-    //   } else if (typeof item === 'object') {
-    //     formdata.append(key, {});
-    //     Object.keys(item).forEach((key2, index2) => {
-    //       const item2 = item[key2];
-    //       if (typeof item2 === 'string') {
-    //         formdata.append(`${key}[${key2}]`, item[key2]);
-    //       } else if (typeof item2 === 'object') {
-    //         item2.forEach((image, index)=>{
-    //           formdata.append(`${item}.${item2}[]`, image);
-    //         })
-    //       }
-
-    //     });
-    //   }
-    // });
-
-    // function obj2FormData(obj, formData = new FormData()) {
-    //   this.formData = formData;
-
-    //   this.createFormData = function (obj, subKeyStr = '') {
-    //     for (let i in obj) {
-    //       let value = obj[i];
-    //       let subKeyStrTrans = subKeyStr ? subKeyStr + '[' + i + ']' : i;
-
-    //       if (typeof value === 'string' || typeof value === 'number') {
-    //         this.formData.append(subKeyStrTrans, value);
-    //       } else if (typeof value === 'object') {
-    //         this.createFormData(value, subKeyStrTrans);
-    //       }
-    //     }
-    //   };
-
-    //   this.createFormData(obj);
-
-    //   return this.formData;
-    // }
-
-    // console.log(obj2FormData(userMsg));
-    // if (typeof msg.message.text === 'object') {
-    //   msg.message.text.forEach((item, index) =>
-    //     formData.append(`text[${index}]`, item),
-    //   );
-    // }
-    // formdata.append('senderId', senderId);
-    // formdata.append('sentTime', '2021-04-23 00:12:01');
-    // fetch(`http://192.168.18.86:3000/chat/`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data',
-    //   },
-    //   body: formdata,
-    // })
-    //   .then((response) => response.json())
-    //   .then((json) => {
-    //     this.socket.emit('input', 'sent');
-    //   })
-    //   .catch((err) => console.log(err));
+  //   fetch(`http://192.168.0.115:3000/chat/`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'content-type': 'multipart/form-data',
+  //     },
+  //     body: formdata,
+  //   })
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       console.log(json);
+  //       // this.socket.emit('input', 'sent');
+  //     })
+  //     .catch((err) => console.log(err));
 
     // another socket config
     // this.setState({data: [...this.state.data, msg]});
@@ -371,7 +311,7 @@ class ChatRoom extends React.Component {
             let img = {
               name: imageName,
               type: item.mime,
-              url:
+              uri:
                 Platform.OS === 'android'
                   ? item.path
                   : item.path.replace('file://', ''),
@@ -380,54 +320,13 @@ class ChatRoom extends React.Component {
             return img;
           });
 
-          // const imageName = images[0].path.split('/').pop();
-          // const data = new FormData();
-          // let img = {
-          //   name: imageName,
-          //   type: images[0].mime,
-          //   uri:
-          //     Platform.OS === 'android'
-          //       ? images[0].path
-          //       : images[0].path.replace('file://', ''),
-          // };
-
-          // data.append('img', img);
-          // fetch('http://192.168.1.36:3000/image/upload', {
-          //   method: 'POST',
-          //   body: data,
-          //   headers: {
-          //     'Content-Type': 'multipart/form-data',
-          //   },
-          // })
-          //   .then((response) => response.json())
-          //   .then((json) => {
-          //     console.log(json);
-          //   })
-          //   .catch((err) => console.log('err======', err));
-
-          // let img = {
-          //   name: imageName,
-          //   type: images[0].mime,
-          //   uri:
-          //     Platform.OS === 'android'
-          //       ? images[0].path
-          //       : images[0].path.replace('file://', ''),
-          // };
-
           let messageObj = {
             userId: 2,
             type: 'image',
             message: {
-              text: imageArr,
+              image: imageArr,
             },
           };
-          // let messageObj = {
-          //   userId: 2,
-          //   type: 'Image',
-          //   message: {
-          //     image: imageArr,
-          //   },
-          // };
           this.getDataFromInput(messageObj);
         }
       })
@@ -519,7 +418,7 @@ class ChatRoom extends React.Component {
               showsVerticalScrollIndicator={false}
               data={this.state.data}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item,index}) => (
+              renderItem={({item, index}) => (
                 <Conversation
                   myId={this.state.userId}
                   // myId={this.state.senderId}

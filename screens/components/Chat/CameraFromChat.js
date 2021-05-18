@@ -11,10 +11,10 @@ import {
   Image,
 } from 'react-native';
 import {RNCamera} from 'react-native-camera';
-import Toolbar from './camera/toolbar';
-import styles from './camera/styles';
-import Gallery from './camera/gallery';
-import {dirPicutures} from './camera/dirStorage';
+import Toolbar from '../Camera/toolbar';
+import styles from '../Camera/styles';
+import Gallery from '../Camera/gallery';
+import {dirPicutures} from '../Camera/dirStorage';
 const moment = require('moment');
 const RNFS = require('react-native-fs');
 let {height, width} = Dimensions.get('window');

@@ -152,6 +152,13 @@ const HomeStack = createStackNavigator(
         headerShown: false,
       }),
     },
+    cameraFromChat: {
+      screen: chat.CameraFromChat,
+      navigationOptions: ({navigation}) => ({
+        safeAreaInsets: {top: 0},
+        headerShown: false,
+      }),
+    },
     // imageGrid: {
     //   screen: chat.ImagePreview,
     //   // navigationOptions: ({navigation}) => ({

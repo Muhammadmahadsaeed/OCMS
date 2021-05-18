@@ -54,15 +54,16 @@ class InputBox extends React.Component {
     });
   }
   captureImage = async (type) => {
-    ImagePicker.openCamera({
-      mediaType: type,
-      includeBase64: true,
-      useFrontCamera: true,
-    })
-      .then((res) => {
-        // console.log(image);
-      })
-      .catch((err) => console.log(err));
+    this.props.navigation.navigation.navigate('cameraFromChat')
+    // ImagePicker.openCamera({
+    //   mediaType: type,
+    //   includeBase64: true,
+    //   useFrontCamera: true,
+    // })
+    //   .then((res) => {
+    //     // console.log(image);
+    //   })
+    //   .catch((err) => console.log(err));
   };
 
   onMicrophonePress = () => {

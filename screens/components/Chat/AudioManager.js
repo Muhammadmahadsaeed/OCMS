@@ -10,11 +10,11 @@ const AUDIO_STATUS = {
   begin: 'begin',
   pause: 'pause',
   resume: 'resume',
-  stop: 'stop',
+  stop: 'stop'
 }
 
 async function startPlayer(path, callback) {
-  console.log({ currentPath, path })
+  // console.log("current path=======",{ currentPath, path })
 
   if (currentPath === undefined) {
     currentPath = path
@@ -64,6 +64,7 @@ async function startPlayer(path, callback) {
 async function pausePlayer() {
   try {
     await audioRecorderPlayer.pausePlayer();
+    console.log("pause=======")
     currentCallback({ status: AUDIO_STATUS.pause })
   } catch (error) {
     console.log({ 'ERROR PAUSE PLAYER': error })
@@ -80,9 +81,20 @@ async function stopPlayer() {
   audioRecorderPlayer = undefined
 }
 
+async function resumePlayer() {
+  const isResume = await audioRecorderPlayer.resumePlayer();
+  console.log({ isResume })
+  // audioRecorderPlayer.removePlayBackListener()
+  // currentPosition = 0
+  // currentPath = undefined; // <----- added this line
+  currentCallback({ status: AUDIO_STATUS.resume })
+  // audioRecorderPlayer = undefined
+}
+
 export {
   AUDIO_STATUS,
   startPlayer,
   stopPlayer,
   pausePlayer,
+  resumePlayer
 }
