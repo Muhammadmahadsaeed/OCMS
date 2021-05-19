@@ -10,7 +10,8 @@ import {
   Image,
   ActivityIndicator,
   TextInput,
-  PermissionsAndroid,Platform
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
 import {fetchUser, api} from '../../config/env';
 import LinearGradient from 'react-native-linear-gradient';
@@ -23,22 +24,22 @@ class ChatTab extends Component {
     super();
     this.state = {
       data: [
-        {
-          name: 'Lennart Johansson',
-          city: 'Stockholm',
-        },
-        {
-          name: 'Karl Eriksson',
-          city: 'London',
-        },
-        {
-          name: 'Pekka Hartikainen',
-          city: 'Helsinki',
-        },
-        {
-          name: 'Mia Svensson',
-          city: 'Berlin',
-        },
+        // {
+        //   name: 'Lennart Johansson',
+        //   city: 'Stockholm',
+        // },
+        // {
+        //   name: 'Karl Eriksson',
+        //   city: 'London',
+        // },
+        // {
+        //   name: 'Pekka Hartikainen',
+        //   city: 'Helsinki',
+        // },
+        // {
+        //   name: 'Mia Svensson',
+        //   city: 'Berlin',
+        // },
       ],
       limit: 10,
       page: 1,
@@ -48,15 +49,13 @@ class ChatTab extends Component {
   }
 
   componentDidMount() {
-    // this.setState({isLoading: true}, this.getData);
+    this.setState({isLoading: true}, this.getData);
   }
   getData = async () => {
     const {limit} = this.state;
-
     fetch(`${api}message/${this.props.user.user.user._id}`)
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
         this.setState({
           data: json.data,
           // data: this.state.data.concat(json),
@@ -126,30 +125,30 @@ class ChatTab extends Component {
     ) : null;
   };
   goToContact = async () => {
-    if (Platform.OS !== 'android') {
-      return Promise.resolve(true);
-    }
-    if (Platform.OS === 'android') {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-          {
-            title: "Contacts",
-            message: "This app would like to view your contacts."
-          }
-        )
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('You can use the storage');
-        } else {
-          console.log('permission denied');
-          return;
-        }
-      } catch (err) {
-        console.warn(err);
-        return;
-      }
-    }
-    // this.props.navigation.navigate('contact')
+    // if (Platform.OS !== 'android') {
+    //   return Promise.resolve(true);
+    // }
+    // if (Platform.OS === 'android') {
+    //   try {
+    //     const granted = await PermissionsAndroid.request(
+    //       PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+    //       {
+    //         title: "Contacts",
+    //         message: "This app would like to view your contacts."
+    //       }
+    //     )
+    //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    //       console.log('You can use the storage');
+    //     } else {
+    //       console.log('permission denied');
+    //       return;
+    //     }
+    //   } catch (err) {
+    //     console.warn(err);
+    //     return;
+    //   }
+    // }
+    this.props.navigation.navigate('contact');
   };
   render() {
     return (
@@ -175,7 +174,7 @@ class ChatTab extends Component {
             />
           </View>
           <View style={{flex: 1}}>
-            {/* {this.state.loading ? (
+            {this.state.loading ? (
               <View
                 style={{
                   flex: 1,
@@ -184,17 +183,17 @@ class ChatTab extends Component {
                 }}>
                 <ActivityIndicator size="large" animating color="black" />
               </View>
-            ) : ( */}
-            <FlatList
-              data={this.state.data}
-              showsVerticalScrollIndicator={false}
-              renderItem={(item) => this.renderItemComponent(item)}
-              keyExtractor={(item, index) => index.toString()}
-              // onEndReached={this.handleLoadMore}
-              // onEndReachedThreshold={0}
-              // ListFooterComponent={this.renderFooter}
-            />
-            {/* )}  */}
+            ) : (
+              <FlatList
+                data={this.state.data}
+                showsVerticalScrollIndicator={false}
+                renderItem={(item) => this.renderItemComponent(item)}
+                keyExtractor={(item, index) => index.toString()}
+                // onEndReached={this.handleLoadMore}
+                // onEndReachedThreshold={0}
+                // ListFooterComponent={this.renderFooter}
+              />
+            )}
           </View>
           <LinearGradient
             style={styles.bottomView}

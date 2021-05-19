@@ -31,6 +31,7 @@ import {api} from '../../config/env';
 import ImagePicker from 'react-native-image-crop-picker';
 import {connect} from 'react-redux';
 import chatApis from '../../../api/services/chat';
+const CONNECTION_PORT = 'http://192.168.1.77:6868';
 class ChatRoom extends React.Component {
   constructor(props) {
     super(props);
@@ -128,6 +129,26 @@ class ChatRoom extends React.Component {
       data: [],
       receiverId: '',
     };
+
+    this.socket = socketIO(CONNECTION_PORT, {
+      transports: ['websocket'],
+      forceNew: true,
+      upgrade: false,
+    });
+    this.socket.connect();
+    this.socket.on('connect', () => {
+      console.log('connected to socket server');
+    });
+    // get previous messages
+    this.getMessages();
+    this.socket.on(
+      'chat message',
+      () => {
+        console.log('socket output=======');
+        this.getMessages();
+      },
+      () => {},
+    );
   }
   componentDidMount() {
     const converstion = this.props.navigation.getParam('converstion');
@@ -135,79 +156,66 @@ class ChatRoom extends React.Component {
       receiverId: converstion._id,
       senderId: this.props.user.user.user._id,
     });
-    // get previous messages
-    this.getMessages();
-    this.socket = socketIO('http://192.168.1.77:4000', {
-      transports: ['websocket'],
-      jsonp: false,
-    });
-    this.socket.connect();
-    this.socket.on('connect', () => {
-      console.log('connected to socket server');
-    });
-    this.socket.on('output', () => {
-      console.log('socket=======');
-      this.getMessages();
-    });
   }
+
   getDataFromInput = async (msg) => {
-   
     //notify new message
     // this.socket.emit('input', 'sent');
     const {senderId, receiverId} = this.state;
-    const userMsg = {
-      senderId: senderId,
-      receiverId: receiverId,
-      messageText: msg.message.text,
-      messageType: msg.type,
-      sentTime: '2021-04-23 00:12:01',
-      messageMedia: msg.message.image,
-    };
-    try {
-      const res = await chatApis.sendMessage(userMsg);
-<<<<<<< HEAD
-      console.log("res from chat======",res)
-      // this.setState({data: [...this.state.data, msg]});
-=======
-      console.log("=====",res)
->>>>>>> 59d36af2f6e52827fdcd317a3ddc68e7112d127f
-    } catch (err) {
-      console.log(err);
-    }
+    // const userMsg = {
+    //   senderId: senderId,
+    //   receiverId: receiverId,
+    //   messageText: msg.message.text,
+    //   messageType: msg.type,
+    //   sentTime: '2021-04-23 00:12:01',
+    //   messageMedia: msg.message.image,
+    // };
+    // try {
+    //   const res = await chatApis.sendMessage(userMsg);
+    //   // this.setState({data: [...this.state.data, msg]});
+    //   console.log("=====",res)
+    // } catch (err) {
+    //   console.log(err);
+    // }
+    //   let formdata = new FormData();
+    //   formdata.append('messageText', 'hello');
+    //   formdata.append('senderId', senderId);
+    //   formdata.append('receiverId', receiverId);
+    //   formdata.append('messageType', msg.type);
+    //   formdata.append('sentTime', '2021-04-23 00:12:01');
+    //   msg.message.image?.forEach((image)=>{
+    //     formdata.append('messageMedia', image);
+    // })
 
-  //   let formdata = new FormData();
-  //   formdata.append('messageText', 'hello');
-  //   formdata.append('senderId', senderId);
-  //   formdata.append('receiverId', receiverId);
-  //   formdata.append('messageType', msg.type);
-  //   formdata.append('sentTime', '2021-04-23 00:12:01');
-  //   msg.message.image?.forEach((image)=>{
-  //     formdata.append('messageMedia', image);
-  // })
-
-  //   fetch(`http://192.168.0.115:3000/chat/`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'content-type': 'multipart/form-data',
-  //     },
-  //     body: formdata,
-  //   })
-  //     .then((response) => response.json())
-  //     .then((json) => {
-  //       console.log(json);
-  //       // this.socket.emit('input', 'sent');
-  //     })
-  //     .catch((err) => console.log(err));
+    //   fetch(`http://192.168.0.115:3000/chat/`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'content-type': 'multipart/form-data',
+    //     },
+    //     body: formdata,
+    //   })
+    //     .then((response) => response.json())
+    //     .then((json) => {
+    //       console.log(json);
+    //       // this.socket.emit('input', 'sent');
+    //     })
+    //     .catch((err) => console.log(err));
 
     // another socket config
     // this.setState({data: [...this.state.data, msg]});
-    // socket.emit('input', {
-    //   name: 'mahad',
-    //   messageContent: msg,
-    //   senderId: '6062cb84ac8ec71b54bfcd2e', //login user id
-    //   receiverId: this.state.receiverId, //recvr user id
-    //   sentTime: '2021-03-31 09:37',
-    // });
+    this.socket.emit(
+      'chat message',
+      {
+        messageText: msg.message.text,
+        messageType: msg.type,
+        senderId: senderId, //login user id
+        receiverId: receiverId, //recvr user id
+        sentTime: new Date().now,
+      },
+      () => {
+        // this._scrollToBottom(50);
+      },
+    );
   };
   getMessages = () => {
     const senderId = this.props.user.user.user._id;
@@ -241,10 +249,14 @@ class ChatRoom extends React.Component {
         // });
         // this.setState({chatMessages: [...this.state.chatMessages, ...message]});
         // this.setState({data: [...this.state.data, ...message]});
-        
         this.setState({data: json.data.reverse()});
+        // this._scrollToBottom(70);
       })
       .catch((err) => console.log(err));
+    // }
+    // ,
+    // () => {},
+    // );
   };
 
   selectDocument = async () => {
@@ -406,7 +418,7 @@ class ChatRoom extends React.Component {
   };
   render() {
     return (
-      <View style={{flex: 1}} >
+      <View style={{flex: 1}}>
         <ConversationHeader
           navigationProps={this.props}
           getSelectedMessage={this.getSelectedMessage}
@@ -434,8 +446,7 @@ class ChatRoom extends React.Component {
                   getSelectedMessage={this.getSelectedMessage}
                 />
               )}
-              inverted={1}
-              // inverted={true}
+              inverted={true}
             />
             <InputBox
               ref={this.InputBoxRef}

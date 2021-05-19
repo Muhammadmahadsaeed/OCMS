@@ -199,7 +199,7 @@ const Conversation = (props) => {
   // if (!playWidth) {
   //   playWidth = 0;
   // }
-  console.log(message)
+ 
   return (
     <View >
       <View 

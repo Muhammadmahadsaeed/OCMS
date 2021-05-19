@@ -114,8 +114,6 @@ const PhoneLogin = ({ navigation }) => {
                   setFormattedValue(text);
                 }}
               />
-
-
               <View style={styles.iconRight}>
                 {!isValid && (
                   <Image
@@ -125,11 +123,6 @@ const PhoneLogin = ({ navigation }) => {
                 )}
               </View>
             </View>
-
-
-
-
-
             {errortext != '' ? (
               <View style={styles.errorView}>
                 <Text style={styles.errorTextStyle}>{errortext}</Text>
