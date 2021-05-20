@@ -173,28 +173,38 @@ class ChatTab extends Component {
               returnKeyType="next"
             />
           </View>
-          <View style={{flex: 1}}>
-            {this.state.loading ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <ActivityIndicator size="large" animating color="black" />
-              </View>
-            ) : (
-              <FlatList
-                data={this.state.data}
-                showsVerticalScrollIndicator={false}
-                renderItem={(item) => this.renderItemComponent(item)}
-                keyExtractor={(item, index) => index.toString()}
-                // onEndReached={this.handleLoadMore}
-                // onEndReachedThreshold={0}
-                // ListFooterComponent={this.renderFooter}
-              />
-            )}
-          </View>
+          {this.state.data ? (
+            <View style={{flex: 1}}>
+              {this.state.loading ? (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <ActivityIndicator size="large" animating color="black" />
+                </View>
+              ) : (
+                <FlatList
+                  data={this.state.data}
+                  showsVerticalScrollIndicator={false}
+                  renderItem={(item) => this.renderItemComponent(item)}
+                  keyExtractor={(item, index) => index.toString()}
+                  // onEndReached={this.handleLoadMore}
+                  // onEndReachedThreshold={0}
+                  // ListFooterComponent={this.renderFooter}
+                />
+              )}
+            </View>
+          ) : (
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Image source={require('../../../asessts/images/box.png')} />
+              <Text style={{textAlign: 'center'}}>
+                You've no recent messages, let's start a conversation!
+              </Text>
+            </View>
+          )}
           <LinearGradient
             style={styles.bottomView}
             colors={[colors.Colors.blueLight, colors.Colors.blueDark]}

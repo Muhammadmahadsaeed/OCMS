@@ -187,28 +187,28 @@ class ChatRoom extends React.Component {
       msg.message.file?.forEach((time) => {
         formdata.append('recordDuration', time.recordTime);
       });
-      console.log( msg.message.file)
-      // fetch(`http://192.168.1.77:3000/chat/`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'content-type': 'multipart/form-data',
-      //   },
-      //   body: formdata,
-      // })
-      //   .then((response) => response.json())
-      //   .then((json) => {
-      //     this.socket.emit(
-      //       'chat message',
-      //       {
-      //         messageType: msg.type,
-      //         senderId: senderId, //login user id
-      //         receiverId: receiverId, //recvr user id
-      //         sentTime: '2021-04-23 00:12:01',
-      //       },
-      //       () => {},
-      //     );
-      //   })
-      //   .catch((err) => console.log(err));
+     
+      fetch(`http://192.168.1.77:3000/chat/`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+        body: formdata,
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          this.socket.emit(
+            'chat message',
+            {
+              messageType: msg.type,
+              senderId: senderId, //login user id
+              receiverId: receiverId, //recvr user id
+              sentTime: '2021-04-23 00:12:01',
+            },
+            () => {},
+          );
+        })
+        .catch((err) => console.log(err));
     }
     // const userMsg = {
     //   senderId: senderId,
@@ -313,40 +313,61 @@ class ChatRoom extends React.Component {
       const res = await DocumentPicker.pickMultiple({
         type: [DocumentPicker.types.allFiles],
       });
-      console.log(res);
-      for (const result of res) {
-        const fileUrl = result.uri.replace('file://', '');
-        // const fileName = result.uri.replace('file://', '');
-        console.log(fileUrl);
-        // RNFetchBlob.fs
-        //   .readStream(fileName, 'base64', 1048576)
-        //   .then((ifStream) => {
-        //     ifStream.open();
-        //     ifStream.onData((data) => {
-        //       let base64 = `data:${result.type};base64,${data}`;
-        //       const fileExt = result.type.split('/');
-        //       const param = {
-        //         base64: base64,
-        //         height: 300,
-        //         width: 300,
-        //         fileName: result.name,
-        //         size: 1048576, // size, in bytes
-        //         type: result.type,
-        //         ext: fileExt[1],
-        //         fileUri: result.uri,
-        //       };
-        //       let messageObj = {
-        //         userId: 2,
-        //         type: 'document',
-        //         message: param,
-        //       };
-        //       this.getDataFromInput(messageObj);
-        //     });
-        //     ifStream.onError((err) => {
-        //       console.log(err);
-        //     });
-        //   });
-      }
+      
+      const docArr = res.map((item) =>{
+        // const fileName = item.uri.split('/').pop();
+        let file = {
+          name: item.name,
+          type: item.type,
+          uri:
+            Platform.OS === 'android'
+              ? item.uri
+              : item.uri.replace('file://', ''),
+        };
+        return file;
+      })
+      let messageObj = {
+        userId: 2,
+        type: 'document',
+        message: {
+          file: docArr,
+        },
+      };
+
+      this.getDataFromInput(messageObj);
+      // for (const result of res) {
+      //   const fileUrl = result.uri.replace('file://', '');
+      //   const fileName = result.uri.replace('file://', '');
+       
+      //   RNFetchBlob.fs
+      //     .readStream(fileName, 'base64', 1048576)
+      //     .then((ifStream) => {
+      //       ifStream.open();
+      //       ifStream.onData((data) => {
+      //         let base64 = `data:${result.type};base64,${data}`;
+      //         const fileExt = result.type.split('/');
+      //         const param = {
+      //           base64: base64,
+      //           height: 300,
+      //           width: 300,
+      //           fileName: result.name,
+      //           size: 1048576, // size, in bytes
+      //           type: result.type,
+      //           ext: fileExt[1],
+      //           fileUri: result.uri,
+      //         };
+      //         let messageObj = {
+      //           userId: 2,
+      //           type: 'document',
+      //           message: param,
+      //         };
+      //         this.getDataFromInput(messageObj);
+      //       });
+      //       ifStream.onError((err) => {
+      //         console.log(err);
+      //       });
+      //     });
+      // }
     } catch (err) {
       //Handling any exception (If any)
       if (DocumentPicker.isCancel(err)) {
@@ -442,7 +463,7 @@ class ChatRoom extends React.Component {
             onPress={() => this.selectVideo()}
             activeOpacity={0.8}>
             <Image
-              source={require('../../../asessts/images/gallery-icon.png')}
+              source={require('../../../asessts/images/audio-icon.png')}
             />
           </TouchableOpacity>
         </View>

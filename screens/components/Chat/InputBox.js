@@ -40,6 +40,7 @@ class InputBox extends React.Component {
       duration: '00:00:00',
       startAudio: false,
       currentTime: 0,
+      recordDuration: 0
     };
     this.timer = null;
     this.audioRecorderPlayer = new AudioRecorderPlayer();
@@ -175,7 +176,7 @@ class InputBox extends React.Component {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
     let time = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-    this.setState({recordTime: time});
+    this.setState({recordTime: time,recordDuration: millis});
   }
   onStopRecord = async () => {
     const result = await this.audioRecorderPlayer.stopRecorder();
@@ -199,7 +200,7 @@ class InputBox extends React.Component {
       type: 'audio/acc',
       uri: Platform.OS === 'android' ? result : result.replace('file://', ''),
     };
-    audio.recordTime = this.state.recordTime;
+    audio.recordTime = this.state.recordDuration;
     audioArr.push(audio)
     let messageObj = {
       userId: 2,
@@ -209,7 +210,6 @@ class InputBox extends React.Component {
         file: audioArr,
       },
     };
-  
     this.props.getDataFromInput(messageObj);
     this.setState({
       recordSecs: 0,

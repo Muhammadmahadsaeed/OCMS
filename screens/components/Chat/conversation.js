@@ -43,6 +43,7 @@ const Conversation = (props) => {
   const { position, duration } = useTrackPlayerProgress();
   const [modalVisible, setModalVisible] = useState(false);
   const audioRecorderPlayer = new AudioRecorderPlayer();
+  const [fileExt,setFileExt] = useState(require('../../../asessts/images/pdf.png'))
   audioRecorderPlayer.setSubscriptionDuration(0.09);
   // constructor(props) {
   //   super(props);
@@ -155,17 +156,19 @@ const Conversation = (props) => {
     return message.type;
   };
   const openDocument = async (item) => {
+    // console.log(item)
     const AppFolder = 'OCMS';
     const DirectoryPath = RNFS.ExternalStorageDirectoryPath + '/' + AppFolder;
     RNFS.mkdir(DirectoryPath);
 
     const destPath = `${RNFS.ExternalStorageDirectoryPath}/OCMS/Documents/`;
-    await RNFS.copyFile(item.message.fileUri, destPath);
+    await RNFS.copyFile(item.message.url, destPath);
 
     const fileURL = await RNFS.stat(destPath);
-    FileViewer.open(fileURL.path, { showOpenWithDialog: true })
-      .then((suc) => console.log(suc))
-      .catch((err) => console.log(err));
+
+    // FileViewer.open(fileURL.path, { showOpenWithDialog: true })
+    //   .then((suc) => console.log(suc))
+    //   .catch((err) => console.log(err));
   };
   const onSelectMsg = (message) => {
     if (onPressMessage === false) {
@@ -235,18 +238,18 @@ const Conversation = (props) => {
              
             </View>
           )}
-          {/* {isMessageType() == 'document' && (
+          {isMessageType() == 'document' && (
             <TouchableOpacity
               style={{flex: 1}}
               activeOpacity={0.8}
               onPress={() => openDocument(message)}>
               <View style={styles.documentView}>
-                <Image
-                  source={require('../../../asessts/images/pdf.png')}
+                {/* <Image
+                  source={require('../../../asessts/images/' + message.fileExt)}
                   style={{height: 50, width: 50}}
-                />
+                /> */}
                 <Text numberOfLines={1} style={styles.documentText}>
-                  {message.message.fileName}
+                  {message.filename}
                 </Text>
               </View>
               <View
@@ -259,7 +262,7 @@ const Conversation = (props) => {
                 <Text style={styles.time}>11:45</Text>
               </View>
             </TouchableOpacity>
-          )} */}
+          )}
           {isMessageType() == 'audio' && (
             <View>
               <View
