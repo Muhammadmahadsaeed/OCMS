@@ -24,22 +24,22 @@ class ChatTab extends Component {
     super();
     this.state = {
       data: [
-        // {
-        //   name: 'Lennart Johansson',
-        //   city: 'Stockholm',
-        // },
-        // {
-        //   name: 'Karl Eriksson',
-        //   city: 'London',
-        // },
-        // {
-        //   name: 'Pekka Hartikainen',
-        //   city: 'Helsinki',
-        // },
-        // {
-        //   name: 'Mia Svensson',
-        //   city: 'Berlin',
-        // },
+        {
+          name: 'Lennart Johansson',
+          city: 'Stockholm',
+        },
+        {
+          name: 'Karl Eriksson',
+          city: 'London',
+        },
+        {
+          name: 'Pekka Hartikainen',
+          city: 'Helsinki',
+        },
+        {
+          name: 'Mia Svensson',
+          city: 'Berlin',
+        },
       ],
       limit: 10,
       page: 1,
@@ -48,23 +48,23 @@ class ChatTab extends Component {
     };
   }
 
-  componentDidMount() {
-    this.setState({isLoading: true}, this.getData);
-  }
-  getData = async () => {
-    const {limit} = this.state;
-    fetch(`${api}message/${this.props.user.user.user._id}`)
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({
-          data: json.data,
-          // data: this.state.data.concat(json),
-          isLoading: false,
-          loading: false,
-        });
-      })
-      .catch((err) => console.log(err));
-  };
+  // componentDidMount() {
+  //   this.setState({isLoading: true}, this.getData);
+  // }
+  // getData = async () => {
+  //   const {limit} = this.state;
+  //   fetch(`${api}message/${this.props.user.user.user._id}`)
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       this.setState({
+  //         data: json.data,
+  //         // data: this.state.data.concat(json),
+  //         isLoading: false,
+  //         loading: false,
+  //       });
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
 
   renderItemComponent(props) {
     return (
@@ -173,9 +173,9 @@ class ChatTab extends Component {
               returnKeyType="next"
             />
           </View>
-          {this.state.data ? (
-            <View style={{flex: 1}}>
-              {this.state.loading ? (
+          {/* {this.state.data ? (
+            <View style={{flex: 1}}> */}
+              {/* {this.state.loading ? (
                 <View
                   style={{
                     flex: 1,
@@ -184,7 +184,7 @@ class ChatTab extends Component {
                   }}>
                   <ActivityIndicator size="large" animating color="black" />
                 </View>
-              ) : (
+              ) : ( */}
                 <FlatList
                   data={this.state.data}
                   showsVerticalScrollIndicator={false}
@@ -194,8 +194,8 @@ class ChatTab extends Component {
                   // onEndReachedThreshold={0}
                   // ListFooterComponent={this.renderFooter}
                 />
-              )}
-            </View>
+              {/* )} */}
+            {/* </View>
           ) : (
             <View
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -204,7 +204,7 @@ class ChatTab extends Component {
                 You've no recent messages, let's start a conversation!
               </Text>
             </View>
-          )}
+          )} */}
           <LinearGradient
             style={styles.bottomView}
             colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
