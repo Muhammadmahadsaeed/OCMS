@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from 'react';
+import React, {createRef, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -70,7 +70,7 @@ class InputBox extends React.Component {
     console.warn('Microphone');
   };
   onSendPress = async () => {
-    const { message } = this.state;
+    const {message} = this.state;
     // Encrypt
     // var ciphertext = CryptoJS.AES.encrypt(message, 'secret key 123').toString();
     let messageObj = {
@@ -81,11 +81,11 @@ class InputBox extends React.Component {
       },
     };
     this.props.getDataFromInput(messageObj);
-    this.setState({ message: '' });
+    this.setState({message: ''});
   };
   componentDidMount() {
     this.checkPermission().then(async (hasPermission) => {
-      this.setState({ hasPermission });
+      this.setState({hasPermission});
       if (!hasPermission) return;
     });
   }
@@ -145,18 +145,19 @@ class InputBox extends React.Component {
   };
   handleAudio = () => {
     if (!this.state.startAudio) {
-      this.setState({ startAudio: true });
+      this.setState({startAudio: true});
       this.onStartRecording();
     } else {
-      this.setState({ startAudio: false });
+      this.setState({startAudio: false});
       this.onStopRecord();
     }
   };
   onStartRecording = async () => {
     const path = Platform.select({
       ios: 'hello.m4a',
-      android: `${RNFS.ExternalStorageDirectoryPath
-        }/OCMS/${this.messageIdGenerator()}.acc`,
+      android: `${
+        RNFS.ExternalStorageDirectoryPath
+      }/OCMS/${this.messageIdGenerator()}.acc`,
     });
     const audioSet = {
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -174,14 +175,13 @@ class InputBox extends React.Component {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
     let time = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-    this.setState({ recordTime: time });
+    this.setState({recordTime: time});
   }
   onStopRecord = async () => {
     const result = await this.audioRecorderPlayer.stopRecorder();
     this.audioRecorderPlayer.removeRecordBackListener();
     let arr = [];
-    const fileName = result.replace('file:///', '');
-    console.log(result)
+    // const fileName = result.replace('file:///', '');
     // RNFetchBlob.fs.readStream(fileName, 'base64', 1048576).then((ifStream) => {
     //   ifStream.open();
     //   ifStream.onData((data) => {
@@ -192,15 +192,24 @@ class InputBox extends React.Component {
     //       // type: res.type,
     //       // name: res.name,
     //     };
+    const fileName = result.split('/').pop();
+    let audioArr = []
+    let audio = {
+      name: fileName,
+      type: 'audio/acc',
+      uri: Platform.OS === 'android' ? result : result.replace('file://', ''),
+    };
+    audio.recordTime = this.state.recordTime;
+    audioArr.push(audio)
     let messageObj = {
       userId: 2,
       type: 'audio',
       message: {
         // uri: param.base64,
-        uri: result,
-        recordTime: this.state.recordTime,
+        file: audioArr,
       },
     };
+  
     this.props.getDataFromInput(messageObj);
     this.setState({
       recordSecs: 0,
@@ -226,7 +235,7 @@ class InputBox extends React.Component {
       <View style={styles.audioContainer}>
         <Text style={styles.audioTimerText}>{this.state.recordTime}</Text>
         <TouchableOpacity
-          style={{ padding: 5 }}
+          style={{padding: 5}}
           activeOpacity={0.8}
           onPress={this.onCancel}>
           <Text style={styles.cancelText}>cancel</Text>
@@ -236,12 +245,12 @@ class InputBox extends React.Component {
   };
 
   render() {
-    const { message } = this.state;
+    const {message} = this.state;
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={100}
-        style={{ width: '100%' }}>
+        style={{width: '100%'}}>
         <View style={styles.container}>
           {this.state.startAudio ? (
             this.renderAudioRecorder()
@@ -258,10 +267,10 @@ class InputBox extends React.Component {
                 style={styles.textInput}
                 multiline
                 value={message}
-                onChangeText={(text) => this.setState({ message: text })}
+                onChangeText={(text) => this.setState({message: text})}
               />
               <TouchableOpacity
-                style={{ padding: 5 }}
+                style={{padding: 5}}
                 onPress={() => this.props.openAttachmentModal()}>
                 <Image
                   source={require('../../../asessts/images/attachment-line.png')}
@@ -271,7 +280,7 @@ class InputBox extends React.Component {
 
               {!message && (
                 <TouchableOpacity
-                  style={{ padding: 5 }}
+                  style={{padding: 5}}
                   onPress={() => this.captureImage('photo')}>
                   <Image
                     source={require('../../../asessts/images/camera-icon.png')}

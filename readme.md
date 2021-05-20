@@ -38,4 +38,6 @@ https://stackoverflow.com/questions/49361166/handle-multiselect-in-a-gridview
 
 
 
-https://medium.com/the-sixt-india-blog/how-to-run-a-background-task-in-react-native-cd4d36e40bf
+download image from rn fetch
+
+upload from rn fetch

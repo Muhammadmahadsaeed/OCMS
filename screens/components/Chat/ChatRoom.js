@@ -162,6 +162,54 @@ class ChatRoom extends React.Component {
     //notify new message
     // this.socket.emit('input', 'sent');
     const {senderId, receiverId} = this.state;
+    if (msg.type === 'text') {
+      this.socket.emit(
+        'chat message',
+        {
+          messageText: msg.message.text,
+          messageType: msg.type,
+          senderId: senderId, //login user id
+          receiverId: receiverId, //recvr user id
+          sentTime: new Date().now,
+        },
+        () => {},
+      );
+    } else {
+      let formdata = new FormData();
+      formdata.append('messageText', 'hello');
+      formdata.append('senderId', senderId);
+      formdata.append('receiverId', receiverId);
+      formdata.append('messageType', msg.type);
+      formdata.append('sentTime', '2021-04-23 00:12:01');
+      msg.message.file?.forEach((image) => {
+        formdata.append('messageContent', image);
+      });
+      msg.message.file?.forEach((time) => {
+        formdata.append('recordDuration', time.recordTime);
+      });
+      console.log( msg.message.file)
+      // fetch(`http://192.168.1.77:3000/chat/`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'content-type': 'multipart/form-data',
+      //   },
+      //   body: formdata,
+      // })
+      //   .then((response) => response.json())
+      //   .then((json) => {
+      //     this.socket.emit(
+      //       'chat message',
+      //       {
+      //         messageType: msg.type,
+      //         senderId: senderId, //login user id
+      //         receiverId: receiverId, //recvr user id
+      //         sentTime: '2021-04-23 00:12:01',
+      //       },
+      //       () => {},
+      //     );
+      //   })
+      //   .catch((err) => console.log(err));
+    }
     // const userMsg = {
     //   senderId: senderId,
     //   receiverId: receiverId,
@@ -203,19 +251,19 @@ class ChatRoom extends React.Component {
 
     // another socket config
     // this.setState({data: [...this.state.data, msg]});
-    this.socket.emit(
-      'chat message',
-      {
-        messageText: msg.message.text,
-        messageType: msg.type,
-        senderId: senderId, //login user id
-        receiverId: receiverId, //recvr user id
-        sentTime: new Date().now,
-      },
-      () => {
-        // this._scrollToBottom(50);
-      },
-    );
+    // this.socket.emit(
+    //   'chat message',
+    //   () => {
+    //     console.log("=========",senderId)
+
+    // messageText: msg.message.text,
+    // messageType: msg.type,
+    // senderId: senderId, //login user id
+    // receiverId: receiverId, //recvr user id
+    // sentTime: new Date().now,
+    //   },
+    //   () => {},
+    // );
   };
   getMessages = () => {
     const senderId = this.props.user.user.user._id;
@@ -265,36 +313,39 @@ class ChatRoom extends React.Component {
       const res = await DocumentPicker.pickMultiple({
         type: [DocumentPicker.types.allFiles],
       });
+      console.log(res);
       for (const result of res) {
-        const fileName = result.uri.replace('file://', '');
-        RNFetchBlob.fs
-          .readStream(fileName, 'base64', 1048576)
-          .then((ifStream) => {
-            ifStream.open();
-            ifStream.onData((data) => {
-              let base64 = `data:${result.type};base64,${data}`;
-              const fileExt = result.type.split('/');
-              const param = {
-                base64: base64,
-                height: 300,
-                width: 300,
-                fileName: result.name,
-                size: 1048576, // size, in bytes
-                type: result.type,
-                ext: fileExt[1],
-                fileUri: result.uri,
-              };
-              let messageObj = {
-                userId: 2,
-                type: 'document',
-                message: param,
-              };
-              this.getDataFromInput(messageObj);
-            });
-            ifStream.onError((err) => {
-              console.log(err);
-            });
-          });
+        const fileUrl = result.uri.replace('file://', '');
+        // const fileName = result.uri.replace('file://', '');
+        console.log(fileUrl);
+        // RNFetchBlob.fs
+        //   .readStream(fileName, 'base64', 1048576)
+        //   .then((ifStream) => {
+        //     ifStream.open();
+        //     ifStream.onData((data) => {
+        //       let base64 = `data:${result.type};base64,${data}`;
+        //       const fileExt = result.type.split('/');
+        //       const param = {
+        //         base64: base64,
+        //         height: 300,
+        //         width: 300,
+        //         fileName: result.name,
+        //         size: 1048576, // size, in bytes
+        //         type: result.type,
+        //         ext: fileExt[1],
+        //         fileUri: result.uri,
+        //       };
+        //       let messageObj = {
+        //         userId: 2,
+        //         type: 'document',
+        //         message: param,
+        //       };
+        //       this.getDataFromInput(messageObj);
+        //     });
+        //     ifStream.onError((err) => {
+        //       console.log(err);
+        //     });
+        //   });
       }
     } catch (err) {
       //Handling any exception (If any)
@@ -343,9 +394,10 @@ class ChatRoom extends React.Component {
             userId: 2,
             type: 'image',
             message: {
-              image: imageArr,
+              file: imageArr,
             },
           };
+
           this.getDataFromInput(messageObj);
         }
       })

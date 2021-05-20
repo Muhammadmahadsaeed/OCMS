@@ -9,7 +9,7 @@ import {
   Linking,
   PermissionsAndroid,
   Pressable,
-  Modal, Dimensions,ScrollView
+  Modal, Dimensions, ScrollView
 } from 'react-native';
 import Images from 'react-native-chat-images';
 // import Sound from 'react-native-sound';
@@ -36,7 +36,7 @@ const Conversation = (props) => {
   const [playDuration, setPlayDuration] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   const playbackState = usePlaybackState();
-  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderValue, setSliderValue] = useState(0.2);
   const [isSeeking, setIsSeeking] = useState(false);
   const [currentTrackPosition, setCurrentTrackPosition] = useState(0);
   const [currentTrackDuration, setCurrentTrackDuration] = useState(0);
@@ -44,6 +44,7 @@ const Conversation = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const audioRecorderPlayer = new AudioRecorderPlayer();
   audioRecorderPlayer.setSubscriptionDuration(0.09);
+  const [lastAudio,setlastAudio] = useState('');
   // constructor(props) {
   //   super(props);
   //   this.audioRecorderPlayer = new AudioRecorderPlayer();
@@ -96,52 +97,74 @@ const Conversation = (props) => {
   // }
   // };
 
-  const onStartPlay = async (e, index) => {
-    console.log(e)
-    // const fileName = e.message.uri.replace('file:///', '');
-    const path = Platform.select({
-      ios: 'hello.m4a',
-      // android: fileName,
-      android: e.message[0].url
-    });
-    try {
-      await AudioManager.startPlayer(path, (res) => {
-        const { status } = res;
-        switch (status) {
-          case AudioManager.AUDIO_STATUS.begin:
-            break;
-          case AudioManager.AUDIO_STATUS.play: {
-            const { current_position, duration } = res.data;
-            // console.log(audioRecorderPlayer.mmssss(Math.floor(current_position)))
-            millisToMinutesAndSeconds(current_position);
-            setIsPlaying(true);
-            // setCurrentTrackPosition(current_position)
-            // setCurrentTrackDuration(duration)
-            break;
-          }
-          case AudioManager.AUDIO_STATUS.pause: {
-            console.log('PAUSE AUDIO');
-            // setIsPlaying(false)
-            // AudioManager.pausePlayer()
-            break;
-          }
-          case AudioManager.AUDIO_STATUS: {
-            console.log('RESUME AUDIO');
-            // setIsPlaying(false)
-            // AudioManager.pausePlayer()
-            break;
-          }
-
-          case AudioManager.AUDIO_STATUS.stop: {
-            console.log('STOP AUDIO');
-            // setIsPlaying(false)
-            break;
-          }
-        }
-      });
-    } catch (e) {
-      console.log('err======', e);
+  const onStartPlay = async (e) => {
+    if (!e.message.isPlay) {
+        setIsPlaying(!isPlaying)
+        const fileName = e.message.uri.replace('file:///', '');
+        const path = Platform.select({
+          ios: 'hello.m4a',
+          android: fileName,
+        });
+        await AudioManager.startPlayer(path, (res) => {
+        });
+        e.message.isPlay = true;
     }
+    else if (e.message.isPlay) {
+      setIsPlaying(!isPlaying)
+      e.message.isPlay = false;
+     AudioManager.pausePlayer();
+    }
+    // const fileName = e.message.uri.replace('file:///', '');
+    // const path = Platform.select({
+    //   ios: 'hello.m4a',
+    //   android: fileName,
+    // });
+    // try {
+    //   setIsPlaying(!isPlaying)
+    //   await AudioManager.startPlayer(path, (res) => {
+    //     if(res.status == 'play')
+    //     {
+    //       AudioManager.pausePlayer();
+    //     }
+    // switch (res.status) {
+    //   case AudioManager.AUDIO_STATUS.begin:
+    //     break;
+    // case AudioManager.AUDIO_STATUS.play: {
+    //   AudioManager.pausePlayer()
+    //   // const { current_position, duration } = res.data;
+    //   // console.log(audioRecorderPlayer.mmssss(Math.floor(current_position)))
+    //   // millisToMinutesAndSeconds(current_position);
+    //   // setIsPlaying(true);
+    //   // setCurrentTrackPosition(current_position)
+    //   // setCurrentTrackDuration(duration)
+    //   break;
+    // }
+    // case AudioManager.AUDIO_STATUS.pause: {
+    //   console.log(res.status,"before")
+    //   // console.log('PAUSE AUDIO');
+    //   // setIsPlaying(false)
+    //   AudioManager.pausePlayer()
+    //   console.log(res.status,"after")
+    //   break;
+    // }
+    // case AudioManager.AUDIO_STATUS: {
+    //   console.log('RESUME AUDIO');
+    //   // setIsPlaying(false)
+    //   // AudioManager.pausePlayer()
+    //   break;
+    // }
+
+    // case AudioManager.AUDIO_STATUS.stop: {
+    //   console.log('STOP AUDIO');
+    //   // setIsPlaying(false)
+    //   break;
+    // }
+    // }
+    //   });
+    // }
+    //  catch (e) {
+    //   console.log('err======', e);
+    // }
   };
 
   const millisToMinutesAndSeconds = (millis) => {
@@ -201,10 +224,10 @@ const Conversation = (props) => {
   // if (!playWidth) {
   //   playWidth = 0;
   // }
-  console.log(message)
+
   return (
     <View >
-      <View 
+      <View
         style={
           onPressMessage
             ? { backgroundColor: 'green', margin: 2 }
@@ -232,7 +255,49 @@ const Conversation = (props) => {
           {isMessageType() == 'image' && (
             <View style={{ flex: 1 }} >
               <Images images={message.message} />
-             
+
+            </View>
+          )}
+          {isMessageType() == 'audio' && (
+            <View>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => onStartPlay(message)}
+                  style={{ width: 35, height: 35 }}>
+                  <Image
+                    source={
+                      isPlaying
+                        ? require('../../../asessts/images/pause.png')
+                        : require('../../../asessts/images/play.png')
+                    }
+                    style={{ height: '100%', width: '100%' }}
+                  />
+                </TouchableOpacity>
+
+                <View style={{ marginLeft: 15, flex: 1 }}>
+                  <Slider
+                    // style={{width: 400, height: 40}}
+                    value={sliderValue}
+                    onValueChange={(value) => setSliderValue(value)} 
+                    minimumTrackTintColor="#111000"
+                    maximumTrackTintColor="#000000"
+                    // onSlidingStart={slidingStarted}
+                    // onSlidingComplete={slidingCompleted}
+                  />
+                  <View>
+                    <Text style={styles.duration}>
+                      {playDuration ? playDuration : message.message.recordTime}
+                    </Text>
+                  </View>
+                </View>
+              </View>
             </View>
           )}
           {/* {isMessageType() == 'document' && (
@@ -259,51 +324,9 @@ const Conversation = (props) => {
                 <Text style={styles.time}>11:45</Text>
               </View>
             </TouchableOpacity>
-          )} */}
-          {isMessageType() == 'audio' && (
-            <View>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                }}>
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() => onStartPlay(message, index)}
-                  style={{width: 35, height: 35}}>
-                  <Image
-                    source={
-                      isPlaying
-                        ? require('../../../asessts/images/pause.png')
-                        : require('../../../asessts/images/play.png')
-                    }
-                    style={{height: '100%', width: '100%'}}
-                  />
-                </TouchableOpacity>
-
-                <View style={{marginLeft: 15, flex: 1}}>
-                  <Slider
-                    // style={{width: 400, height: 40}}
-                    minimumValue={0}
-                    maximumValue={1}
-                    value={sliderValue}
-                    minimumTrackTintColor="#111000"
-                    maximumTrackTintColor="#000000"
-                    onSlidingStart={slidingStarted}
-                    onSlidingComplete={slidingCompleted}
-                  />
-                  <View>
-                    <Text style={styles.duration}>
-                      {playDuration ? playDuration : message.message.recordTime}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
           )}
-          {/* {isMessageType() == 'video' && (
+         
+          {isMessageType() == 'video' && (
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Text> Video </Text>
             </TouchableOpacity>
