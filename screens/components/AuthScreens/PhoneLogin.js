@@ -1,5 +1,5 @@
 // Import React and Component
-import React, { useState, createRef, useRef } from 'react';
+import React, {useState, createRef, useRef} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -13,40 +13,62 @@ import {
   Dimensions,
   ToastAndroid,
   Platform,
-  AlertIOS, ActivityIndicator
+  AlertIOS,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import PhoneInput from "react-native-phone-number-input";
+import PhoneInput from 'react-native-phone-number-input';
 import font from '../../constants/font';
 import colors from '../../constants/colors';
-import { api } from '../../config/env';
-const PhoneLogin = ({ navigation }) => {
+import {api} from '../../config/env';
+const PhoneLogin = ({navigation}) => {
   const [userPhone, setUserPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
   const [phoneEmptyErorr, setphoneEmptyErorr] = useState(false);
-  const [formattedValue, setFormattedValue] = useState("");
-  const [isValid, setIsValid] = useState(false);
-  const phoneInput = useRef("");
+  const [formattedValue, setFormattedValue] = useState('');
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [isWrong, setIsWrong] = useState(false);
+  const phoneInput = useRef('');
 
-  const check = (text) => {
-    setUserPhone(text)
+  const checkNumber = (text) => {
+    
+    setphoneEmptyErorr(false);
+    setErrortext('')
     const checkValid = phoneInput.current?.isValidNumber(text);
-    setIsValid(checkValid ? checkValid : false);
-  }
+    if (checkValid) {
+      setIsCorrect(true)
+      setIsWrong(false)
+      setUserPhone(text);
+    } else {
+      setIsWrong(true)
+      setIsCorrect(false)
+      setphoneEmptyErorr(false);
+      setUserPhone('');
+    }
+    // setIsValid(checkValid ? checkValid : false);
+  };
   const handleSubmitPress = () => {
     if (userPhone === '') {
+      setIsCorrect(false)
+      setIsWrong(false)
       setphoneEmptyErorr(true);
+      setErrortext('Invalid phone number')
     } else {
+      setIsCorrect(true)
+      setIsWrong(false)
+      setphoneEmptyErorr(false);
+     
       fetch(`${api}public/gKey`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ mobileNo: userPhone }),
+        body: JSON.stringify({mobileNo: formattedValue}),
       })
         .then((response) => response.json())
         .then((responseJson) => {
+          console.log(responseJson)
           setLoading(false);
           if (responseJson.status == '0') {
             setErrortext(responseJson.data[0].msg);
@@ -66,8 +88,8 @@ const PhoneLogin = ({ navigation }) => {
   return (
     <LinearGradient
       colors={[colors.Colors.blueLight, colors.Colors.blueDark]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
       style={styles.mainBody}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -77,7 +99,7 @@ const PhoneLogin = ({ navigation }) => {
           flexDirection: 'column',
           justifyContent: 'space-between',
         }}>
-        <View style={{ flex: 1 }}>
+        <View style={{flex: 1}}>
           <View style={styles.headerImage}>
             <Text style={styles.headerText}>Community App</Text>
           </View>
@@ -85,19 +107,13 @@ const PhoneLogin = ({ navigation }) => {
 
         <View style={styles.footer}>
           <KeyboardAvoidingView enabled>
-            <View style={[styles.heading, { marginTop: 40 }]}>
+            <View style={[styles.heading, {marginTop: 40}]}>
               <Text style={styles.headingText}>
                 Enter your phone number to continue
               </Text>
             </View>
 
             <View style={styles.SectionStyle}>
-              <View style={styles.iconLeft}>
-                <Image
-                  source={require('../../../asessts/images/user-icon.png')}
-                  style={styles.iconLeftImage}
-                />
-              </View>
               <PhoneInput
                 ref={phoneInput}
                 containerStyle={styles.phonecontainer}
@@ -108,19 +124,32 @@ const PhoneLogin = ({ navigation }) => {
                 defaultCode="PK"
                 layout="second"
                 onChangeText={(text) => {
-                  check(text)
+                  checkNumber(text);
                 }}
                 onChangeFormattedText={(text) => {
                   setFormattedValue(text);
                 }}
               />
               <View style={styles.iconRight}>
-                {!isValid && (
+                {phoneEmptyErorr && (
                   <Image
                     source={require('../../../asessts/images/invalidIcon.png')}
                     style={styles.iconRightImage}
                   />
                 )}
+                {isCorrect && (
+                  <Image
+                    source={require('../../../asessts/images/Icon-check-circle.png')}
+                    style={styles.iconRightImage}
+                  />
+                )}
+                {isWrong && 
+                  <Image
+                  source={require('../../../asessts/images/wrong.png')}
+                  style={styles.iconRightImage}
+                />
+                
+                }
               </View>
             </View>
             {errortext != '' ? (
@@ -205,17 +234,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 30,
     borderColor: '#d8d8d8',
-    backgroundColor: '#F3F1F1'
+    backgroundColor: '#F3F1F1',
   },
-  iconLeft: {
-    left: 3,
-    height: 50,
-    width: 25,
-    justifyContent: 'center',
-    paddingVertical: 4,
-    marginHorizontal: 8,
-    alignItems: 'center',
-  },
+
   iconRight: {
     position: 'absolute',
     right: 3,
@@ -225,24 +246,13 @@ const styles = StyleSheet.create({
     padding: 4,
     alignItems: 'center',
   },
-  iconLeftImage: {
-    resizeMode: 'contain',
-    height: '70%',
-    width: '70%',
-  },
+
   iconRightImage: {
     resizeMode: 'contain',
     height: '100%',
     width: '100%',
   },
-  inputStyle: {
-    flex: 1,
-    color: colors.Colors.gray,
-    paddingLeft: 15,
-    paddingRight: 15,
-    fontFamily: font.Fonts.josefReg,
-    fontSize: 20,
-  },
+
   row: {
     width: '90%',
     flexDirection: 'row',
@@ -284,26 +294,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   phonecontainer: {
+    borderRadius: 30,
     backgroundColor: '#F3F1F1',
-    height: 47,
-    width: '80%',
-    marginTop:1
   },
   phonetext: {
     backgroundColor: '#F3F1F1',
-    height: 47,
+    height: 48,
     fontFamily: font.Fonts.josefReg,
     fontSize: 20,
-    color: colors.Colors.gray
+    color: colors.Colors.gray,
   },
   phonecodetext: {
     fontFamily: font.Fonts.josefReg,
     fontSize: 20,
-    color: colors.Colors.gray
+    color: colors.Colors.gray,
   },
   phonetextcontainer: {
+    borderLeftWidth: 1,
+    borderLeftColor: colors.Colors.gray,
     backgroundColor: '#F3F1F1',
-    height: 47,
-    marginRight: 20
-  }
+  },
 });

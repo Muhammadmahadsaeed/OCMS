@@ -63,13 +63,13 @@ const PhoneOTP = ({navigation}) => {
   };
 
   const onSubmit = () => {
-    navigation.navigate('PhoneRegister');
-    // var num = parseInt(otpArray.join(''), 10);
-    // const email = navigation.state.params.email;
-    // if (isNaN(Number(num))) {
-    //   setErrortext('Please fill out this fields');
-    // } else {
-    //   setLoading(true);
+    // navigation.navigate('PhoneRegister');
+    var num = parseInt(otpArray.join(''), 10);
+    if (isNaN(Number(num))) {
+      setErrortext('Please fill out this fields');
+    }
+     else {
+      setLoading(true);
     //   fetch(`${api}user/verifyOtp`, {
     //     method: 'POST',
     //     headers: {
@@ -94,7 +94,7 @@ const PhoneOTP = ({navigation}) => {
     //       setLoading(false);
     //       console.log(err);
     //     });
-    // }
+    }
   };
   const onResendOtpButtonPress = () => {
     // const msg = 'Please verify your email';
@@ -211,6 +211,7 @@ const PhoneOTP = ({navigation}) => {
                       style={styles.inputStyle}
                       placeholder="?" //12345
                       textAlign={'center'}
+                      keyboardType="numeric"
                       placeholderTextColor={colors.Colors.gray}
                       onFocus={() => setErrortext('')}
                       maxLength={1}
