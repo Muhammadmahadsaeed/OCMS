@@ -181,6 +181,7 @@ class InputBox extends React.Component {
   onStopRecord = async () => {
     const result = await this.audioRecorderPlayer.stopRecorder();
     this.audioRecorderPlayer.removeRecordBackListener();
+    console.log(result)
     let arr = [];
     // const fileName = result.replace('file:///', '');
     // RNFetchBlob.fs.readStream(fileName, 'base64', 1048576).then((ifStream) => {

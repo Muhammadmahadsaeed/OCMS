@@ -98,12 +98,11 @@ const Conversation = (props) => {
   // };
 
   const onStartPlay = async (e, index) => {
-    console.log(e)
     // const fileName = e.message.uri.replace('file:///', '');
     const path = Platform.select({
       ios: 'hello.m4a',
       // android: fileName,
-      android: e.message[0].url
+      android: e.message.uri
     });
     try {
       await AudioManager.startPlayer(path, (res) => {

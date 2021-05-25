@@ -103,7 +103,7 @@ class ChatRoom extends React.Component {
           message: {
             recordTime: '0:07',
             uri:
-              'file:////storage/emulated/0/OCMS/703a370a-9352-4fe6-955c-0ab21f1d85b0.acc',
+              'file:////storage/emulated/0/OCMS/2faf4373-6f09-40d0-a6be-6aba9751ed05.acc',
             isPlay: false,
             isPause: false,
             progress: 0,
@@ -117,7 +117,7 @@ class ChatRoom extends React.Component {
           message: {
             recordTime: '0:40',
             uri:
-              'file:////storage/emulated/0/OCMS/b6b36aac-6a6f-4c53-8716-ef1b790d9366.acc',
+              'file:////storage/emulated/0/OCMS/034bed48-c914-41ee-b8b6-cb94db4b5739.acc',
             isPlay: false,
             isPause: false,
             progress: 0,
@@ -187,7 +187,7 @@ class ChatRoom extends React.Component {
       msg.message.file?.forEach((time) => {
         formdata.append('recordDuration', time.recordTime);
       });
-     
+
       fetch(`http://192.168.1.77:3000/chat/`, {
         method: 'POST',
         headers: {
@@ -313,8 +313,8 @@ class ChatRoom extends React.Component {
       const res = await DocumentPicker.pickMultiple({
         type: [DocumentPicker.types.allFiles],
       });
-      
-      const docArr = res.map((item) =>{
+
+      const docArr = res.map((item) => {
         // const fileName = item.uri.split('/').pop();
         let file = {
           name: item.name,
@@ -325,7 +325,7 @@ class ChatRoom extends React.Component {
               : item.uri.replace('file://', ''),
         };
         return file;
-      })
+      });
       let messageObj = {
         userId: 2,
         type: 'document',
@@ -338,7 +338,7 @@ class ChatRoom extends React.Component {
       // for (const result of res) {
       //   const fileUrl = result.uri.replace('file://', '');
       //   const fileName = result.uri.replace('file://', '');
-       
+
       //   RNFetchBlob.fs
       //     .readStream(fileName, 'base64', 1048576)
       //     .then((ifStream) => {
@@ -462,9 +462,7 @@ class ChatRoom extends React.Component {
           <TouchableOpacity
             onPress={() => this.selectVideo()}
             activeOpacity={0.8}>
-            <Image
-              source={require('../../../asessts/images/audio-icon.png')}
-            />
+            <Image source={require('../../../asessts/images/audio-icon.png')} />
           </TouchableOpacity>
         </View>
       </View>
